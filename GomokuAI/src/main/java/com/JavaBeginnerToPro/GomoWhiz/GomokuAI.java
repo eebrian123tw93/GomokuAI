@@ -32,7 +32,10 @@ public class GomokuAI {
 
 
     public static void main(String[] args) {
-        new GomokuAI();
+        GomokuAI gomokuAI = new GomokuAI();
+        gomokuAI.train();
+        gomokuAI.play();
+
     }
 
     GomokuAI() {
@@ -44,8 +47,8 @@ public class GomokuAI {
             gui = new GomokuGUI(currentState);
         }
 
-        train();
-        play();
+        //train();
+        //play();
         //System.out.println(qMap.size());
         //QTableDAO.save("qmap.txt", qMap);
         //System.out.println(LocalDateTime.now());
