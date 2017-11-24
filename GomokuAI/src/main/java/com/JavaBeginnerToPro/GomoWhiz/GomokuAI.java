@@ -15,7 +15,6 @@ public class GomokuAI {
     static final double GAMMA = 0.9; //the decay rate of future rewards
     static final double LEARNING_RATE = 0.5; //the "ALPHA"
 
-
     Random rand;
     int[] currentState;
     boolean gameEnded = false;
@@ -47,7 +46,7 @@ public class GomokuAI {
 
         train();
         play();
-        System.out.println(qMap.size());
+        //System.out.println(qMap.size());
         //QTableDAO.save("qmap.txt", qMap);
         //System.out.println(LocalDateTime.now());
     }
