@@ -14,22 +14,16 @@ public class GomokuAI {
     static final int winRequire = 5;
     static final double GAMMA = 0.9; //the decay rate of future rewards
     static final double LEARNING_RATE = 0.5; //the "ALPHA"
-
     Random rand;
     int[] currentState;
     boolean gameEnded = false;
     boolean learingMode = true;
-
     GomokuGUI gui;
     int wins = 0;
     int losses = 0;
     int ties = 0;
     int gamesPlayed = 0;
-
-
     Map<String, HashMap<Integer, Double>> qMap; //Map<State, HashMap<Action, Q value>>
-
-
 
     public static void main(String[] args) {
         GomokuAI gomokuAI = new GomokuAI();
