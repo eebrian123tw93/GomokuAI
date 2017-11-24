@@ -5,26 +5,31 @@ import java.util.*;
 public class GomokuAI {
 
     static final int gameBoardWidth = 15;
+    static final int GAMES_TO_TRAIN = 10;
+    static final int GAMES_TO_PLAY = 0;
+    boolean displayBoard = false;
+    boolean isPlaying = false;
+
     static final int GAMEBOARD_SIZE = gameBoardWidth * gameBoardWidth;
     static final int winRequire = 5;
     static final double GAMMA = 0.9; //the decay rate of future rewards
     static final double LEARNING_RATE = 0.5; //the "ALPHA"
 
-    static final int GAMES_TO_TRAIN = 10;
-    static final int GAMES_TO_PLAY = 0;
+
     Random rand;
     int[] currentState;
     boolean gameEnded = false;
     boolean learingMode = true;
-    boolean displayBoard = false;
+
     GomokuGUI gui;
     int wins = 0;
     int losses = 0;
     int ties = 0;
     int gamesPlayed = 0;
-    boolean isPlaying = false;
+
 
     Map<String, HashMap<Integer, Double>> qMap; //Map<State, HashMap<Action, Q value>>
+
 
 
     public static void main(String[] args) {
