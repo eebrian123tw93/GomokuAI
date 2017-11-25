@@ -20,15 +20,17 @@ import java.util.Map;
 GomokuAI_NN:
     store training data in qTable
     every 100 games, train the NN with qTable
+
+    NN input is gameBoard state + current player
 */
 
 public class GomokuAI_NN extends GomokuAI{
     //private static double [][] stateKeyPlusAction;
     //private static double [][] qValue;
     //Map<double[][] stateKeyPlusAction, double [][] qValue> qTable_NN = new
-    Map <double [], Double> qTable = new HashMap<double[], Double>();
+    Map <double [], double[]> qTable = new HashMap<>();
 
-    MLDataSet trainingSet;
+    //MLDataSet trainingSet;
     BasicNetwork network;
 
     GomokuAI_NN(){
@@ -37,14 +39,14 @@ public class GomokuAI_NN extends GomokuAI{
 
     void createNN(){
         // create a neural network, without using a factory
-        //input is GAMEBOARD_SIZE + 2 (GAMEBOARD_SIZE + current player + action)
-        //output is 1 Q value
+        //input is GAMEBOARD_SIZE + 1 (GAMEBOARD_SIZE + current player)
+        //output is GAMEBOARD_SIZE's Q values
         network = new BasicNetwork();
-        network.addLayer(new BasicLayer(null,true, GAMEBOARD_SIZE + 2));
-        network.addLayer(new BasicLayer(new ActivationReLU(),true, 5));
-        network.addLayer(new BasicLayer(new ActivationSigmoid(),false,1));
+        network.addLayer(new BasicLayer(null,true, GAMEBOARD_SIZE + 1));
+        network.addLayer(new BasicLayer(new ActivationReLU(),true, 100));
+        network.addLayer(new BasicLayer(new ActivationSigmoid(),false, GAMEBOARD_SIZE));
         network.getStructure().finalizeStructure();
-        network.reset();
+        network.reset(); //randomize weights
     }
 
 
@@ -96,7 +98,7 @@ public class GomokuAI_NN extends GomokuAI{
             }
 
             nextStateKey = makeStateKey_NN(nextState, nextPlayer);
-            //updateQValues(currentStateKey, currentPlayer, action, nextStateKey, reward);
+            updateQValues(currentStateKey, currentPlayer, action, nextStateKey, reward, nextState);
             currentState = nextState.clone(); //change currentState to the state after the action
 
             //swap players
@@ -174,51 +176,109 @@ public class GomokuAI_NN extends GomokuAI{
         return -1; //just in case. should cause an error
     }
     int getMaxQValueAction(double [] stateKey, int [] validActions) {
-        double [][] stateKey_action = new double[1][1];
-        //pass in the stateKey + a valid action to the NN to get a single Q value. find the action with
+        //double [][] stateKey_action = new double[1][1];
+
+        //pass in the stateKey to the NN to get the Q values. find the action with
         //the largest Q value and return it
         double maxQValue = -1.0;
         int maxQValueAction = -1;
-        double [] nnOutput;
+        double [] nnOutputs = network.compute(new BasicMLData(stateKey)).getData();
 
-        for (int i = 0; i < validActions.length; ++i){
-            stateKey_action[0] = combineStateKeyWithAction(stateKey, validActions[i]);
-            //get output from NN
-            nnOutput = network.compute(new BasicMLData(stateKey_action[0])).getData();
-            if (nnOutput[0] > maxQValue){
-                maxQValue = nnOutput[0];
+        for (int i = 0; i < validActions.length; ++i) {
+            if (nnOutputs[validActions[i]] > maxQValue) {
+                maxQValue = nnOutputs[validActions[i]];
                 maxQValueAction = validActions[i];
             }
         }
-
-
+//        for (int i = 0; i < validActions.length; ++i){
+//            stateKey_action[0] = combineStateKeyWithAction(stateKey, validActions[i]);
+//            //get output from NN
+//            nnOutput = network.compute(new BasicMLData(stateKey_action[0])).getData();
+//            if (nnOutput[0] > maxQValue){
+//                maxQValue = nnOutput[0];
+//                maxQValueAction = validActions[i];
+//            }
         return maxQValueAction;
     }
     int getMinQValueAction(double [] stateKey, int [] validActions) {
-        double [][] stateKey_action = new double[1][1];
+        //double [][] stateKey_action = new double[1][1];
         double minQValue = 1.0;
         int minQValueAction = -1;
-        double [] nnOutput;
+        double [] nnOutputs = network.compute(new BasicMLData(stateKey)).getData();
 
         for (int i = 0; i < validActions.length; ++i){
-            stateKey_action[0] = combineStateKeyWithAction(stateKey, validActions[i]);
-            //get output from NN
-            nnOutput = network.compute(new BasicMLData(stateKey_action[0])).getData();
-            if (nnOutput[0] < minQValue){
-                minQValue = nnOutput[0];
+            if (nnOutputs[validActions[i]] < minQValue){
+                minQValue = nnOutputs[validActions[i]];
                 minQValueAction = validActions[i];
             }
         }
-
+//        for (int i = 0; i < validActions.length; ++i){
+//            stateKey_action[0] = combineStateKeyWithAction(stateKey, validActions[i]);
+//            //get output from NN
+//            nnOutput = network.compute(new BasicMLData(stateKey_action[0])).getData();
+//            if (nnOutput[0] < minQValue){
+//                minQValue = nnOutput[0];
+//                minQValueAction = validActions[i];
+//            }
+//        }
         return minQValueAction;
     }
-    double [] combineStateKeyWithAction(double [] stateKey, double action){
-        double [] stateKey_action = new double[stateKey.length + 1];
-        for (int i = 0; i < stateKey_action.length; ++i){
-            if (i == stateKey_action.length - 1) stateKey_action[i] = action;
-            else stateKey_action[i] = stateKey[i];
+//    double [] combineStateKeyWithAction(double [] stateKey, double action){
+//        double [] stateKey_action = new double[stateKey.length + 1];
+//        for (int i = 0; i < stateKey_action.length; ++i){
+//            if (i == stateKey_action.length - 1) stateKey_action[i] = action;
+//            else stateKey_action[i] = stateKey[i];
+//        }
+//        return stateKey_action;
+//    }
+
+    void updateQValues(double [] currentStateKey, int currentPlayer, int action, double [] nextStateKey, double reward, int[] nextState){
+        //MLDataSet trainingSet = new BasicMLDataSet(XOR_INPUT, XOR_IDEAL);
+        double expectedQValue = 0; //the expected Q value
+        if (gameEnded) expectedQValue = reward;
+        else {
+            // assumes that the opponent always makes the best move
+            if (currentPlayer == 1) expectedQValue = reward + (GAMMA * getMinQValue(nextStateKey, nextState));
+            else expectedQValue = reward + (GAMMA * getMaxQValue(nextStateKey, nextState));
         }
-        return stateKey_action;
+
+//        double q = getQValue(currentStateKey, action);
+//        q += LEARNING_RATE * (expectedQValue - q);
+        double [] qValues = network.compute(new BasicMLData(currentStateKey)).getData();
+        qValues[action] += LEARNING_RATE * (expectedQValue - qValues[action]);
+        trainNN(currentStateKey, qValues);
+    }
+    double getMinQValue(double [] stateKey, int [] state){
+        double [] nnOutputs = network.compute(new BasicMLData(stateKey)).getData();
+        int [] validActions = getValidActions(state);
+        double minQValue = 1;
+        for (int i = 0; i < validActions.length; ++i){
+            if (nnOutputs[validActions[i]] < minQValue) minQValue = nnOutputs[validActions[i]];
+        }
+        return  minQValue;
+    }
+    double getMaxQValue(double [] stateKey, int [] state){
+        double [] nnOutputs = network.compute(new BasicMLData(stateKey)).getData();
+        int [] validActions = getValidActions(state);
+        double maxQValue = -1;
+        for (int i = 0; i < validActions.length; ++i){
+            if (nnOutputs[validActions[i]] > maxQValue) maxQValue = nnOutputs[validActions[i]];
+        }
+        return  maxQValue;
+    }
+    double getQValue(double [] stateKey, int action){
+        return network.compute(new BasicMLData(stateKey)).getData(action);
+    }
+
+    //train the NN with a single state key and qValues
+    void trainNN(double [] stateKey, double [] qValues){
+        double [][] trainingInput = {stateKey};
+        double [][] trainingIdeal = {qValues};
+        MLDataSet trainingSet = new BasicMLDataSet(trainingInput, trainingIdeal);
+        ResilientPropagation train = new ResilientPropagation(network, trainingSet);
+        do {
+            train.iteration();
+        } while(train.getError() > 0.01);
     }
 
 }

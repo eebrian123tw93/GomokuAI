@@ -1,17 +1,18 @@
 package com.JavaBeginnerToPro.GomoWhiz;
+import java.time.LocalDateTime;
 import java.util.*;
 
 
 public class GomokuAI {
 
     static final int gameBoardWidth = 15;
-    static final int GAMES_TO_TRAIN = 10;
+    static final int winRequire = 5;
+    static final int GAMES_TO_TRAIN = 1000;
     static final int GAMES_TO_PLAY = 0;
     boolean displayBoard = false;
     boolean isPlaying = false;
 
     static final int GAMEBOARD_SIZE = gameBoardWidth * gameBoardWidth;
-    static final int winRequire = 5;
     static final double GAMMA = 0.9; //the decay rate of future rewards
     static final double LEARNING_RATE = 0.5; //the "ALPHA"
     Random rand;
@@ -27,8 +28,11 @@ public class GomokuAI {
 
     public static void main(String[] args) {
         GomokuAI gomokuAI = new GomokuAI();
+
+        System.out.println("Training and playing started at: " + LocalDateTime.now());
         gomokuAI.train();
         gomokuAI.play();
+        System.out.println("Training and playing ended at: " + LocalDateTime.now());
 
     }
 
