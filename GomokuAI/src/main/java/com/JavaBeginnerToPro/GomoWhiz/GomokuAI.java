@@ -4,11 +4,11 @@ import java.util.*;
 
 public class GomokuAI {
 
-    static final int gameBoardWidth = 15;
-    static final int winRequire = 5;
-    static final int GAMES_TO_TRAIN = 1000;
-    static final int GAMES_TO_PLAY = 0;
-    boolean displayBoard = false;
+    static final int gameBoardWidth = 3;
+    static final int winRequire = 3;
+    static final int GAMES_TO_TRAIN = 100000;
+    static final int GAMES_TO_PLAY = 3000;
+    boolean displayBoard = true;
     boolean isPlaying = false;
 
     static final int GAMEBOARD_SIZE = gameBoardWidth * gameBoardWidth;
@@ -32,7 +32,7 @@ public class GomokuAI {
         gomokuAI.train();
         gomokuAI.play();
         System.out.println("run time = " + (System.currentTimeMillis() - startTime) / 1000);
-        QTableDAO.save("qmap15_5_1000games_original.txt", qMap);
+        //QTableDAO.save("qmap15_5_1000games_original.txt", qMap);
     }
 
     GomokuAI() {
@@ -171,12 +171,14 @@ public class GomokuAI {
 //        return key;
         StringBuilder sb = new StringBuilder();
         for (int i: state) sb.append(Integer.toString(i));
+        sb.append(Integer.toString(currentPlayer));
         String key = sb.toString();
 
         //if this game state hasn't happened before
         if (qMap.get(key) == null) qMap.put(key, createActionQValueMap(state));
         return key;
     }
+
 //    String makeStateKey_Better(int [] state, int currentPlayer){
 //        //String key = Arrays.toString(state) + Integer.toString(currentPlayer); //key = state + player
 ////        String key = new String();
@@ -210,8 +212,8 @@ public class GomokuAI {
             //player 1 looks for the maximum Q values (because it gets a positive reward when winning)
             if (currentPlayer == 1) return getMaxQValueAction(stateKey);
             //player -1 looks for the minimum Q values (because it gets a negative reward when winning)
-            //else if (currentPlayer == -1) return getMinQValueAction(stateKey);
-            else if (currentPlayer == -1) return getMaxQValueAction(stateKey);
+            else if (currentPlayer == -1) return getMinQValueAction(stateKey);
+            //else if (currentPlayer == -1) return getMaxQValueAction(stateKey);
         }
 
         else {

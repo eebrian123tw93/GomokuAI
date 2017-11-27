@@ -18,7 +18,7 @@ import java.util.Map;
 
 /*
 GomokuAI_NN:
-    training methods: 1. train the network every step
+    training methods: 1. train the network every step (bad)
                       2. train the network every X amount of games
                       3. randomly record games into a replay memory, then everytime
                       the replay memory fills up to a certain amount, train the network with it
@@ -55,9 +55,8 @@ public class GomokuAI_NN extends GomokuAI{
         //output is GAMEBOARD_SIZE's Q values
         network = new BasicNetwork();
         network.addLayer(new BasicLayer(null,true, GAMEBOARD_SIZE + 1));
-        network.addLayer(new BasicLayer(new ActivationReLU(),true, 225));
+        network.addLayer(new BasicLayer(new ActivationReLU(),true, 500));
         network.addLayer(new BasicLayer(new ActivationReLU(), true, 12));
-        //network.addLayer();
         network.addLayer(new BasicLayer(new ActivationSigmoid(),false, GAMEBOARD_SIZE));
         network.getStructure().finalizeStructure();
         network.reset(); //randomize weights
@@ -291,6 +290,22 @@ public class GomokuAI_NN extends GomokuAI{
     void trainNN(double [] stateKey, double [] qValues){
         double [][] trainingInput = {stateKey};
         double [][] trainingIdeal = {qValues};
+        MLDataSet trainingSet = new BasicMLDataSet(trainingInput, trainingIdeal);
+        ResilientPropagation train = new ResilientPropagation(network, trainingSet);
+        //int epoch = 1;
+        do {
+            train.iteration();
+            //System.out.println("Epoch #" + epoch + " Error:" + train.getError());
+            //++epoch;
+        } while(train.getError() > 0.01);
+        train.finishTraining();
+        //System.out.println("-----finished training-----");
+    }
+
+    //train the NN with multiple state keys and qValues
+    void trainNN(double [][] stateKeys, double [][] qValues){
+        double [][] trainingInput = stateKeys.clone();
+        double [][] trainingIdeal = qValues.clone();
         MLDataSet trainingSet = new BasicMLDataSet(trainingInput, trainingIdeal);
         ResilientPropagation train = new ResilientPropagation(network, trainingSet);
         //int epoch = 1;
