@@ -1,5 +1,4 @@
 package com.JavaBeginnerToPro.GomoWhiz;
-import java.time.LocalDateTime;
 import java.util.*;
 
 
@@ -13,8 +12,8 @@ public class GomokuAI {
     boolean isPlaying = false;
 
     static final int GAMEBOARD_SIZE = gameBoardWidth * gameBoardWidth;
-    static final double GAMMA = 0.9; //the decay rate of future rewards
-    static final double LEARNING_RATE = 0.5; //the "ALPHA"
+    static final double GAMMA = 0.8; //the decay rate of future rewards
+    static final double LEARNING_RATE = 0.1; //the "ALPHA"
     Random rand;
     int[] currentState;
     boolean gameEnded = false;
@@ -24,16 +23,16 @@ public class GomokuAI {
     int losses = 0;
     int ties = 0;
     int gamesPlayed = 0;
-    Map<String, HashMap<Integer, Double>> qMap; //Map<State, HashMap<Action, Q value>>
+    static Map<String, HashMap<Integer, Double>> qMap; //Map<State, HashMap<Action, Q value>>
 
     public static void main(String[] args) {
         GomokuAI gomokuAI = new GomokuAI();
 
-        System.out.println("Training and playing started at: " + LocalDateTime.now());
+        long startTime = System.currentTimeMillis();
         gomokuAI.train();
         gomokuAI.play();
-        System.out.println("Training and playing ended at: " + LocalDateTime.now());
-
+        System.out.println("run time = " + (System.currentTimeMillis() - startTime) / 1000);
+        QTableDAO.save("qmap15_5_1000games_original.txt", qMap);
     }
 
     GomokuAI() {
@@ -48,7 +47,7 @@ public class GomokuAI {
         //train();
         //play();
         //System.out.println(qMap.size());
-        //QTableDAO.save("qmap.txt", qMap);
+        //QTableDAO.save("qmapTicTacToe.txt", qMap);
         //System.out.println(LocalDateTime.now());
     }
 
@@ -117,6 +116,7 @@ public class GomokuAI {
             else nextPlayer = 1;
 
             currentStateKey = makeStateKey(currentState, currentPlayer);
+            //currentStateKey = makeStateKey_Better(currentState, currentPlayer);
             nextState = currentState.clone();
             int action = chooseAction(currentStateKey, currentPlayer, currentState);
             nextState[action] = currentPlayer; //place the piece
@@ -139,6 +139,7 @@ public class GomokuAI {
             }
 
             nextStateKey = makeStateKey(nextState, nextPlayer);
+            //nextStateKey = makeStateKey_Better(nextState, nextPlayer);
             updateQValues(currentStateKey, currentPlayer, action, nextStateKey, reward);
             currentState = nextState.clone(); //change currentState to the state after the action
 
@@ -164,11 +165,33 @@ public class GomokuAI {
     }
 
     String makeStateKey(int[] state, int currentPlayer) {
-        String key = Arrays.toString(state) + Integer.toString(currentPlayer); //key = state + player
+//        String key = Arrays.toString(state) + Integer.toString(currentPlayer); //key = state + player
+//        //if this game state hasn't happened before
+//        if (qMap.get(key) == null) qMap.put(key, createActionQValueMap(state));
+//        return key;
+        StringBuilder sb = new StringBuilder();
+        for (int i: state) sb.append(Integer.toString(i));
+        String key = sb.toString();
+
         //if this game state hasn't happened before
         if (qMap.get(key) == null) qMap.put(key, createActionQValueMap(state));
         return key;
     }
+//    String makeStateKey_Better(int [] state, int currentPlayer){
+//        //String key = Arrays.toString(state) + Integer.toString(currentPlayer); //key = state + player
+////        String key = new String();
+////        for (int i: state) key += Integer.toString(i);
+////        key += Integer.toString(currentPlayer);
+//
+//        StringBuilder sb = new StringBuilder();
+//        for (int i: state) sb.append(Integer.toString(i));
+//        String key = sb.toString();
+//
+//        //if this game state hasn't happened before
+//        if (qMap.get(key) == null) qMap.put(key, createActionQValueMap(state));
+//        return key;
+//    }
+
     HashMap<Integer, Double> createActionQValueMap(int[] state) {
         // create hashmap of all valid actions in this state and random initial qvalues
         HashMap<Integer, Double> vals = new HashMap<Integer, Double>();
@@ -187,7 +210,8 @@ public class GomokuAI {
             //player 1 looks for the maximum Q values (because it gets a positive reward when winning)
             if (currentPlayer == 1) return getMaxQValueAction(stateKey);
             //player -1 looks for the minimum Q values (because it gets a negative reward when winning)
-            else if (currentPlayer == -1) return getMinQValueAction(stateKey);
+            //else if (currentPlayer == -1) return getMinQValueAction(stateKey);
+            else if (currentPlayer == -1) return getMaxQValueAction(stateKey);
         }
 
         else {

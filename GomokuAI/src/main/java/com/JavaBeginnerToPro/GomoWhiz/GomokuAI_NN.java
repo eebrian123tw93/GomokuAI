@@ -18,8 +18,11 @@ import java.util.Map;
 
 /*
 GomokuAI_NN:
-    store training data in qTable
-    every 100 games, train the NN with qTable
+    training methods: 1. train the network every step
+                      2. train the network every X amount of games
+                      3. randomly record games into a replay memory, then everytime
+                      the replay memory fills up to a certain amount, train the network with it
+
 
     NN input is gameBoard state + current player
 */
@@ -33,8 +36,17 @@ public class GomokuAI_NN extends GomokuAI{
     //MLDataSet trainingSet;
     BasicNetwork network;
 
-    GomokuAI_NN(){
+    public static void main(String[] args) {
+        long startTime = System.currentTimeMillis();
+        new GomokuAI_NN();
+        System.out.println("run time = " + (System.currentTimeMillis() - startTime) / 1000);
+    }
 
+    GomokuAI_NN(){
+       createNN();
+
+       train();
+       play();
     }
 
     void createNN(){
@@ -43,7 +55,9 @@ public class GomokuAI_NN extends GomokuAI{
         //output is GAMEBOARD_SIZE's Q values
         network = new BasicNetwork();
         network.addLayer(new BasicLayer(null,true, GAMEBOARD_SIZE + 1));
-        network.addLayer(new BasicLayer(new ActivationReLU(),true, 100));
+        network.addLayer(new BasicLayer(new ActivationReLU(),true, 225));
+        network.addLayer(new BasicLayer(new ActivationReLU(), true, 12));
+        //network.addLayer();
         network.addLayer(new BasicLayer(new ActivationSigmoid(),false, GAMEBOARD_SIZE));
         network.getStructure().finalizeStructure();
         network.reset(); //randomize weights
@@ -98,7 +112,7 @@ public class GomokuAI_NN extends GomokuAI{
             }
 
             nextStateKey = makeStateKey_NN(nextState, nextPlayer);
-            updateQValues(currentStateKey, currentPlayer, action, nextStateKey, reward, nextState);
+            //updateQValues(currentStateKey, currentPlayer, action, nextStateKey, reward, nextState);
             currentState = nextState.clone(); //change currentState to the state after the action
 
             //swap players
@@ -156,7 +170,7 @@ public class GomokuAI_NN extends GomokuAI{
             //player 1 looks for the maximum Q values (because it gets a positive reward when winning)
             if (currentPlayer == 1) return getMaxQValueAction(stateKey, validActions);
                 //player -1 looks for the minimum Q values (because it gets a negative reward when winning)
-            else if (currentPlayer == -1) return getMinQValueAction(stateKey, validActions);
+            else return getMinQValueAction(stateKey, validActions);
         }
 
         else {
@@ -172,15 +186,16 @@ public class GomokuAI_NN extends GomokuAI{
             }
         }
 
+        //boolean somethingwentwrong = true;
         //else if (currentPlayer == -1) return getMaxQValueAction(stateKey);
-        return -1; //just in case. should cause an error
+        //return -1; //just in case. should cause an error
     }
     int getMaxQValueAction(double [] stateKey, int [] validActions) {
         //double [][] stateKey_action = new double[1][1];
 
         //pass in the stateKey to the NN to get the Q values. find the action with
         //the largest Q value and return it
-        double maxQValue = -1.0;
+        double maxQValue = -Double.MAX_VALUE;
         int maxQValueAction = -1;
         double [] nnOutputs = network.compute(new BasicMLData(stateKey)).getData();
 
@@ -202,7 +217,7 @@ public class GomokuAI_NN extends GomokuAI{
     }
     int getMinQValueAction(double [] stateKey, int [] validActions) {
         //double [][] stateKey_action = new double[1][1];
-        double minQValue = 1.0;
+        double minQValue = Double.MAX_VALUE;
         int minQValueAction = -1;
         double [] nnOutputs = network.compute(new BasicMLData(stateKey)).getData();
 
@@ -232,7 +247,7 @@ public class GomokuAI_NN extends GomokuAI{
 //        return stateKey_action;
 //    }
 
-    void updateQValues(double [] currentStateKey, int currentPlayer, int action, double [] nextStateKey, double reward, int[] nextState){
+    void updateQValues(double [] currentStateKey, int currentPlayer, int action, double [] nextStateKey, double reward, int[] nextState) {
         //MLDataSet trainingSet = new BasicMLDataSet(XOR_INPUT, XOR_IDEAL);
         double expectedQValue = 0; //the expected Q value
         if (gameEnded) expectedQValue = reward;
@@ -244,9 +259,11 @@ public class GomokuAI_NN extends GomokuAI{
 
 //        double q = getQValue(currentStateKey, action);
 //        q += LEARNING_RATE * (expectedQValue - q);
-        double [] qValues = network.compute(new BasicMLData(currentStateKey)).getData();
-        qValues[action] += LEARNING_RATE * (expectedQValue - qValues[action]);
-        trainNN(currentStateKey, qValues);
+        double[] qValues = network.compute(new BasicMLData(currentStateKey)).getData();
+        if (qValues[action] != expectedQValue) {
+            qValues[action] += LEARNING_RATE * (expectedQValue - qValues[action]);
+            trainNN(currentStateKey, qValues);
+        }
     }
     double getMinQValue(double [] stateKey, int [] state){
         double [] nnOutputs = network.compute(new BasicMLData(stateKey)).getData();
@@ -276,9 +293,14 @@ public class GomokuAI_NN extends GomokuAI{
         double [][] trainingIdeal = {qValues};
         MLDataSet trainingSet = new BasicMLDataSet(trainingInput, trainingIdeal);
         ResilientPropagation train = new ResilientPropagation(network, trainingSet);
+        //int epoch = 1;
         do {
             train.iteration();
+            //System.out.println("Epoch #" + epoch + " Error:" + train.getError());
+            //++epoch;
         } while(train.getError() > 0.01);
+        train.finishTraining();
+        //System.out.println("-----finished training-----");
     }
 
 }
