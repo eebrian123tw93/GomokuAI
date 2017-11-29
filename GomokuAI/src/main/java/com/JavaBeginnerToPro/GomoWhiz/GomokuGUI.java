@@ -1,11 +1,20 @@
 package com.JavaBeginnerToPro.GomoWhiz;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.border.DropShadowBorder;
-
 import javax.imageio.ImageIO;
-import javax.swing.*;
+import javax.swing.ImageIcon;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
-import java.awt.*;
+import java.awt.BasicStroke;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.Point;
+import java.awt.Rectangle;
+import java.awt.Window;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.KeyEvent;
@@ -158,6 +167,8 @@ class BoardPanel extends JXPanel {
     private int [] randomTable;
     private int rectSize;
     private int chessR;
+    private int blackPlayer = 1;
+    private int whitePlayer = 2;
 
     private  BufferedImage blackChessImage;
     private   BufferedImage whiteChessImage;
@@ -254,7 +265,7 @@ class BoardPanel extends JXPanel {
 
         for (int i = 0; i < gameState.length; i++) {
             transform.rotate(randomTable[i]*Math.PI/2, blackChessImage.getWidth()/2, blackChessImage.getHeight()/2);
-            if (gameState[i] == 1) {
+            if (gameState[i] == blackPlayer) {
 
 
                 AffineTransformOp op = new AffineTransformOp(transform, AffineTransformOp.TYPE_BICUBIC);
@@ -264,7 +275,7 @@ class BoardPanel extends JXPanel {
 //                g.fillOval(p.x - chessR / 2, p.y - chessR / 2, chessR, chessR);
 //                blackChessImage
 
-            } else if (gameState[i] == -1) {
+            } else if (gameState[i] == whitePlayer) {
                 AffineTransformOp op = new AffineTransformOp(transform, AffineTransformOp.TYPE_BICUBIC);
                 g.drawImage(op.filter(whiteChessImage,null),p.x - chessR / 2, p.y - chessR / 2, chessR, chessR,this);
 //                g.setColor(Color.WHITE);

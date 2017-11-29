@@ -1,14 +1,17 @@
 package com.JavaBeginnerToPro.GomoWhiz;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
 
 
 public class GomokuAI {
 
-    static final int gameBoardWidth = 3;
-    static final int winRequire = 3;
-    static final int GAMES_TO_TRAIN = 100000;
-    static final int GAMES_TO_PLAY = 3000;
-    boolean displayBoard = true;
+    static final int gameBoardWidth = 15;
+    static final int winRequire = 5;
+    static final int GAMES_TO_TRAIN = 1000;
+    static final int GAMES_TO_PLAY = 0;
+    boolean displayBoard = false;
     boolean isPlaying = false;
 
     static final int GAMEBOARD_SIZE = gameBoardWidth * gameBoardWidth;
