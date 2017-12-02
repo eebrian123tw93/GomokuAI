@@ -17,41 +17,14 @@ public class GomokuAI_2 extends GomokuAI{
         gomokuAI_2.train();
         gomokuAI_2.play();
         System.out.println("run time = " + (System.currentTimeMillis() - startTime) / 1000);
-        //QTableDAO.save("qMap225_5p1.txt", qMap);
-        //QTableDAO.save("qMap225_5p2.txt", qMap2);
+        //QTableDAO.save("qMap100_5p1.txt", qMap);
+        //QTableDAO.save("qMap16_3p2.txt", qMap2);
     }
 
     GomokuAI_2(){
         qMap2 = new HashMap<>();
     }
 
-    void play(){
-        isPlaying = true;
-        //playing phrase
-        while (gamesPlayed < GAMES_TO_PLAY){
-            learingMode = false;
-            playOneGame();
-            ++gamesPlayed;
-
-            if (displayBoard) {
-                try {
-                    ((BoardPanel)gui.getContentPane().getComponent(0)).initRandomTable();
-                    //gui.repaint();
-                    Thread.sleep(500);
-                }
-
-                catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            if (gamesPlayed % 1000 == 0) {
-                System.out.println("wins: " + wins + " losses: " + losses + " ties: " + ties);
-                wins=losses=ties=0;
-            }
-        }
-        gamesPlayed = 0;
-    }
     void playOneGame() {
         //int [] currentState = new int[GAMEBOARD_SIZE]; //initialize gameboard. all elements in state[] are 0 when declared
         for (int i = 0; i < GAMEBOARD_SIZE; ++i) currentState[i] = 0; //reset current state to all 0
@@ -105,7 +78,6 @@ public class GomokuAI_2 extends GomokuAI{
             if (currentPlayer == 1) currentPlayer = 2;
             else currentPlayer = 1;
 
-
             if (displayBoard && isPlaying) {
                 try {
                     ((BoardPanel) gui.getContentPane().getComponent(0)).setGameState(currentState);
@@ -141,11 +113,11 @@ public class GomokuAI_2 extends GomokuAI{
 
     int chooseAction(String stateKey, int currentPlayer, int[] currentState) {
 
-        if (learingMode == false) {
+        if (learningMode == false) {
             //player 1 looks for the maximum Q values (because it gets a positive reward when winning)
             if (currentPlayer == 1) return getMaxQValueAction(stateKey, currentPlayer);
                 //player 2 looks for the minimum Q values (because it gets a negative reward when winning)
-            else if (currentPlayer == 2) return getMinQValueAction(stateKey, currentPlayer);
+            else return getMinQValueAction(stateKey, currentPlayer);
             //else if (currentPlayer == 2) return getMaxQValueAction(stateKey, currentPlayer);
         }
 
@@ -162,7 +134,7 @@ public class GomokuAI_2 extends GomokuAI{
             }
         }
 
-        return -1; //just in case. should cause an error
+        //return -1; //just in case. should cause an error
     }
     int getMaxQValueAction(String stateKey, int currentPlayer) {
         double maxQValue = -Double.MAX_VALUE;
@@ -205,6 +177,7 @@ public class GomokuAI_2 extends GomokuAI{
 
     void updateQValues(String currentStateKey, int currentPlayer, int action, String nextStateKey, double reward) {
         double expectedQValue = 0; //the expected Q value
+        //if (currentPlayer == 2) return;
 
         if (gameEnded) expectedQValue = reward;
         else {

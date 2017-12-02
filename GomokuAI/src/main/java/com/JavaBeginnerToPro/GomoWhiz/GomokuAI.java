@@ -7,20 +7,20 @@ import java.util.Random;
 
 public class GomokuAI {
 
-    static final int gameBoardWidth = 15;
-    static final int winRequire = 5;
-    static final int GAMES_TO_TRAIN = 1000;
-    static final int GAMES_TO_PLAY = 0;
+    static final int gameBoardWidth = 3;
+    static final int winRequire = 3;
+    static final int GAMES_TO_TRAIN = 1000000;
+    static final int GAMES_TO_PLAY = 3000;
     boolean displayBoard = false;
     boolean isPlaying = false;
 
     static final int GAMEBOARD_SIZE = gameBoardWidth * gameBoardWidth;
-    static final double GAMMA = 0.8; //the decay rate of future rewards
-    static final double LEARNING_RATE = 0.1; //the "ALPHA"
+    static final double GAMMA = 0.9; //the decay rate of future rewards
+    static final double LEARNING_RATE = 0.01; //the "ALPHA"
     Random rand;
     int[] currentState;
     boolean gameEnded = false;
-    boolean learingMode = true;
+    boolean learningMode = true;
     GomokuGUI gui;
     int wins = 0;
     int losses = 0;
@@ -75,7 +75,7 @@ public class GomokuAI {
         isPlaying = true;
         //playing phrase
         while (gamesPlayed < GAMES_TO_PLAY){
-            learingMode = false;
+            learningMode = false;
             playOneGame();
             ++gamesPlayed;
 
@@ -211,7 +211,7 @@ public class GomokuAI {
     //int[] currentState is for choosing random moves
     int chooseAction(String stateKey, int currentPlayer, int[] currentState) {
 
-        if (learingMode == false) {
+        if (learningMode == false) {
             //player 1 looks for the maximum Q values (because it gets a positive reward when winning)
             if (currentPlayer == 1) return getMaxQValueAction(stateKey);
             //player -1 looks for the minimum Q values (because it gets a negative reward when winning)
