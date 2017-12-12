@@ -7,16 +7,16 @@ import java.util.Random;
 
 public class GomokuAI {
 
-    static final int gameBoardWidth = 3;
-    static final int winRequire = 3;
-    static final int GAMES_TO_TRAIN = 1000000;
-    static final int GAMES_TO_PLAY = 3000;
-    boolean displayBoard = false;
-    boolean isPlaying = false;
+    public static int gameBoardWidth = 3;
+    public static int winRequire = 3;
+    public static int GAMES_TO_TRAIN = 1000000;
+    public static int GAMES_TO_PLAY = 100000;
+    public boolean displayBoard = false;
+    public boolean isPlaying = false;
 
     static final int GAMEBOARD_SIZE = gameBoardWidth * gameBoardWidth;
     static final double GAMMA = 0.9; //the decay rate of future rewards
-    static final double LEARNING_RATE = 0.01; //the "ALPHA"
+    static final double LEARNING_RATE = 0.1; //the "ALPHA"
     Random rand;
     int[] currentState;
     boolean gameEnded = false;

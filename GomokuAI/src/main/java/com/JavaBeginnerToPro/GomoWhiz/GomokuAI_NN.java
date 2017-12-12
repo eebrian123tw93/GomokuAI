@@ -6,10 +6,14 @@ import org.encog.engine.network.activation.ActivationSigmoid;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.data.basic.BasicMLData;
 import org.encog.ml.data.basic.BasicMLDataSet;
+import org.encog.ml.train.strategy.Greedy;
+import org.encog.ml.train.strategy.Strategy;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.BasicLayer;
 import org.encog.neural.networks.training.propagation.resilient.ResilientPropagation;
+import static org.encog.persist.EncogDirectoryPersistence.*;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -36,70 +40,93 @@ GomokuAI_NN:
 
 public class GomokuAI_NN extends GomokuAI_2{
 
-    BasicNetwork network1;
-    BasicNetwork network2;
+    static BasicNetwork network1;
+    static BasicNetwork network2;
 
-    private static final int recordAmountBeforeTrain = 1000; //the amount of games to record before training it in NN
+   // private static final int
+    private static final int recordAmountBeforeTrain = 100000; //the amount of games to record before training it in NN
     private static final int trainingEpochs = 1;
+    private static final int hiddenLayerCount = 10;
 
     public static void main(String[] args) {
         long startTime = System.currentTimeMillis();
         GomokuAI_NN gomokuAI_NN = new GomokuAI_NN();
         gomokuAI_NN.trainAndPlay();
+
+        saveObject(new File("network_9_3p1.eg"), network1); //save network1
+
         System.out.println("run time = " + (System.currentTimeMillis() - startTime) / 1000);
         Encog.getInstance().shutdown();
     }
 
     GomokuAI_NN(){
        createNN();
+       GAMES_TO_TRAIN = 1000000;
+       GAMES_TO_PLAY = 10000;
     }
 
     void createNN(){
         // create a neural network
         //input is GAMEBOARD_SIZE + 1 (GAMEBOARD_SIZE + current player)
         //output is GAMEBOARD_SIZE's Q values
+
+//        network1 = new BasicNetwork();
+//        for (int i = 0; i < )
+
+
         network1 = new BasicNetwork();
         network1.addLayer(new BasicLayer(null,true, GAMEBOARD_SIZE));
-        network1.addLayer(new BasicLayer(new ActivationReLU(), true, GAMEBOARD_SIZE * 2));
-        network1.addLayer(new BasicLayer(new ActivationReLU(), true, GAMEBOARD_SIZE * 3));
-        network1.addLayer(new BasicLayer(new ActivationReLU(), true, GAMEBOARD_SIZE * 4));
-        network1.addLayer(new BasicLayer(new ActivationReLU(), true, GAMEBOARD_SIZE * 5));
-        network1.addLayer(new BasicLayer(new ActivationReLU(), true, GAMEBOARD_SIZE * 6));
-        network1.addLayer(new BasicLayer(new ActivationReLU(), true, GAMEBOARD_SIZE * 7));
-        network1.addLayer(new BasicLayer(new ActivationReLU(), true, GAMEBOARD_SIZE * 8));
-        network1.addLayer(new BasicLayer(new ActivationReLU(), true, GAMEBOARD_SIZE * 9));
-        network1.addLayer(new BasicLayer(new ActivationReLU(), true, GAMEBOARD_SIZE * 8));
-        network1.addLayer(new BasicLayer(new ActivationReLU(), true, GAMEBOARD_SIZE * 7));
-        network1.addLayer(new BasicLayer(new ActivationReLU(), true, GAMEBOARD_SIZE * 6));
-        network1.addLayer(new BasicLayer(new ActivationReLU(), true, GAMEBOARD_SIZE * 5));
-        network1.addLayer(new BasicLayer(new ActivationReLU(), true, GAMEBOARD_SIZE * 4));
-        network1.addLayer(new BasicLayer(new ActivationReLU(), true, GAMEBOARD_SIZE * 3));
-        network1.addLayer(new BasicLayer(new ActivationReLU(), true, GAMEBOARD_SIZE * 2));
+
+        for (int i = 0; i < hiddenLayerCount; ++i){
+            network1.addLayer(new BasicLayer(new ActivationSigmoid(), true, GAMEBOARD_SIZE));
+        }
+
         network1.addLayer(new BasicLayer(new ActivationSigmoid(),false, GAMEBOARD_SIZE));
         network1.getStructure().finalizeStructure();
         network1.reset(); //randomize weights
 
         network2 = new BasicNetwork();
         network2.addLayer(new BasicLayer(null,true, GAMEBOARD_SIZE));
-        network2.addLayer(new BasicLayer(new ActivationReLU(), true, GAMEBOARD_SIZE * 2));
-        network2.addLayer(new BasicLayer(new ActivationReLU(), true, GAMEBOARD_SIZE * 3));
-        network2.addLayer(new BasicLayer(new ActivationReLU(), true, GAMEBOARD_SIZE * 4));
-        network2.addLayer(new BasicLayer(new ActivationReLU(), true, GAMEBOARD_SIZE * 5));
-        network2.addLayer(new BasicLayer(new ActivationReLU(), true, GAMEBOARD_SIZE * 6));
-        network2.addLayer(new BasicLayer(new ActivationReLU(), true, GAMEBOARD_SIZE * 7));
-        network2.addLayer(new BasicLayer(new ActivationReLU(), true, GAMEBOARD_SIZE * 8));
-        network2.addLayer(new BasicLayer(new ActivationReLU(), true, GAMEBOARD_SIZE * 9));
-        network2.addLayer(new BasicLayer(new ActivationReLU(), true, GAMEBOARD_SIZE * 8));
-        network2.addLayer(new BasicLayer(new ActivationReLU(), true, GAMEBOARD_SIZE * 7));
-        network2.addLayer(new BasicLayer(new ActivationReLU(), true, GAMEBOARD_SIZE * 6));
-        network2.addLayer(new BasicLayer(new ActivationReLU(), true, GAMEBOARD_SIZE * 5));
-        network2.addLayer(new BasicLayer(new ActivationReLU(), true, GAMEBOARD_SIZE * 4));
-        network2.addLayer(new BasicLayer(new ActivationReLU(), true, GAMEBOARD_SIZE * 3));
-        network2.addLayer(new BasicLayer(new ActivationReLU(), true, GAMEBOARD_SIZE * 2));
+
+        for (int i = 0; i < hiddenLayerCount; ++i){
+            network2.addLayer(new BasicLayer(new ActivationSigmoid(), true, GAMEBOARD_SIZE));
+        }
+
         network2.addLayer(new BasicLayer(new ActivationSigmoid(),false, GAMEBOARD_SIZE));
         network2.getStructure().finalizeStructure();
         network2.reset(); //randomize weights
 
+
+        //        network1.addLayer(new BasicLayer(new ActivationReLU(), true, GAMEBOARD_SIZE * 2));
+//        network1.addLayer(new BasicLayer(new ActivationReLU(), true, GAMEBOARD_SIZE * 3));
+//        network1.addLayer(new BasicLayer(new ActivationReLU(), true, GAMEBOARD_SIZE * 4));
+//        network1.addLayer(new BasicLayer(new ActivationReLU(), true, GAMEBOARD_SIZE * 5));
+//        network1.addLayer(new BasicLayer(new ActivationReLU(), true, GAMEBOARD_SIZE * 6));
+        //network1.addLayer(new BasicLayer(new ActivationReLU(), true, GAMEBOARD_SIZE * 7));
+        //network1.addLayer(new BasicLayer(new ActivationReLU(), true, GAMEBOARD_SIZE * 8));
+        //network1.addLayer(new BasicLayer(new ActivationReLU(), true, GAMEBOARD_SIZE * 9));
+        //network1.addLayer(new BasicLayer(new ActivationReLU(), true, GAMEBOARD_SIZE * 8));
+        //network1.addLayer(new BasicLayer(new ActivationReLU(), true, GAMEBOARD_SIZE * 7));
+//        network1.addLayer(new BasicLayer(new ActivationReLU(), true, GAMEBOARD_SIZE * 6));
+//        network1.addLayer(new BasicLayer(new ActivationReLU(), true, GAMEBOARD_SIZE * 5));
+//        network1.addLayer(new BasicLayer(new ActivationReLU(), true, GAMEBOARD_SIZE * 4));
+//        network1.addLayer(new BasicLayer(new ActivationReLU(), true, GAMEBOARD_SIZE * 3));
+//        network1.addLayer(new BasicLayer(new ActivationReLU(), true, GAMEBOARD_SIZE * 2));
+//        network2.addLayer(new BasicLayer(new ActivationReLU(), true, GAMEBOARD_SIZE * 2));
+//        network2.addLayer(new BasicLayer(new ActivationReLU(), true, GAMEBOARD_SIZE * 3));
+//        network2.addLayer(new BasicLayer(new ActivationReLU(), true, GAMEBOARD_SIZE * 4));
+//        network2.addLayer(new BasicLayer(new ActivationReLU(), true, GAMEBOARD_SIZE * 5));
+//        network2.addLayer(new BasicLayer(new ActivationReLU(), true, GAMEBOARD_SIZE * 6));
+//        network2.addLayer(new BasicLayer(new ActivationReLU(), true, GAMEBOARD_SIZE * 7));
+//        network2.addLayer(new BasicLayer(new ActivationReLU(), true, GAMEBOARD_SIZE * 8));
+//        network2.addLayer(new BasicLayer(new ActivationReLU(), true, GAMEBOARD_SIZE * 9));
+//        network2.addLayer(new BasicLayer(new ActivationReLU(), true, GAMEBOARD_SIZE * 8));
+//        network2.addLayer(new BasicLayer(new ActivationReLU(), true, GAMEBOARD_SIZE * 7));
+//        network2.addLayer(new BasicLayer(new ActivationReLU(), true, GAMEBOARD_SIZE * 6));
+//        network2.addLayer(new BasicLayer(new ActivationReLU(), true, GAMEBOARD_SIZE * 5));
+//        network2.addLayer(new BasicLayer(new ActivationReLU(), true, GAMEBOARD_SIZE * 4));
+//        network2.addLayer(new BasicLayer(new ActivationReLU(), true, GAMEBOARD_SIZE * 3));
+//        network2.addLayer(new BasicLayer(new ActivationReLU(), true, GAMEBOARD_SIZE * 2));
     }
 
     void trainAndPlay(){
@@ -271,10 +298,10 @@ public class GomokuAI_NN extends GomokuAI_2{
 //    }
 
     void trainNeuralNetworks(){
-        System.out.println("train NN");
+        //System.out.println("train NN");
         trainNN(1);
         trainNN(2);
-        System.out.println("training finished");
+        //System.out.println("training finished");
     }
 
     void clearQMaps(){
@@ -336,10 +363,13 @@ public class GomokuAI_NN extends GomokuAI_2{
             train = new ResilientPropagation(network2, trainingSet);
         }
 
+        train.addStrategy(new Greedy());
+
         while (epoch < trainingEpochs) {
             train.iteration();
             ++epoch;
         }
+        train.finishTraining();
     }
 
 //    //train the NN with a single state key and qValues
