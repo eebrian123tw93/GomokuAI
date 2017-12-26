@@ -17,8 +17,23 @@
                     <target>1.8</target>
                 </configuration>
             </plugin>
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <configuration>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                    <archive>
+                        <manifest>
+                            <mainClass>com.JavaBeginnerToPro.GomoWhiz.ConwayAI_V2.QTable_AI</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
+
+
     <dependencies>
         <dependency>
             <groupId>org.swinglabs</groupId>
@@ -31,6 +46,7 @@
             <artifactId>encog-core</artifactId>
             <version>3.4</version>
         </dependency>
+
     </dependencies>
 
 
