@@ -13,6 +13,9 @@ import java.util.Random;
 public class GomokuGUI extends JFrame implements KeyListener {
     PlayWithHumanBoardPanel panel;
     Playground playground;
+    public static void main(String[] args) {
+        new GomokuGUI( new int[225]);
+    }
     public GomokuGUI(int[] gameState) {
         setTitle("Gomoku");
 
@@ -30,8 +33,8 @@ public class GomokuGUI extends JFrame implements KeyListener {
         setLayout(new BorderLayout());
         getContentPane().setLayout(new BorderLayout());
         getContentPane().add(new BoardPanel(gameState),BorderLayout.CENTER);
-     //   panel=new PlayWithHumanBoardPanel(gameState);
-     //   getContentPane().add(panel,BorderLayout.CENTER);
+        //panel=new PlayWithHumanBoardPanel(gameState);
+        //getContentPane().add(panel,BorderLayout.CENTER);
         setSize(1280, 720);
 
         String osName = System.getProperty("os.name").toLowerCase();
@@ -44,7 +47,6 @@ public class GomokuGUI extends JFrame implements KeyListener {
 //        }
 
         playground=new Playground();
-
         addKeyListener(this);
 
         createMenuBar();
@@ -131,10 +133,6 @@ public class GomokuGUI extends JFrame implements KeyListener {
         statusLabel.setHorizontalAlignment(SwingConstants.LEFT);
         statusPanel.add(statusLabel);
 //        jFrame.setVisible(true);
-    }
-
-    public static void main(String[] args) {
-        new GomokuGUI( new int[225]);
     }
 
     @SuppressWarnings({"unchecked", "rawtypes"})

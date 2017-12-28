@@ -27,11 +27,11 @@ public class QTable_AI extends Conway_V2_base {
     double LEARNING_RATE = 0.5;
     final double DECAY = 0.9;
     double RANDOM_MOVE_PROBABILITY = 0.5;
-    boolean displayBoard = false;
+    private static boolean displayBoard = false;
     static int GAMES_TO_TRAIN = 400000;
     static int qMapSaveInterval = 5000;
 
-    GomokuGUI gui;
+    private static GomokuGUI gui;
     int player1Wins = 0;
     int player2Wins = 0;
     int ties = 0;
@@ -42,6 +42,7 @@ public class QTable_AI extends Conway_V2_base {
             qMap = QMapIO.load("QTable_AI_V2_brain.txt");
         }
         QTable_AI qTable_AI = new QTable_AI();
+        if (displayBoard) gui = new GomokuGUI(new int [225]);
         qTable_AI.train();
         QMapIO.save("QTable_AI_V2_brain.txt", qMap);
 //        QTable_AI qTableAi = new QTable_AI();
@@ -99,7 +100,7 @@ public class QTable_AI extends Conway_V2_base {
 //        System.out.println("Forced action: " + forced_action);
 //
 //        state[forced_action] = 1;
-        if (displayBoard) gui = new GomokuGUI(new int [225]);
+        //if (displayBoard) gui = new GomokuGUI(new int [225]);
 //        showGUI(state);
 //        showGUI(state);
 //

@@ -21,13 +21,13 @@
       <file leaf-file-name="QTable_AI.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/JavaBeginnerToPro/GomoWhiz/ConwayAI_V2/QTable_AI.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-787">
-              <caret line="26" column="30" lean-forward="false" selection-start-line="26" selection-start-column="30" selection-end-line="26" selection-end-column="30" />
+            <state relative-caret-position="361">
+              <caret line="223" column="9" lean-forward="false" selection-start-line="223" selection-start-column="9" selection-end-line="223" selection-end-column="9" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#1692#1739#0" expanded="false" />
-                <element signature="e#2436#2466#0" expanded="false" />
-                <element signature="e#4625#4650#0" expanded="false" />
+                <element signature="e#1784#1831#0" expanded="false" />
+                <element signature="e#2528#2558#0" expanded="false" />
+                <element signature="e#4719#4744#0" expanded="false" />
                 <element signature="method#train#0;class#QTable_AI#0" expanded="false" />
                 <element signature="method#trainOneGame#0;class#QTable_AI#0" expanded="false" />
                 <element signature="method#trainOneGame_withMinMax#0;class#QTable_AI#0" expanded="false" />
@@ -42,9 +42,10 @@
                 <element signature="method#evalState#0;class#QTable_AI#0" expanded="false" />
                 <element signature="method#updateQValue#0;class#QTable_AI#0" expanded="false" />
                 <element signature="method#getTopFiveQValueActions#0;class#QTable_AI#0" expanded="false" />
-                <element signature="e#19603#19673#0" expanded="false" />
-                <element signature="e#20273#20349#0" expanded="false" />
-                <element signature="e#20865#20938#0" expanded="false" />
+                <element signature="e#19697#19767#0" expanded="false" />
+                <element signature="e#20367#20443#0" expanded="false" />
+                <element signature="e#20959#21032#0" expanded="false" />
+                <element signature="method#showGUI#0;class#QTable_AI#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -53,25 +54,35 @@
       <file leaf-file-name="Playground.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/JavaBeginnerToPro/GomoWhiz/Version_1/Playground.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1656">
-              <caret line="312" column="41" lean-forward="false" selection-start-line="312" selection-start-column="41" selection-end-line="312" selection-end-column="41" />
+            <state relative-caret-position="280">
+              <caret line="30" column="43" lean-forward="false" selection-start-line="30" selection-start-column="43" selection-end-line="30" selection-end-column="43" />
               <folding>
-                <element signature="method#Playground#0;class#Playground#0" expanded="false" />
-                <element signature="e#1175#1176#0" expanded="true" />
-                <element signature="e#1213#1214#0" expanded="true" />
-                <element signature="e#1255#1256#0" expanded="true" />
-                <element signature="e#1293#1294#0" expanded="true" />
+                <element signature="imports" expanded="true" />
                 <element signature="method#main#0;class#Playground#0" expanded="false" />
                 <element signature="method#play#0;class#Playground#0" expanded="false" />
                 <element signature="method#showGUI#0;class#Playground#0" expanded="false" />
+                <element signature="class#AI#0" expanded="false" />
+                <element signature="method#randomMove#0;class#AI#0" expanded="false" />
+                <element signature="class#Random#0" expanded="false" />
                 <element signature="class#TableBased2_Conway#0" expanded="false" />
                 <element signature="class#NN_ConwayP1#0" expanded="false" />
                 <element signature="class#NN_ConwayP2#0" expanded="false" />
-                <element signature="class#MinMax_smartAgent#0" expanded="false" />
-                <element signature="e#9103#9104#0" expanded="true" />
-                <element signature="e#9148#9149#0" expanded="true" />
-                <element signature="e#9504#9570#0" expanded="false" />
-                <element signature="e#10044#10106#0" expanded="false" />
+                <element signature="class#MinMax#0" expanded="false" />
+                <element signature="class#MinMaxWithForcedActions#0" expanded="false" />
+                <element signature="method#MinMaxWithForcedActions#0;class#MinMaxWithForcedActions#0" expanded="false" />
+                <element signature="method#move#0;class#MinMaxWithForcedActions#0" expanded="false" />
+                <element signature="class#QTableWithForcedActions#0" expanded="false" />
+                <element signature="e#10467#10468#0" expanded="true" />
+                <element signature="e#10533#10534#0" expanded="true" />
+                <element signature="class#PureQTable#0" expanded="false" />
+                <element signature="method#PureQTable#0;class#PureQTable#0" expanded="false" />
+                <element signature="method#move#0;class#PureQTable#0" expanded="false" />
+                <element signature="method#makeStateKey#0;class#PureQTable#0" expanded="false" />
+                <element signature="method#getMaxQValueAction#0;class#PureQTable#0" expanded="false" />
+                <element signature="method#getMinQValueAction#0;class#PureQTable#0" expanded="false" />
+                <element signature="method#evalState#0;class#PureQTable#0" expanded="false" />
+                <element signature="method#getValidActions#0;class#PureQTable#0" expanded="false" />
+                <element signature="class#forcedActions#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -80,8 +91,8 @@
       <file leaf-file-name="MinimxAlphaBetaPruning.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/JavaBeginnerToPro/GomoWhiz/minMax/MinimxAlphaBetaPruning.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="7152">
-              <caret line="330" column="0" lean-forward="false" selection-start-line="330" selection-start-column="0" selection-end-line="330" selection-end-column="0" />
+            <state relative-caret-position="162">
+              <caret line="322" column="24" lean-forward="false" selection-start-line="322" selection-start-column="24" selection-end-line="322" selection-end-column="24" />
               <folding>
                 <element signature="e#7358#7417#0" expanded="false" />
               </folding>
@@ -89,12 +100,21 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Minimax.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/JavaBeginnerToPro/GomoWhiz/minMax/Minimax.java">
+      <file leaf-file-name="GomokuGUI.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/JavaBeginnerToPro/GomoWhiz/Version_1/GomokuGUI.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2112">
-              <caret line="91" column="17" lean-forward="false" selection-start-line="91" selection-start-column="17" selection-end-line="91" selection-end-column="17" />
-              <folding />
+            <state relative-caret-position="144">
+              <caret line="22" column="55" lean-forward="false" selection-start-line="22" selection-start-column="55" selection-end-line="22" selection-end-column="55" />
+              <folding>
+                <element signature="e#730#790#0" expanded="false" />
+                <element signature="method#createMenuBar#0;class#GomokuGUI#0" expanded="false" />
+                <element signature="method#createStatusBar#0;class#GomokuGUI#0" expanded="false" />
+                <element signature="method#enableOSXFullscreen#0;class#GomokuGUI#0" expanded="false" />
+                <element signature="method#keyTyped#0;class#GomokuGUI#0" expanded="false" />
+                <element signature="method#keyPressed#0;class#GomokuGUI#0" expanded="false" />
+                <element signature="method#keyReleased#0;class#GomokuGUI#0" expanded="false" />
+                <element signature="method#requestToggleFullScreen#0;class#GomokuGUI#0" expanded="false" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -102,8 +122,8 @@
       <file leaf-file-name="PlayWithHumanBoardPanel.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/JavaBeginnerToPro/GomoWhiz/Version_1/PlayWithHumanBoardPanel.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="336">
-              <caret line="71" column="7" lean-forward="false" selection-start-line="71" selection-start-column="7" selection-end-line="71" selection-end-column="7" />
+            <state relative-caret-position="360">
+              <caret line="70" column="18" lean-forward="false" selection-start-line="70" selection-start-column="18" selection-end-line="70" selection-end-column="18" />
               <folding>
                 <element signature="method#init#0;class#PlayWithHumanBoardPanel#0" expanded="false" />
               </folding>
@@ -114,29 +134,11 @@
       <file leaf-file-name="SmartAgent.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/JavaBeginnerToPro/GomoWhiz/minMax/SmartAgent.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="240">
-              <caret line="10" column="0" lean-forward="false" selection-start-line="10" selection-start-column="0" selection-end-line="10" selection-end-column="0" />
+            <state relative-caret-position="8">
+              <caret line="16" column="23" lean-forward="false" selection-start-line="16" selection-start-column="23" selection-end-line="16" selection-end-column="23" />
               <folding>
                 <element signature="e#1223#1224#0" expanded="true" />
                 <element signature="e#1275#1276#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="GomokuGUI.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/JavaBeginnerToPro/GomoWhiz/Version_1/GomokuGUI.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="24">
-              <caret line="87" column="0" lean-forward="false" selection-start-line="87" selection-start-column="0" selection-end-line="87" selection-end-column="0" />
-              <folding>
-                <element signature="e#5152#5153#0" expanded="true" />
-                <element signature="e#5196#5197#0" expanded="true" />
-                <element signature="method#enableOSXFullscreen#0;class#GomokuGUI#0" expanded="false" />
-                <element signature="method#keyTyped#0;class#GomokuGUI#0" expanded="false" />
-                <element signature="method#keyPressed#0;class#GomokuGUI#0" expanded="false" />
-                <element signature="method#keyReleased#0;class#GomokuGUI#0" expanded="false" />
-                <element signature="method#requestToggleFullScreen#0;class#GomokuGUI#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -205,11 +207,11 @@
         <option value="$PROJECT_DIR$/src/main/java/com/JavaBeginnerToPro/GomoWhiz/ConwayAI_V2/NN_AI_V2.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/JavaBeginnerToPro/GomoWhiz/Version_1/PlayWithHumanBoardPanel.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/JavaBeginnerToPro/GomoWhiz/ConwayAI_V2/QMapIO.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/JavaBeginnerToPro/GomoWhiz/minMax/MinimxAlphaBetaPruning.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/JavaBeginnerToPro/GomoWhiz/minMax/SmartAgent.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/JavaBeginnerToPro/GomoWhiz/Version_1/GomokuGUI.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/JavaBeginnerToPro/GomoWhiz/Version_1/Playground.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/JavaBeginnerToPro/GomoWhiz/ConwayAI_V2/QTable_AI.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/JavaBeginnerToPro/GomoWhiz/minMax/MinimxAlphaBetaPruning.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/JavaBeginnerToPro/GomoWhiz/Version_1/Playground.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/JavaBeginnerToPro/GomoWhiz/Version_1/GomokuGUI.java" />
       </list>
     </option>
   </component>
@@ -354,7 +356,8 @@
               <item name="main" type="462c0819:PsiDirectoryNode" />
               <item name="java" type="462c0819:PsiDirectoryNode" />
               <item name="GomoWhiz" type="462c0819:PsiDirectoryNode" />
-              <item name="Version_1" type="462c0819:PsiDirectoryNode" />
+              <item name="minMax" type="462c0819:PsiDirectoryNode" />
+              <item name="MinimxAlphaBetaPruning.java" type="529ef68f:ClassesTreeStructureProvider$PsiClassOwnerTreeNode" />
             </path>
             <path>
               <item name="GomokuAI" type="b2602c69:ProjectViewProjectNode" />
@@ -364,7 +367,6 @@
               <item name="java" type="462c0819:PsiDirectoryNode" />
               <item name="GomoWhiz" type="462c0819:PsiDirectoryNode" />
               <item name="Version_1" type="462c0819:PsiDirectoryNode" />
-              <item name="Playground.java" type="529ef68f:ClassesTreeStructureProvider$PsiClassOwnerTreeNode" />
             </path>
           </expand>
           <select />
@@ -393,7 +395,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Application.GomokuGUI">
+  <component name="RunManager" selected="Application.Playground">
     <configuration default="true" type="Applet" factoryName="Applet">
       <option name="WIDTH" value="400" />
       <option name="HEIGHT" value="300" />
@@ -578,9 +580,9 @@
     </list>
     <recent_temporary>
       <list size="5">
-        <item index="0" class="java.lang.String" itemvalue="Application.GomokuGUI" />
-        <item index="1" class="java.lang.String" itemvalue="Application.QTable_AI" />
-        <item index="2" class="java.lang.String" itemvalue="Application.Playground" />
+        <item index="0" class="java.lang.String" itemvalue="Application.Playground" />
+        <item index="1" class="java.lang.String" itemvalue="Application.GomokuGUI" />
+        <item index="2" class="java.lang.String" itemvalue="Application.QTable_AI" />
         <item index="3" class="java.lang.String" itemvalue="Application.PlayWithHumanBoardPanel" />
         <item index="4" class="java.lang.String" itemvalue="Application.PatternDetect" />
       </list>
@@ -608,6 +610,7 @@
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32842582" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Palette&#9;" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Image Layers" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
@@ -619,6 +622,7 @@
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.24543501" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3295583" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24973147" sideWeight="0.4942029" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
@@ -629,10 +633,8 @@
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32842582" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Coverage" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24973147" sideWeight="0.5057971" order="8" side_tool="true" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3295583" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
     </layout>
     <layout-to-restore>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -670,12 +672,6 @@
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/com/JavaBeginnerToPro/GomoWhiz/ConwayAI_V2/QTable_AI.java</url>
-          <line>88</line>
-          <properties />
-          <option name="timeStamp" value="131" />
-        </line-breakpoint>
         <line-breakpoint type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/com/JavaBeginnerToPro/GomoWhiz/ConwayAI_V2/PatternDetect.java</url>
           <line>100</line>
@@ -684,19 +680,19 @@
         </line-breakpoint>
         <line-breakpoint type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/com/JavaBeginnerToPro/GomoWhiz/ConwayAI_V2/QTable_AI.java</url>
-          <line>186</line>
+          <line>187</line>
           <properties />
           <option name="timeStamp" value="142" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/com/JavaBeginnerToPro/GomoWhiz/ConwayAI_V2/QTable_AI.java</url>
-          <line>380</line>
+          <line>381</line>
           <properties />
           <option name="timeStamp" value="145" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/com/JavaBeginnerToPro/GomoWhiz/ConwayAI_V2/QTable_AI.java</url>
-          <line>229</line>
+          <line>230</line>
           <properties />
           <option name="timeStamp" value="147" />
         </line-breakpoint>
@@ -708,21 +704,9 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/com/JavaBeginnerToPro/GomoWhiz/ConwayAI_V2/QTable_AI.java</url>
-          <line>133</line>
+          <line>134</line>
           <properties />
           <option name="timeStamp" value="153" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/com/JavaBeginnerToPro/GomoWhiz/ConwayAI_V2/QTable_AI.java</url>
-          <line>100</line>
-          <properties />
-          <option name="timeStamp" value="157" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/com/JavaBeginnerToPro/GomoWhiz/ConwayAI_V2/QTable_AI.java</url>
-          <line>101</line>
-          <properties />
-          <option name="timeStamp" value="158" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/com/JavaBeginnerToPro/GomoWhiz/ConwayAI_V2/QTable_AI.java</url>
@@ -732,54 +716,48 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/com/JavaBeginnerToPro/GomoWhiz/ConwayAI_V2/QTable_AI.java</url>
-          <line>44</line>
+          <line>45</line>
           <properties />
           <option name="timeStamp" value="160" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/com/JavaBeginnerToPro/GomoWhiz/ConwayAI_V2/QTable_AI.java</url>
-          <line>45</line>
+          <line>46</line>
           <properties />
           <option name="timeStamp" value="161" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/com/JavaBeginnerToPro/GomoWhiz/Version_1/GomokuGUI.java</url>
-          <line>32</line>
-          <properties />
-          <option name="timeStamp" value="162" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/com/JavaBeginnerToPro/GomoWhiz/minMax/MinimxAlphaBetaPruning.java</url>
-          <line>329</line>
+          <line>330</line>
           <properties />
           <option name="timeStamp" value="163" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/com/JavaBeginnerToPro/GomoWhiz/ConwayAI_V2/QTable_AI.java</url>
-          <line>503</line>
+          <line>504</line>
           <properties />
           <option name="timeStamp" value="164" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/com/JavaBeginnerToPro/GomoWhiz/minMax/MinimxAlphaBetaPruning.java</url>
-          <line>384</line>
+          <line>385</line>
           <properties />
           <option name="timeStamp" value="165" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/com/JavaBeginnerToPro/GomoWhiz/minMax/MinimxAlphaBetaPruning.java</url>
-          <line>411</line>
+          <line>412</line>
           <properties />
           <option name="timeStamp" value="166" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/com/JavaBeginnerToPro/GomoWhiz/ConwayAI_V2/QTable_AI.java</url>
-          <line>513</line>
+          <line>514</line>
           <properties />
           <option name="timeStamp" value="167" />
         </line-breakpoint>
       </breakpoints>
-      <option name="time" value="169" />
+      <option name="time" value="174" />
     </breakpoint-manager>
     <watches-manager>
       <configuration name="Application">
@@ -846,13 +824,6 @@
     </expressions>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/JavaBeginnerToPro/GomoWhiz/Version_1/QTableDAO.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="360">
-          <caret line="24" column="17" lean-forward="false" selection-start-line="24" selection-start-column="17" selection-end-line="24" selection-end-column="17" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/JavaBeginnerToPro/GomoWhiz/Version_1/QTicTacToe.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -1039,13 +1010,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/JavaBeginnerToPro/GomoWhiz/ConwayAI_V2/Conway_V2_base.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1440">
-          <caret line="48" column="17" lean-forward="false" selection-start-line="48" selection-start-column="17" selection-end-line="48" selection-end-column="17" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/JavaBeginnerToPro/GomoWhiz/Version_1/GomokuAI_NN.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="416">
@@ -1064,14 +1028,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="456">
           <caret line="22" column="13" lean-forward="false" selection-start-line="22" selection-start-column="13" selection-end-line="22" selection-end-column="13" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/JavaBeginnerToPro/GomoWhiz/ConwayAI_V2/PatternDetect.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1752">
-          <caret line="75" column="44" lean-forward="false" selection-start-line="75" selection-start-column="44" selection-end-line="75" selection-end-column="44" />
           <folding />
         </state>
       </provider>
@@ -1100,14 +1056,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/JavaBeginnerToPro/GomoWhiz/minMax/Minimax.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2112">
-          <caret line="91" column="17" lean-forward="false" selection-start-line="91" selection-start-column="17" selection-end-line="91" selection-end-column="17" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/JavaBeginnerToPro/GomoWhiz/ConwayAI_V2/QMapIO.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="504">
@@ -1116,10 +1064,52 @@
         </state>
       </provider>
     </entry>
+    <entry file="jar://C:/Program Files/Java/jdk1.8.0_144/src.zip!/java/awt/image/DataBufferByte.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="268">
+          <caret line="91" column="0" lean-forward="false" selection-start-line="91" selection-start-column="0" selection-end-line="91" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/JavaBeginnerToPro/GomoWhiz/ConwayAI_V2/PatternDetect.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1248">
+          <caret line="75" column="44" lean-forward="false" selection-start-line="75" selection-start-column="44" selection-end-line="75" selection-end-column="44" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/JavaBeginnerToPro/GomoWhiz/ConwayAI_V2/Conway_V2_base.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="582">
+          <caret line="155" column="5" lean-forward="true" selection-start-line="49" selection-start-column="4" selection-end-line="155" selection-end-column="5" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/JavaBeginnerToPro/GomoWhiz/minMax/Minimax.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="24">
+          <caret line="91" column="17" lean-forward="false" selection-start-line="91" selection-start-column="17" selection-end-line="91" selection-end-column="17" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/JavaBeginnerToPro/GomoWhiz/Version_1/PlayWithHumanBoardPanel.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="360">
+          <caret line="70" column="18" lean-forward="false" selection-start-line="70" selection-start-column="18" selection-end-line="70" selection-end-column="18" />
+          <folding>
+            <element signature="method#init#0;class#PlayWithHumanBoardPanel#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/JavaBeginnerToPro/GomoWhiz/minMax/SmartAgent.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="240">
-          <caret line="10" column="0" lean-forward="false" selection-start-line="10" selection-start-column="0" selection-end-line="10" selection-end-column="0" />
+        <state relative-caret-position="8">
+          <caret line="16" column="23" lean-forward="false" selection-start-line="16" selection-start-column="23" selection-end-line="16" selection-end-column="23" />
           <folding>
             <element signature="e#1223#1224#0" expanded="true" />
             <element signature="e#1275#1276#0" expanded="true" />
@@ -1127,58 +1117,24 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/JavaBeginnerToPro/GomoWhiz/Version_1/Playground.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1656">
-          <caret line="312" column="41" lean-forward="false" selection-start-line="312" selection-start-column="41" selection-end-line="312" selection-end-column="41" />
-          <folding>
-            <element signature="method#Playground#0;class#Playground#0" expanded="false" />
-            <element signature="e#1175#1176#0" expanded="true" />
-            <element signature="e#1213#1214#0" expanded="true" />
-            <element signature="e#1255#1256#0" expanded="true" />
-            <element signature="e#1293#1294#0" expanded="true" />
-            <element signature="method#main#0;class#Playground#0" expanded="false" />
-            <element signature="method#play#0;class#Playground#0" expanded="false" />
-            <element signature="method#showGUI#0;class#Playground#0" expanded="false" />
-            <element signature="class#TableBased2_Conway#0" expanded="false" />
-            <element signature="class#NN_ConwayP1#0" expanded="false" />
-            <element signature="class#NN_ConwayP2#0" expanded="false" />
-            <element signature="class#MinMax_smartAgent#0" expanded="false" />
-            <element signature="e#9103#9104#0" expanded="true" />
-            <element signature="e#9148#9149#0" expanded="true" />
-            <element signature="e#9504#9570#0" expanded="false" />
-            <element signature="e#10044#10106#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/JavaBeginnerToPro/GomoWhiz/minMax/MinimxAlphaBetaPruning.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="7152">
-          <caret line="330" column="0" lean-forward="false" selection-start-line="330" selection-start-column="0" selection-end-line="330" selection-end-column="0" />
+        <state relative-caret-position="162">
+          <caret line="322" column="24" lean-forward="false" selection-start-line="322" selection-start-column="24" selection-end-line="322" selection-end-column="24" />
           <folding>
             <element signature="e#7358#7417#0" expanded="false" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/JavaBeginnerToPro/GomoWhiz/Version_1/PlayWithHumanBoardPanel.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="336">
-          <caret line="71" column="7" lean-forward="false" selection-start-line="71" selection-start-column="7" selection-end-line="71" selection-end-column="7" />
-          <folding>
-            <element signature="method#init#0;class#PlayWithHumanBoardPanel#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/JavaBeginnerToPro/GomoWhiz/Version_1/GomokuGUI.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="24">
-          <caret line="87" column="0" lean-forward="false" selection-start-line="87" selection-start-column="0" selection-end-line="87" selection-end-column="0" />
+        <state relative-caret-position="144">
+          <caret line="22" column="55" lean-forward="false" selection-start-line="22" selection-start-column="55" selection-end-line="22" selection-end-column="55" />
           <folding>
-            <element signature="e#5152#5153#0" expanded="true" />
-            <element signature="e#5196#5197#0" expanded="true" />
+            <element signature="e#730#790#0" expanded="false" />
+            <element signature="method#createMenuBar#0;class#GomokuGUI#0" expanded="false" />
+            <element signature="method#createStatusBar#0;class#GomokuGUI#0" expanded="false" />
             <element signature="method#enableOSXFullscreen#0;class#GomokuGUI#0" expanded="false" />
             <element signature="method#keyTyped#0;class#GomokuGUI#0" expanded="false" />
             <element signature="method#keyPressed#0;class#GomokuGUI#0" expanded="false" />
@@ -1188,15 +1144,50 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/JavaBeginnerToPro/GomoWhiz/ConwayAI_V2/QTable_AI.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/JavaBeginnerToPro/GomoWhiz/Version_1/Playground.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-787">
-          <caret line="26" column="30" lean-forward="false" selection-start-line="26" selection-start-column="30" selection-end-line="26" selection-end-column="30" />
+        <state relative-caret-position="280">
+          <caret line="30" column="43" lean-forward="false" selection-start-line="30" selection-start-column="43" selection-end-line="30" selection-end-column="43" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#1692#1739#0" expanded="false" />
-            <element signature="e#2436#2466#0" expanded="false" />
-            <element signature="e#4625#4650#0" expanded="false" />
+            <element signature="method#main#0;class#Playground#0" expanded="false" />
+            <element signature="method#play#0;class#Playground#0" expanded="false" />
+            <element signature="method#showGUI#0;class#Playground#0" expanded="false" />
+            <element signature="class#AI#0" expanded="false" />
+            <element signature="method#randomMove#0;class#AI#0" expanded="false" />
+            <element signature="class#Random#0" expanded="false" />
+            <element signature="class#TableBased2_Conway#0" expanded="false" />
+            <element signature="class#NN_ConwayP1#0" expanded="false" />
+            <element signature="class#NN_ConwayP2#0" expanded="false" />
+            <element signature="class#MinMax#0" expanded="false" />
+            <element signature="class#MinMaxWithForcedActions#0" expanded="false" />
+            <element signature="method#MinMaxWithForcedActions#0;class#MinMaxWithForcedActions#0" expanded="false" />
+            <element signature="method#move#0;class#MinMaxWithForcedActions#0" expanded="false" />
+            <element signature="class#QTableWithForcedActions#0" expanded="false" />
+            <element signature="e#10467#10468#0" expanded="true" />
+            <element signature="e#10533#10534#0" expanded="true" />
+            <element signature="class#PureQTable#0" expanded="false" />
+            <element signature="method#PureQTable#0;class#PureQTable#0" expanded="false" />
+            <element signature="method#move#0;class#PureQTable#0" expanded="false" />
+            <element signature="method#makeStateKey#0;class#PureQTable#0" expanded="false" />
+            <element signature="method#getMaxQValueAction#0;class#PureQTable#0" expanded="false" />
+            <element signature="method#getMinQValueAction#0;class#PureQTable#0" expanded="false" />
+            <element signature="method#evalState#0;class#PureQTable#0" expanded="false" />
+            <element signature="method#getValidActions#0;class#PureQTable#0" expanded="false" />
+            <element signature="class#forcedActions#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/JavaBeginnerToPro/GomoWhiz/ConwayAI_V2/QTable_AI.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="361">
+          <caret line="223" column="9" lean-forward="false" selection-start-line="223" selection-start-column="9" selection-end-line="223" selection-end-column="9" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#1784#1831#0" expanded="false" />
+            <element signature="e#2528#2558#0" expanded="false" />
+            <element signature="e#4719#4744#0" expanded="false" />
             <element signature="method#train#0;class#QTable_AI#0" expanded="false" />
             <element signature="method#trainOneGame#0;class#QTable_AI#0" expanded="false" />
             <element signature="method#trainOneGame_withMinMax#0;class#QTable_AI#0" expanded="false" />
@@ -1211,9 +1202,10 @@
             <element signature="method#evalState#0;class#QTable_AI#0" expanded="false" />
             <element signature="method#updateQValue#0;class#QTable_AI#0" expanded="false" />
             <element signature="method#getTopFiveQValueActions#0;class#QTable_AI#0" expanded="false" />
-            <element signature="e#19603#19673#0" expanded="false" />
-            <element signature="e#20273#20349#0" expanded="false" />
-            <element signature="e#20865#20938#0" expanded="false" />
+            <element signature="e#19697#19767#0" expanded="false" />
+            <element signature="e#20367#20443#0" expanded="false" />
+            <element signature="e#20959#21032#0" expanded="false" />
+            <element signature="method#showGUI#0;class#QTable_AI#0" expanded="false" />
           </folding>
         </state>
       </provider>

@@ -320,12 +320,13 @@ class BrianConway extends Fast {
 
     @Override
     public int mm(Board board, int d) {
-        int [] state = transfer(board);
-        int [] player1Patterns = PatternDetect.detect(state, 1);
-        int [] player2Patterns = PatternDetect.detect(state, 2);
-        if (qTable_ai.obviousActionNeeded(player1Patterns, player2Patterns)){
-            return qTable_ai.forcedAction(state, qTable_ai.scanObviousPatternTypes(player1Patterns, player2Patterns, numplayer), numplayer);
-        }
+        //forced actions
+//        int [] state = transfer(board);
+//        int [] player1Patterns = PatternDetect.detect(state, 1);
+//        int [] player2Patterns = PatternDetect.detect(state, 2);
+//        if (qTable_ai.obviousActionNeeded(player1Patterns, player2Patterns)){
+//            return qTable_ai.forcedAction(state, qTable_ai.scanObviousPatternTypes(player1Patterns, player2Patterns, numplayer), numplayer);
+//        }
 
         List<Integer> bestAction = new ArrayList<>();
         List<Integer> availableCells = Arrays.stream(qTable_ai.getTopFiveQValueActions(transfer(board), numplayer)).boxed().collect(Collectors.toList());
