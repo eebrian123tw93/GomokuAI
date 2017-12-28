@@ -12,7 +12,7 @@ public class SQLvsMini extends SQLComokuAI_II {
 
     @Override
     void playOneGame() {
-        SmartAgent smartAgent = new SmartAgent(gameBoardWidth, winRequire);
+        SmartAgent smartAgent = new SmartAgent(gameBoardWidth, winRequire,1);
         for (int i = 0; i < GAMEBOARD_SIZE; ++i) currentState[i] = 0; //reset current state to all 0
         int[] nextState; //will be used between turns
         int currentPlayer;

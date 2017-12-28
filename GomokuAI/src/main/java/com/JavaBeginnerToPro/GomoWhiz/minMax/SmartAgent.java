@@ -9,10 +9,12 @@ public class SmartAgent extends Agent {
 
     Minimax minimax;
 
-    public SmartAgent(int boardWidth, int winRequire) {
-        super(boardWidth, winRequire);
-//        minimax = new Minimax();
-        minimax=new fast();
+    public SmartAgent(int boardWidth, int winRequire,int numPlayer) {
+        super(boardWidth, winRequire,numPlayer);
+//        minimax = new Minimax(numplayer);
+//        minimax=new BrianConway(numplayer);
+//        minimax=new MinimxAlphaBetaPruning();
+        minimax=new Fast(numplayer);
     }
 
     public String firstTurn() {
@@ -38,7 +40,7 @@ public class SmartAgent extends Agent {
     }
     public int move(Board board){
         board.nextPlayer='o';
-        return  minimax.mm(board,2);
+        return  minimax.mm(board,4);
 //        return minimax.computerMove;
     }
     public int move(int [] state){

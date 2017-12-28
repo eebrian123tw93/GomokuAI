@@ -1,8 +1,5 @@
 package com.JavaBeginnerToPro.GomoWhiz.Version_1;
 
-import com.JavaBeginnerToPro.GomoWhiz.ConwayAI_V2.Conway_V2_base;
-import com.JavaBeginnerToPro.GomoWhiz.ConwayAI_V2.PatternDetect;
-import com.JavaBeginnerToPro.GomoWhiz.ConwayAI_V2.QMapIO;
 import com.JavaBeginnerToPro.GomoWhiz.ConwayAI_V2.QTable_AI;
 import com.JavaBeginnerToPro.GomoWhiz.minMax.SmartAgent;
 import org.encog.ml.data.basic.BasicMLData;
@@ -25,17 +22,17 @@ public class Playground {
     public int player1Win = 0;
     public int player2Win = 0;
     public int tie = 0;
-    private int [] state;
+    private int[] state;
     private java.util.Random rand;
     boolean displayBoard = true;
     GomokuGUI gui;
 
 
-    Playground(){
+    Playground() {
         player2 = new ConwayAI_V2_QTable(2);
-        player1 = new MinMax_smartAgent();
+        player1 = new MinMax_smartAgent(1);
         rand = new java.util.Random();
-        state = new int [BOARD_SIZE];
+        state = new int[BOARD_SIZE];
         if (displayBoard) gui = new GomokuGUI(state);
     }
 
@@ -43,7 +40,7 @@ public class Playground {
         int gamesPlayed = 0;
         Playground playground = new Playground();
         long startTime = System.currentTimeMillis();
-        while (gamesPlayed < GAMES_TO_PLAY){
+        while (gamesPlayed < GAMES_TO_PLAY) {
             playground.play();
             ++gamesPlayed;
 
@@ -56,7 +53,7 @@ public class Playground {
         System.out.println("run time = " + (System.currentTimeMillis() - startTime) / 1000);
     }
 
-    void play(){
+    void play() {
         state = new int[BOARD_SIZE];
         int action;
         int movesRemaining = BOARD_SIZE;
@@ -65,7 +62,7 @@ public class Playground {
         if (rand.nextBoolean()) currentPlayer = 1;
         else currentPlayer = 2;
 
-        while (true){
+        while (true) {
             if (currentPlayer == 1) action = player1.move(state);
             else action = player2.move(state);
             state[action] = currentPlayer;
@@ -73,15 +70,13 @@ public class Playground {
 
             if (displayBoard) showGUI(state);
 
-            if (DetectWin_2.detectWin(state, BOARD_WIDTH, WIN_REQUIRE, 1)){
+            if (DetectWin_2.detectWin(state, BOARD_WIDTH, WIN_REQUIRE, 1)) {
                 ++player1Win;
                 break;
-            }
-            else if (DetectWin_2.detectWin(state, BOARD_WIDTH, WIN_REQUIRE, 2)){
+            } else if (DetectWin_2.detectWin(state, BOARD_WIDTH, WIN_REQUIRE, 2)) {
                 ++player2Win;
                 break;
-            }
-            else if (movesRemaining == 0){
+            } else if (movesRemaining == 0) {
                 ++tie;
                 break;
             }
@@ -92,14 +87,12 @@ public class Playground {
 
     }
 
-    void showGUI(int [] state){
+    void showGUI(int[] state) {
         try {
             ((BoardPanel) gui.getContentPane().getComponent(0)).setGameState(state);
             gui.repaint();
             Thread.sleep(300);
-        }
-
-        catch (InterruptedException e) {
+        } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }
@@ -108,8 +101,10 @@ public class Playground {
 // state: what the board looks like, in a 1D array. 1 and 2 for players, 0 for empty
 abstract class AI {
     java.util.Random rand = new java.util.Random();
-    abstract public int move(int [] state);
-    int randomMove(int [] state){
+
+    abstract public int move(int[] state);
+
+    int randomMove(int[] state) {
         ArrayList<Integer> moveList = new ArrayList<Integer>();
         for (int i = 0; i < state.length; i++)
             if (state[i] == 0)
@@ -118,25 +113,25 @@ abstract class AI {
     }
 }
 
-class Random extends AI{
-    public int move(int [] state){
+class Random extends AI {
+    public int move(int[] state) {
         return randomMove(state);
     }
 }
 
-class TableBased2_Conway extends AI{
+class TableBased2_Conway extends AI {
     private Map<String, HashMap<Integer, Double>> qMap;
     private String brainFileName = "qMap9_3p2.txt";
 
-    TableBased2_Conway(){
+    TableBased2_Conway() {
         qMap = QTableDAO.load(brainFileName);
     }
 
-    public int move(int [] state){
+    public int move(int[] state) {
         String stateKey = stateToString(state);
         if (qMap.get(stateKey) == null) return randomMove(state);
-       //else return getMaxQValueAction(stateKey);
-       else return getMinQValueAction(stateKey);
+            //else return getMaxQValueAction(stateKey);
+        else return getMinQValueAction(stateKey);
     }
 
     int getMaxQValueAction(String stateKey) {
@@ -152,7 +147,8 @@ class TableBased2_Conway extends AI{
         }
         return maxQValueAction;
     }
-    int getMinQValueAction(String stateKey){
+
+    int getMinQValueAction(String stateKey) {
         double minQValue = Double.MAX_VALUE;
         int minQValueAction = -1;
         Map<Integer, Double> vals = qMap.get(stateKey);
@@ -165,9 +161,10 @@ class TableBased2_Conway extends AI{
         }
         return minQValueAction;
     }
-    String stateToString(int [] state){
+
+    String stateToString(int[] state) {
         StringBuilder sb = new StringBuilder();
-        for (int i: state) sb.append(Integer.toString(i));
+        for (int i : state) sb.append(Integer.toString(i));
         return sb.toString();
     }
 
@@ -182,34 +179,36 @@ class TableBased2_Conway extends AI{
 //    }
 }
 
-class NN_ConwayP1 extends AI{
+class NN_ConwayP1 extends AI {
     //GomokuAI_NN gomokuAI_NN = new GomokuAI_NN();
     private String fileName = "network_9_3p1.eg";
     BasicNetwork network;
 
-    NN_ConwayP1(){
-        network = (BasicNetwork)loadObject(new File(fileName));
+    NN_ConwayP1() {
+        network = (BasicNetwork) loadObject(new File(fileName));
     }
 
-    public int move(int [] state){
+    public int move(int[] state) {
         return getMaxQValueAction(getNNOutputs(stateToDoubleArray(state)), state);
         //return getMinQValueAction(getNNOutputs(stateToDoubleArray(state)), state);
     }
 
-    double [] stateToDoubleArray(int [] state){
-        double [] state_double = new double[state.length];
+    double[] stateToDoubleArray(int[] state) {
+        double[] state_double = new double[state.length];
         for (int i = 0; i < state_double.length; ++i) state_double[i] = state[i];
         return state_double;
     }
-    double [] getNNOutputs (double [] stateKey){
+
+    double[] getNNOutputs(double[] stateKey) {
         return network.compute(new BasicMLData(stateKey)).getData();
     }
-    int getMaxQValueAction(double [] nnOutputs, int [] state){
+
+    int getMaxQValueAction(double[] nnOutputs, int[] state) {
         double maxQValue = Double.NEGATIVE_INFINITY;
         int action = 0;
 
-        for (int i = 0; i < nnOutputs.length; ++i){
-            if (nnOutputs[i] > maxQValue && state[i] == 0){
+        for (int i = 0; i < nnOutputs.length; ++i) {
+            if (nnOutputs[i] > maxQValue && state[i] == 0) {
                 maxQValue = nnOutputs[i];
                 action = i;
             }
@@ -217,12 +216,13 @@ class NN_ConwayP1 extends AI{
 
         return action;
     }
-    int getMinQValueAction(double [] nnOutputs, int [] state){
+
+    int getMinQValueAction(double[] nnOutputs, int[] state) {
         double minQValue = Double.POSITIVE_INFINITY;
         int action = 0;
 
-        for (int i = 0; i < nnOutputs.length; ++i){
-            if (nnOutputs[i] < minQValue && state[i] == 0){
+        for (int i = 0; i < nnOutputs.length; ++i) {
+            if (nnOutputs[i] < minQValue && state[i] == 0) {
                 minQValue = nnOutputs[i];
                 action = i;
             }
@@ -232,34 +232,36 @@ class NN_ConwayP1 extends AI{
     }
 }
 
-class NN_ConwayP2 extends AI{
+class NN_ConwayP2 extends AI {
     //GomokuAI_NN gomokuAI_NN = new GomokuAI_NN();
     private String fileName = "network_9_3p2.eg";
     BasicNetwork network;
 
-    NN_ConwayP2(){
-        network = (BasicNetwork)loadObject(new File(fileName));
+    NN_ConwayP2() {
+        network = (BasicNetwork) loadObject(new File(fileName));
     }
 
-    public int move(int [] state){
+    public int move(int[] state) {
         //return getMaxQValueAction(getNNOutputs(stateToDoubleArray(state)), state);
         return getMinQValueAction(getNNOutputs(stateToDoubleArray(state)), state);
     }
 
-    double [] stateToDoubleArray(int [] state){
-        double [] state_double = new double[state.length];
+    double[] stateToDoubleArray(int[] state) {
+        double[] state_double = new double[state.length];
         for (int i = 0; i < state_double.length; ++i) state_double[i] = state[i];
         return state_double;
     }
-    double [] getNNOutputs (double [] stateKey){
+
+    double[] getNNOutputs(double[] stateKey) {
         return network.compute(new BasicMLData(stateKey)).getData();
     }
-    int getMaxQValueAction(double [] nnOutputs, int [] state){
+
+    int getMaxQValueAction(double[] nnOutputs, int[] state) {
         double maxQValue = Double.NEGATIVE_INFINITY;
         int action = 0;
 
-        for (int i = 0; i < nnOutputs.length; ++i){
-            if (nnOutputs[i] > maxQValue && state[i] == 0){
+        for (int i = 0; i < nnOutputs.length; ++i) {
+            if (nnOutputs[i] > maxQValue && state[i] == 0) {
                 maxQValue = nnOutputs[i];
                 action = i;
             }
@@ -267,12 +269,13 @@ class NN_ConwayP2 extends AI{
 
         return action;
     }
-    int getMinQValueAction(double [] nnOutputs, int [] state){
+
+    int getMinQValueAction(double[] nnOutputs, int[] state) {
         double minQValue = Double.POSITIVE_INFINITY;
         int action = 0;
 
-        for (int i = 0; i < nnOutputs.length; ++i){
-            if (nnOutputs[i] < minQValue && state[i] == 0){
+        for (int i = 0; i < nnOutputs.length; ++i) {
+            if (nnOutputs[i] < minQValue && state[i] == 0) {
                 minQValue = nnOutputs[i];
                 action = i;
             }
@@ -283,8 +286,14 @@ class NN_ConwayP2 extends AI{
 }
 
 class MinMax_smartAgent extends AI {
-    public int move (int [] state){
-        return new SmartAgent(15,5).move(state);
+    SmartAgent smartAgent;
+
+    MinMax_smartAgent(int ourPlayerNum) {
+        smartAgent = new SmartAgent(15, 5, ourPlayerNum);
+    }
+
+    public int move(int[] state) {
+        return smartAgent.move(state);
     }
 }
 
@@ -293,14 +302,14 @@ class ConwayAI_V2_QTable extends AI {
     QTable_AI qTable_ai;
     //private Map<String, Double> qMap;
 
-    ConwayAI_V2_QTable(int ourPlayerNum){
+    ConwayAI_V2_QTable(int ourPlayerNum) {
         this.ourPlayerNum = ourPlayerNum;
         qTable_ai = new QTable_AI();
         qTable_ai.setqMap("QTable_AI_V2_brain.txt");
         //qMap = QMapIO.load("QTable_AI_V2_brain.txt");
     }
 
-    public int move(int [] state){
+    public int move(int[] state) {
 //        int [] player1Patterns = PatternDetect.detect(state, 1);
 //        int [] player2Patterns = PatternDetect.detect(state, 2);
 //

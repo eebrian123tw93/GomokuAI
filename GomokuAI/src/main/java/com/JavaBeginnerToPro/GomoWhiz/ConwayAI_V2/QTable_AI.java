@@ -22,7 +22,7 @@ import java.util.*;
 
 public class QTable_AI extends Conway_V2_base {
 
-    static Map<String, Double> qMap = new HashMap<>();
+    public static Map<String, Double> qMap = new HashMap<>();
 
     double LEARNING_RATE = 0.3;
     final double DECAY = 0.9;
@@ -196,7 +196,7 @@ public class QTable_AI extends Conway_V2_base {
             }
 
             else {
-                action = new SmartAgent(15,5).move(currentState);
+                action = new SmartAgent(15,5,1).move(currentState);
                 nextState[action] = currentPlayer;
                 --movesRemaining;
                 nextStateReward = evalReward(nextState, movesRemaining);

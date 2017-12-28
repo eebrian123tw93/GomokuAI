@@ -1,37 +1,19 @@
 package com.JavaBeginnerToPro.GomoWhiz.Version_1;
-import org.jdesktop.swingx.JXPanel;
-import org.jdesktop.swingx.border.DropShadowBorder;
-import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
+
+import javax.swing.*;
+import javax.swing.border.BevelBorder;
 import javax.swing.border.EmptyBorder;
-import java.awt.BasicStroke;
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Image;
-import java.awt.Point;
-import java.awt.Rectangle;
-import java.awt.Window;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
+import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.geom.AffineTransform;
-import java.awt.image.AffineTransformOp;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.Random;
 
 public class GomokuGUI extends JFrame implements KeyListener {
-   public GomokuGUI(int[] gameState) {
-        Point point = new Point(this.getBounds().width, this.getBounds().height);
+    PlayWithHumanBoardPanel panel;
+    public GomokuGUI(int[] gameState) {
         setTitle("Gomoku");
-
 
         setIconImage(new ImageIcon("five.png").getImage());
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -44,14 +26,15 @@ public class GomokuGUI extends JFrame implements KeyListener {
 //       bag3.weighty = 0;
 //       bag3.fill = GridBagConstraints.CENTER;
 //       bag3.anchor = GridBagConstraints.WEST;
-       setLayout(new BorderLayout());
-       ((JPanel)getContentPane()).setBorder(new EmptyBorder(30,30,30,30));
+        setLayout(new BorderLayout());
         getContentPane().setLayout(new BorderLayout());
-        getContentPane().add(new BoardPanel(gameState));
+//        getContentPane().add(new BoardPanel(gameState),BorderLayout.CENTER);
+        panel=new PlayWithHumanBoardPanel(gameState);
+        getContentPane().add(panel,BorderLayout.CENTER);
         setSize(1280, 720);
 
-        String osName=System.getProperty("os.name").toLowerCase();
-        if(osName.indexOf("mac")>=0){
+        String osName = System.getProperty("os.name").toLowerCase();
+        if (osName.indexOf("mac") >= 0) {
             enableOSXFullscreen();
         }
 //        else {
@@ -60,40 +43,66 @@ public class GomokuGUI extends JFrame implements KeyListener {
 //        }
         addKeyListener(this);
 
-       try {
-           Thread.sleep(1000);
-       } catch (InterruptedException e) {
-           e.printStackTrace();
-       }
+        createMenuBar();
+        createStatusBar();
 
-       setVisible(true);
+        setVisible(true);
     }
+
+    public void createMenuBar() {
+        JMenuBar menuBar = new JMenuBar();
+        JMenu game = new JMenu("Game");
+        JMenuItem exitMenuItem = new JMenuItem("Exit");
+        exitMenuItem.setMnemonic(KeyEvent.VK_E);
+        exitMenuItem.setToolTipText("Exit application");
+        exitMenuItem.addActionListener((ActionEvent event) -> {
+            System.exit(0);
+        });
+        JMenuItem restartMenuItem=new JMenuItem("Restart");
+        restartMenuItem.setMnemonic(KeyEvent.VK_R);
+        restartMenuItem.setToolTipText("Restart Game");
+        restartMenuItem.addActionListener((ActionEvent event) -> {
+            int [] gameState= panel.getGameState();
+            for(int i=0;i<gameState.length;i++){
+                gameState[i]=0;
+            }
+           panel.playing=true;
+            repaint();
+        });
+        game.add(restartMenuItem);
+        game.add(exitMenuItem);
+        menuBar.add(game);
+        setJMenuBar(menuBar);
+    }
+
+    public void createStatusBar() {
+        JFrame jFrame = this;
+        JPanel statusPanel = new JPanel();
+        statusPanel.setBackground(Color.YELLOW);
+        statusPanel.setBorder(new BevelBorder(BevelBorder.LOWERED));
+        jFrame.getContentPane().add(statusPanel, BorderLayout.SOUTH);
+        statusPanel.setPreferredSize(new Dimension(jFrame.getWidth(), 20));
+        statusPanel.setLayout(new BoxLayout(statusPanel, BoxLayout.X_AXIS));
+        JLabel statusLabel = new JLabel("status");
+        statusLabel.setHorizontalAlignment(SwingConstants.LEFT);
+        statusPanel.add(statusLabel);
+//        jFrame.setVisible(true);
+    }
+
     public static void main(String[] args) {
 
 
         Random random = new Random();
-        int[] state = new int[36];
+        int[] state = new int[225];
         for (int i = 0; i < state.length; i++) {
 //            state[i] = random.nextInt(3) - 1;
-            state[i]=0;
+            state[i] = 0;
         }
         GomokuGUI gui = new GomokuGUI(state);
 
 
-        while (true) {
-            try {
-                Thread.sleep(1000);
-                for (int i = 0; i < state.length; i++) {
-                        state[i] = random.nextInt(3) - 1;
-                }
-                gui.repaint();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-        }
-
     }
+
     @SuppressWarnings({"unchecked", "rawtypes"})
     public void enableOSXFullscreen() {
         try {
@@ -102,51 +111,55 @@ public class GomokuGUI extends JFrame implements KeyListener {
             Method method = fullScreenUtil.getMethod("setWindowCanFullScreen", params);
             method.invoke(fullScreenUtil, this, true);
 
-            Class  application=Class.forName("com.apple.eawt.Application");
+            Class application = Class.forName("com.apple.eawt.Application");
             Class params1[] = new Class[]{};
-            Method method1=application.getMethod("getApplication",params1);
+            Method method1 = application.getMethod("getApplication", params1);
             method1.invoke(application);
             Class params2[] = new Class[]{Image.class};
-            Object o=  application.newInstance();
-            Method method2=application.getMethod("setDockIconImage",params2);
-            method2.invoke(o,new ImageIcon("five.png").getImage());
+            Object o = application.newInstance();
+            Method method2 = application.getMethod("setDockIconImage", params2);
+            method2.invoke(o, new ImageIcon("five.png").getImage());
 
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
     }
+
     @Override
     public void keyTyped(KeyEvent e) {
 
     }
+
     @Override
     public void keyPressed(KeyEvent e) {
 
     }
+
     @Override
     public void keyReleased(KeyEvent e) {
 
-        if(e.getKeyCode()==KeyEvent.VK_ESCAPE){
+        if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
             System.exit(0);
 
             return;
         }
 
-            String osName=System.getProperty("os.name").toLowerCase();
-            if(osName.indexOf("mac")>=0){
-                if(e.getKeyCode()==KeyEvent.VK_F5)
+        String osName = System.getProperty("os.name").toLowerCase();
+        if (osName.indexOf("mac") >= 0) {
+            if (e.getKeyCode() == KeyEvent.VK_F5)
                 requestToggleFullScreen();
-            }else {
-                if(e.getKeyCode()==KeyEvent.VK_F11) {
-                    setExtendedState(JFrame.MAXIMIZED_BOTH);
-                    setUndecorated(true);
-                }
+        } else {
+            if (e.getKeyCode() == KeyEvent.VK_F11) {
+                setExtendedState(JFrame.MAXIMIZED_BOTH);
+                setUndecorated(true);
             }
+        }
 
 
     }
+
     @SuppressWarnings({"unchecked", "rawtypes"})
-    public  void requestToggleFullScreen() {
+    public void requestToggleFullScreen() {
         try {
             Class appClass = Class.forName("com.apple.eawt.Application");
             Class params[] = new Class[]{};
