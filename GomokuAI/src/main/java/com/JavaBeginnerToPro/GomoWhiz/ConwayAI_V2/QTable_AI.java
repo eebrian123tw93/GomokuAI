@@ -37,11 +37,8 @@ public class QTable_AI extends Conway_V2_base {
     int ties = 0;
 
     public static void main(String[] args) {
-        Path path = Paths.get("QTable_AI_V2_brain.txt").toAbsolutePath();
-        if (Files.exists(path)){
-            qMap = QMapIO.load("QTable_AI_V2_brain.txt");
-        }
         QTable_AI qTable_AI = new QTable_AI();
+        qTable_AI.setqMap("QTable_AI_V2_brain.txt");
         if (displayBoard) gui = new GomokuGUI(new int [225]);
         qTable_AI.train();
         QMapIO.save("QTable_AI_V2_brain.txt", qMap);
