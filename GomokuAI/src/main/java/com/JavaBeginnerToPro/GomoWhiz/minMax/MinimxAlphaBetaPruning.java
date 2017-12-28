@@ -1,6 +1,7 @@
 package com.JavaBeginnerToPro.GomoWhiz.minMax;
 
 
+import com.JavaBeginnerToPro.GomoWhiz.ConwayAI_V2.PatternDetect;
 import com.JavaBeginnerToPro.GomoWhiz.ConwayAI_V2.QMapIO;
 import com.JavaBeginnerToPro.GomoWhiz.ConwayAI_V2.QTable_AI;
 
@@ -313,17 +314,22 @@ class BrianConway extends Fast {
 
     public BrianConway(int numplayer) {
         super(numplayer);
-        Path path = Paths.get("QTable_AI_V2_brain.txt").toAbsolutePath();
-        if (Files.exists(path)){
-            QTable_AI.qMap = QMapIO.load("QTable_AI_V2_brain.txt");
-        }
         qTable_ai = new QTable_AI();
+        qTable_ai.setqMap("QTable_AI_V2_brain.txt");
     }
 
     @Override
     public int mm(Board board, int d) {
+        //forced actions
+//        int [] state = transfer(board);
+//        int [] player1Patterns = PatternDetect.detect(state, 1);
+//        int [] player2Patterns = PatternDetect.detect(state, 2);
+//        if (qTable_ai.obviousActionNeeded(player1Patterns, player2Patterns)){
+//            return qTable_ai.forcedAction(state, qTable_ai.scanObviousPatternTypes(player1Patterns, player2Patterns, numplayer), numplayer);
+//        }
+
         List<Integer> bestAction = new ArrayList<>();
-        List<Integer> availableCells = Arrays.stream(qTable_ai.getTopFiveQValueActions(transfer(board), 1)).boxed().collect(Collectors.toList());
+        List<Integer> availableCells = Arrays.stream(qTable_ai.getTopFiveQValueActions(transfer(board), numplayer)).boxed().collect(Collectors.toList());
         int max = Integer.MIN_VALUE;
         ExecutorService es;
         if (availableCells.size() != 0)
@@ -403,7 +409,6 @@ class BrianConway extends Fast {
         }
         return min;
     }
-
     public int maxAB(Board board, int deep, int alpha, int beta) {
         boolean win = DetectWin_2.detectWin(transfer(board), board.n, board.winRequire, numplayer) || DetectWin_2.detectWin(transfer(board), board.n, board.winRequire, numOpponent);
         int point = 0;

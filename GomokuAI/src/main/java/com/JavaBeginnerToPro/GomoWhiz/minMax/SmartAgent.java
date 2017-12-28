@@ -12,9 +12,9 @@ public class SmartAgent extends Agent {
     public SmartAgent(int boardWidth, int winRequire,int numPlayer) {
         super(boardWidth, winRequire,numPlayer);
 //        minimax = new Minimax(numplayer);
-//        minimax=new BrianConway(numplayer);
+     //   minimax=new BrianConway(numplayer);
 //        minimax=new MinimxAlphaBetaPruning();
-        minimax=new Fast(numplayer);
+       minimax=new Fast(numplayer);
     }
 
     public String firstTurn() {

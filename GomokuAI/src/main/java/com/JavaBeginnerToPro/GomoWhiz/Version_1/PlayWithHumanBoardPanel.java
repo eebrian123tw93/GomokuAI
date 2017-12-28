@@ -2,8 +2,6 @@ package com.JavaBeginnerToPro.GomoWhiz.Version_1;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
@@ -69,8 +67,8 @@ public class PlayWithHumanBoardPanel extends BoardPanel implements MouseListener
     public PlayWithHumanBoardPanel(int[] gameState) {
         super(gameState);
         addMouseListener(this);
-        ai=new ConwayAI_V2_QTable(1);
-        ai=new MinMax_smartAgent(1);
+     //   ai=new QTableWithForcedActions(1);
+        ai=new MinMax(1);
         playing=true;
 //        Button button=new Button("Restart");
 //        button.addActionListener(new ActionListener() {

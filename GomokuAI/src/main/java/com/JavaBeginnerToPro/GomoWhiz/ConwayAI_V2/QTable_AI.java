@@ -22,26 +22,24 @@ import java.util.*;
 
 public class QTable_AI extends Conway_V2_base {
 
-    public static Map<String, Double> qMap = new HashMap<>();
+    private static Map<String, Double> qMap = new HashMap<>();
 
-    double LEARNING_RATE = 0.3;
+    double LEARNING_RATE = 0.5;
     final double DECAY = 0.9;
-    double RANDOM_MOVE_PROBABILITY = -1;
-    boolean displayBoard = false;
-    static int GAMES_TO_TRAIN = 20000;
+    double RANDOM_MOVE_PROBABILITY = 0.5;
+    private static boolean displayBoard = false;
+    static int GAMES_TO_TRAIN = 400000;
     static int qMapSaveInterval = 5000;
 
-    GomokuGUI gui;
+    private static GomokuGUI gui;
     int player1Wins = 0;
     int player2Wins = 0;
     int ties = 0;
 
     public static void main(String[] args) {
-        Path path = Paths.get("QTable_AI_V2_brain.txt").toAbsolutePath();
-        if (Files.exists(path)){
-            qMap = QMapIO.load("QTable_AI_V2_brain.txt");
-        }
         QTable_AI qTable_AI = new QTable_AI();
+        qTable_AI.setqMap("QTable_AI_V2_brain.txt");
+        if (displayBoard) gui = new GomokuGUI(new int [225]);
         qTable_AI.train();
         QMapIO.save("QTable_AI_V2_brain.txt", qMap);
 //        QTable_AI qTableAi = new QTable_AI();
@@ -99,7 +97,7 @@ public class QTable_AI extends Conway_V2_base {
 //        System.out.println("Forced action: " + forced_action);
 //
 //        state[forced_action] = 1;
-        if (displayBoard) gui = new GomokuGUI(new int [225]);
+        //if (displayBoard) gui = new GomokuGUI(new int [225]);
 //        showGUI(state);
 //        showGUI(state);
 //
@@ -120,7 +118,8 @@ public class QTable_AI extends Conway_V2_base {
         int gamesPerSecond = 0;
         int gamesPerSecondCounter = 0;
 
-        while(gamesPlayed < GAMES_TO_TRAIN){
+        //while(gamesPlayed < GAMES_TO_TRAIN){
+        while(true){
 
             if (System.currentTimeMillis() - startCountTime >= 1000){
                 gamesPerSecond = gamesPerSecondCounter;
@@ -133,7 +132,7 @@ public class QTable_AI extends Conway_V2_base {
             ++gamesPlayed;
             ++gamesPerSecondCounter;
 
-            if (gamesPlayed % 5000 == 0 && RANDOM_MOVE_PROBABILITY > 0) RANDOM_MOVE_PROBABILITY -= 0.05;
+            if (gamesPlayed % 10000 == 0 && RANDOM_MOVE_PROBABILITY > 0) RANDOM_MOVE_PROBABILITY -= 0.05;
             if (gamesPlayed % qMapSaveInterval == 0){
                 System.out.println("Saved qMap");
                 QMapIO.save("QTable_AI_V2_brain.txt", qMap);
@@ -214,30 +213,23 @@ public class QTable_AI extends Conway_V2_base {
 
     public int chooseAction(int [] state, int currentPlayer){
         if (PatternDetect.isEmpty(state)) return state.length / 2;
-        if (rand.nextDouble() > RANDOM_MOVE_PROBABILITY) {
-            int [] player1Patterns = PatternDetect.detect(state, 1);
-            int [] player2Patterns = PatternDetect.detect(state, 2);
+        int [] player1Patterns = PatternDetect.detect(state, 1);
+        int [] player2Patterns = PatternDetect.detect(state, 2);
 
-            if (currentPlayer == 1){
-                if (obviousActionNeeded(player1Patterns, player2Patterns)){
-                    return forcedAction(state, scanObviousPatternTypes(player1Patterns, player2Patterns, currentPlayer), currentPlayer);
-                }
-//                else return getMaxQValueAction(state, currentPlayer);
-                //return getMaxQValueAction(state, currentPlayer);
-                return randomMove(state);
+        if (obviousActionNeeded(player1Patterns, player2Patterns)) {
+            return forcedAction(state, scanObviousPatternTypes(player1Patterns, player2Patterns, currentPlayer), currentPlayer);
+        }
+
+        else if (rand.nextDouble() > RANDOM_MOVE_PROBABILITY) {
+            if (currentPlayer == 1) {
+                return getMaxQValueAction(state, currentPlayer);
+                //return randomMove(state);
             }
-            //else return getMinQValueAction(state, currentPlayer);
             else {
-                if (obviousActionNeeded(player1Patterns, player2Patterns)){
-                    return forcedAction(state, scanObviousPatternTypes(player1Patterns, player2Patterns, currentPlayer), currentPlayer);
-                }
-
                 return getMinQValueAction(state, currentPlayer);
                 //return randomMove(state);
             }
-            //else return randomMove(state);
         }
-
         else return randomMove(state);
     }
     int getMaxQValueAction(int [] state, int currentPlayer){
@@ -294,13 +286,13 @@ public class QTable_AI extends Conway_V2_base {
         return 0;
     }
 
-    boolean obviousActionNeeded(int [] player1Patterns, int [] player2Patterns){
+    public boolean obviousActionNeeded(int [] player1Patterns, int [] player2Patterns){
         if (player1Patterns[25] == 1 || player1Patterns[6] == 1 || player1Patterns[20] == 1 || player1Patterns[24] == 1 || player1Patterns[9] == 1) return true;
         if (player2Patterns[25] == 1 || player2Patterns[6] == 1 || player2Patterns[20] == 1 || player2Patterns[24] == 1 || player2Patterns[9] == 1) return true;
 
         return false;
     }
-    ArrayList<Integer> scanObviousPatternTypes(int [] player1Patterns, int [] player2Patterns, int currentPlayer){
+    public ArrayList<Integer> scanObviousPatternTypes(int [] player1Patterns, int [] player2Patterns, int currentPlayer){
         ArrayList<Integer> patterns = new ArrayList<>();
         /*
         check for:
@@ -383,7 +375,7 @@ public class QTable_AI extends Conway_V2_base {
 //        }
         return patterns;
     }
-    int forcedAction(int [] state, ArrayList<Integer> types, int currentPlayer){
+    public int forcedAction(int [] state, ArrayList<Integer> types, int currentPlayer){
         int [] validActions = getValidActions(state);
         int [] stateCopy = state.clone();
         int [] pattern;
@@ -432,7 +424,7 @@ public class QTable_AI extends Conway_V2_base {
         //last resort
         return randomMove(state);
     }
-    boolean patternContainsType(int [] pattern, int type){
+    public boolean patternContainsType(int [] pattern, int type){
         if (pattern[type] == 1) return true;
         return false;
     }
@@ -484,7 +476,6 @@ public class QTable_AI extends Conway_V2_base {
         //System.out.println("Original Actions: " + Arrays.toString(actions));
         //System.out.println("Original Values: " + Arrays.toString(values));
 
-
         double maxValue;
         for (int i = 0; i < values.length - 1; ++i){
             for (int j = i + 1; j < values.length; ++j) {
@@ -500,8 +491,8 @@ public class QTable_AI extends Conway_V2_base {
             }
         }
 
-        System.out.println("Sorted Actions: " + Arrays.toString(actions));
-        System.out.println("Sorted Values: " + Arrays.toString(values));
+//        System.out.println("Sorted Actions: " + Arrays.toString(actions));
+//        System.out.println("Sorted Values: " + Arrays.toString(values));
 
         int [] topFive = new int[5];
 
@@ -570,7 +561,7 @@ public class QTable_AI extends Conway_V2_base {
         try {
             ((BoardPanel) gui.getContentPane().getComponent(0)).setGameState(state);
             gui.repaint();
-            Thread.sleep(300);
+            Thread.sleep(000);
         }
 
         catch (InterruptedException e) {

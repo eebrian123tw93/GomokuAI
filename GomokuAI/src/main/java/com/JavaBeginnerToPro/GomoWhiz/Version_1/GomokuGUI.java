@@ -12,6 +12,10 @@ import java.util.Random;
 
 public class GomokuGUI extends JFrame implements KeyListener {
     PlayWithHumanBoardPanel panel;
+    Playground playground;
+    public static void main(String[] args) {
+        new GomokuGUI( new int[225]);
+    }
     public GomokuGUI(int[] gameState) {
         setTitle("Gomoku");
 
@@ -28,9 +32,9 @@ public class GomokuGUI extends JFrame implements KeyListener {
 //       bag3.anchor = GridBagConstraints.WEST;
         setLayout(new BorderLayout());
         getContentPane().setLayout(new BorderLayout());
-//        getContentPane().add(new BoardPanel(gameState),BorderLayout.CENTER);
-        panel=new PlayWithHumanBoardPanel(gameState);
-        getContentPane().add(panel,BorderLayout.CENTER);
+        getContentPane().add(new BoardPanel(gameState),BorderLayout.CENTER);
+        //panel=new PlayWithHumanBoardPanel(gameState);
+        //getContentPane().add(panel,BorderLayout.CENTER);
         setSize(1280, 720);
 
         String osName = System.getProperty("os.name").toLowerCase();
@@ -41,6 +45,8 @@ public class GomokuGUI extends JFrame implements KeyListener {
 //            setExtendedState(JFrame.MAXIMIZED_BOTH);
 //            setUndecorated(true);
 //        }
+
+        playground=new Playground();
         addKeyListener(this);
 
         createMenuBar();
@@ -69,9 +75,49 @@ public class GomokuGUI extends JFrame implements KeyListener {
            panel.playing=true;
             repaint();
         });
+        JMenu player1Menu = new JMenu("Player1");
+        JMenu player2Menu = new JMenu("Player2");
+
+        JMenuItem randomAI = new JMenuItem("Random");
+        randomAI.addActionListener((ActionEvent event) -> {
+            playground.setPlayer1(new com.JavaBeginnerToPro.GomoWhiz.Version_1.Random());
+        });
+
+        JMenuItem conwayQTableAI = new JMenuItem("Pure QTable");
+//        conwayQTableAI.addActionListener((ActionEvent event) -> {
+//            playground.setPlayer1(new com.JavaBeginnerToPro.GomoWhiz.Version_1.Random());
+//        });
+
+        JMenuItem forcedActionAI = new JMenuItem("Forced actions");
+        JMenuItem minMaxAI = new JMenuItem("MinMax");
+        JMenuItem minMaxForcedAI = new JMenuItem("MinMax with forced actions");
+        JMenuItem qTableForcedAI = new JMenuItem("QTable with forced actions");
+        JMenuItem randomAI2 = new JMenuItem("Random");
+        JMenuItem conwayQTableAI2 = new JMenuItem("Pure QTable");
+        JMenuItem forcedActionAI2 = new JMenuItem("Forced actions");
+        JMenuItem minMaxAI2 = new JMenuItem("MinMax");
+        JMenuItem minMaxForcedAI2 = new JMenuItem("MinMax with forced actions");
+        JMenuItem qTableForcedAI2 = new JMenuItem("QTable with forced actions");
+
+        player1Menu.add(randomAI);
+        player1Menu.add(conwayQTableAI);
+        player1Menu.add(forcedActionAI);
+        player1Menu.add(minMaxAI);
+        player1Menu.add(minMaxForcedAI);
+        player1Menu.add(qTableForcedAI);
+
+        player2Menu.add(randomAI2);
+        player2Menu.add(conwayQTableAI2);
+        player2Menu.add(forcedActionAI2);
+        player2Menu.add(minMaxAI2);
+        player2Menu.add(minMaxForcedAI2);
+        player2Menu.add(qTableForcedAI2);
+
         game.add(restartMenuItem);
         game.add(exitMenuItem);
         menuBar.add(game);
+        menuBar.add(player1Menu);
+        menuBar.add(player2Menu);
         setJMenuBar(menuBar);
     }
 
@@ -87,20 +133,6 @@ public class GomokuGUI extends JFrame implements KeyListener {
         statusLabel.setHorizontalAlignment(SwingConstants.LEFT);
         statusPanel.add(statusLabel);
 //        jFrame.setVisible(true);
-    }
-
-    public static void main(String[] args) {
-
-
-        Random random = new Random();
-        int[] state = new int[225];
-        for (int i = 0; i < state.length; i++) {
-//            state[i] = random.nextInt(3) - 1;
-            state[i] = 0;
-        }
-        GomokuGUI gui = new GomokuGUI(state);
-
-
     }
 
     @SuppressWarnings({"unchecked", "rawtypes"})
