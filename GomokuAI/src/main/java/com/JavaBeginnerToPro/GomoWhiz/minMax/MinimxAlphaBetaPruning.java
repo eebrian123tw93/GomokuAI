@@ -1,8 +1,10 @@
 package com.JavaBeginnerToPro.GomoWhiz.minMax;
 
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.*;
 
 public class MinimxAlphaBetaPruning extends Minimax {
 
@@ -40,14 +42,16 @@ public class MinimxAlphaBetaPruning extends Minimax {
         boolean win = DetectWin_2.detectWin(transfer(board), board.n, board.winRequire, 1) || DetectWin_2.detectWin(transfer(board), board.n, board.winRequire, -1);
 
         int point = 0;
-        for (Boolean[][] winState : Board.winStates) {
-            point += eval(board, winState, 1);
-        }
+//        for (Boolean[][] winState : Board.winStates) {
+//            point += eval(board, winState, 1);
+//
+//        }
+        point = evaluate(board, 1);
 //        System.out.println(point);
         if (deep == 0 || win) {
             return point;
         }
-        List<Integer> availableCells = board.getEmpties();
+        List<Integer> availableCells = board.getEmpties(-1);
         if (availableCells.size() == 0) {
             return 0;
         }
@@ -70,29 +74,37 @@ public class MinimxAlphaBetaPruning extends Minimax {
         int point = 0;
         if (player == 1) {
             if (DetectWin_2.detectWin(transfer(board), board.n, board.winRequire, player)) {
-                point += 105000;
+                point = 105000;
+                return point;
             }
             if (DetectWin_2.detectWin(transfer(board), board.n, board.winRequire - 1, player)) {
-                point += 1500;
+                point = 1500;
+                return point;
             }
             if (DetectWin_2.detectWin(transfer(board), board.n, board.winRequire - 2, player)) {
-                point += 15;
+                point = 15;
+                return point;
             }
             if (DetectWin_2.detectWin(transfer(board), board.n, board.winRequire - 3, player)) {
-                point += 5;
+                point = 5;
+                return point;
             }
         } else if (player == -1) {
             if (DetectWin_2.detectWin(transfer(board), board.n, board.winRequire, player)) {
-                point += 100000;
+                point = -100000;
+                return point;
             }
             if (DetectWin_2.detectWin(transfer(board), board.n, board.winRequire - 1, player)) {
-                point += 1000;
+                point = -1000;
+                return point;
             }
             if (DetectWin_2.detectWin(transfer(board), board.n, board.winRequire - 2, player)) {
-                point += 10;
+                point = -10;
+                return point;
             }
             if (DetectWin_2.detectWin(transfer(board), board.n, board.winRequire - 3, player)) {
-                point += 1;
+                point = -1;
+                return point;
             }
         }
 
@@ -103,6 +115,7 @@ public class MinimxAlphaBetaPruning extends Minimax {
         char symbol = '\0';
         int score = 0;
         int count = 0;
+        boolean continues = false;
         if (player == 1) {
             symbol = 'o';
         } else {
@@ -111,24 +124,17 @@ public class MinimxAlphaBetaPruning extends Minimax {
         for (int i = 0; i < winState.length; i++) {
             for (int j = 0; j < winState[i].length; j++) {
                 if (winState[i][j] && board.board[i][j] == symbol) {
-                    count++;
+
+                    if (continues) {
+                        count++;
+                    }
+                    continues = true;
+                } else if (winState[i][j] && board.board[i][j] != symbol) {
+                    continues = false;
                 }
             }
         }
         if (player == 1) {
-            if (count == 2) {
-                score = 2;
-            }
-            if (count == 3) {
-                score = 200;
-            }
-            if (count == 4) {
-                score = 20000;
-            }
-            if (count == 5) {
-                score = 2000000;
-            }
-        }else{
             if (count == 2) {
                 score = 1;
             }
@@ -139,7 +145,20 @@ public class MinimxAlphaBetaPruning extends Minimax {
                 score = 10000;
             }
             if (count == 5) {
-                score = 1000000;
+                score = 100000000;
+            }
+        } else {
+            if (count == 2) {
+                score = -10;
+            }
+            if (count == 3) {
+                score = -1000;
+            }
+            if (count == 4) {
+                score = -100000;
+            }
+            if (count == 5) {
+                score = -10000000;
             }
         }
 
@@ -149,13 +168,14 @@ public class MinimxAlphaBetaPruning extends Minimax {
     public int maxAB(Board board, int deep, int alpha, int beta) {
         boolean win = DetectWin_2.detectWin(transfer(board), board.n, board.winRequire, 1) || DetectWin_2.detectWin(transfer(board), board.n, board.winRequire, -1);
         int point = 0;
-        for (Boolean[][] winState : Board.winStates) {
-            point += eval(board, winState, -1);
-        }
+//        for (Boolean[][] winState : Board.winStates) {
+//            point += eval(board, winState, -1);
+//        }
+        point = evaluate(board, -1);
         if (deep == 0 || win) {
             return point;
         }
-        List<Integer> availableCells = board.getEmpties();
+        List<Integer> availableCells = board.getEmpties(1);
         if (availableCells.size() == 0) {
             return 0;
         }
@@ -174,3 +194,104 @@ public class MinimxAlphaBetaPruning extends Minimax {
         return max;
     }
 }
+
+class fast extends MinimxAlphaBetaPruning {
+    @Override
+    public int mm(Board board, int d) {
+        List<Integer> bestAction = new ArrayList<>();
+        List<Integer> availableCells = board.getEmpties(1);
+        int max = Integer.MIN_VALUE;
+//        for (int i = 0; i < availableCells.size(); i++) {
+//            int action = availableCells.get(i);
+//            Board b = board.clone();
+//            b.placeMove('o', board.transfer(action), false);
+//            int best = minAB(b, d - 1, Integer.MIN_VALUE, Integer.MAX_VALUE);
+//            if (best == max) {
+//                bestAction.add(action);
+//            }
+//            if (best > max) {
+//                max = best;
+//                bestAction.clear();
+//                bestAction.add(action);
+//            }
+//
+//        }
+
+//        ExecutorService es = Executors.newCachedThreadPool();
+        ExecutorService es;
+        if (availableCells.size() != 0)
+            es = Executors.newFixedThreadPool(availableCells.size());
+        else
+            es = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+        List<FutureTask<ReturnObject>> list = new ArrayList<>();
+        for (int i = 0; i < availableCells.size(); i++) {
+            int action = availableCells.get(i);
+            FutureTask<ReturnObject> futureTask = new FutureTask<ReturnObject>(new CallableTask(action, board, d));
+            es.execute(futureTask);
+            list.add(futureTask);
+        }
+        for (int i = 0; i < availableCells.size(); i++) {
+            try {
+                ReturnObject returnObject = list.get(i).get();
+                if (returnObject.best == max) {
+                    bestAction.add(returnObject.action);
+                }
+                if (returnObject.best > max) {
+                    max = returnObject.best;
+                    bestAction.clear();
+                    bestAction.add(returnObject.action);
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }
+
+        }
+        es.shutdown();
+        Runtime.getRuntime().gc();
+        try {
+            es.awaitTermination(5, TimeUnit.SECONDS);
+        } catch (Exception e) {
+
+        }
+        if (bestAction.size() == 0) {
+            if (availableCells.size() == 0) return board.transfer(board.strMove(board.n / 2, board.n / 2));
+            return availableCells.get(new Random().nextInt(availableCells.size()));
+        }
+
+        return bestAction.get(new Random().nextInt(bestAction.size()));
+//        return bestAction.get(bestAction.size()-1);
+    }
+
+    class CallableTask implements Callable<ReturnObject> {
+        int action;
+        Board board;
+        int d;
+
+        CallableTask(int action, Board board, int d) {
+            this.action = action;
+            this.board = board;
+            this.d = d;
+        }
+
+        @Override
+        public ReturnObject call() throws Exception {
+            ReturnObject returnObject = new ReturnObject();
+            returnObject.action = action;
+            Board b = board.clone();
+            b.placeMove('o', board.transfer(action), false);
+            returnObject.best = minAB(b, d - 1, Integer.MIN_VALUE, Integer.MAX_VALUE);
+            return returnObject;
+        }
+    }
+
+    class ReturnObject {
+        int action;
+        int best;
+    }
+
+}
+
+
+

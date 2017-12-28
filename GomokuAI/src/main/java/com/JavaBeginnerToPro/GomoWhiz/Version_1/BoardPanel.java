@@ -16,12 +16,31 @@ import java.io.IOException;
 import java.util.Random;
 
 public class BoardPanel extends JXPanel {
+    public Rectangle[][] getRectangles() {
+        return rectangles;
+    }
+
     private Rectangle[][] rectangles;
+
+    public int[] getGameState() {
+        return gameState;
+    }
+
     private int[] gameState;
     private int [] randomTable;
     private int rectSize;
     private int chessR;
+
+    public int getBlackPlayer() {
+        return blackPlayer;
+    }
+
     private int blackPlayer = 1;
+
+    public int getWhitePlayer() {
+        return whitePlayer;
+    }
+
     private int whitePlayer = 2;
 
     private BufferedImage blackChessImage;

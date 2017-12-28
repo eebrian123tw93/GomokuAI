@@ -290,177 +290,331 @@ class MinMax_smartAgent extends AI {
 
 class ConwayAI_V2_QTable extends AI {
     private int ourPlayerNum;
-    private Map<String, Double> qMap;
+    QTable_AI qTable_ai;
+    //private Map<String, Double> qMap;
 
     ConwayAI_V2_QTable(int ourPlayerNum){
         this.ourPlayerNum = ourPlayerNum;
-        qMap = QMapIO.load("QTable_AI_V2_brain.txt");
+        qTable_ai = new QTable_AI();
+        qTable_ai.setqMap("QTable_AI_V2_brain.txt");
+        //qMap = QMapIO.load("QTable_AI_V2_brain.txt");
     }
 
     public int move(int [] state){
-        if (ourPlayerNum == 1) return getMaxQValueAction(state, 1);
-        else return getMaxQValueAction(state, 2);
+//        int [] player1Patterns = PatternDetect.detect(state, 1);
+//        int [] player2Patterns = PatternDetect.detect(state, 2);
+//
+//        if (obviousActionNeeded(player1Patterns, player2Patterns)){
+//            return forcedAction(state, scanObviousPatternTypes(player1Patterns, player2Patterns, ourPlayerNum), ourPlayerNum);
+//        }
+//
+//        if (ourPlayerNum == 1) return getMaxQValueAction(state, 1);
+//        else return getMinQValueAction(state, 2);
+        return qTable_ai.chooseAction(state, ourPlayerNum);
     }
 
-    int getMaxQValueAction(int [] state, int currentPlayer){
-        int[] nextState = state.clone();
-        int[] validActions = getValidActions(state);
-        int maxQAction = -1;
-        double stateMaxQValue = Double.NEGATIVE_INFINITY;
-        double stateQValue;
-
-        for (int i = 0; i < validActions.length; ++i) {
-            nextState[validActions[i]] = currentPlayer;
-            stateQValue = evalState(makeStateKey(nextState));
-            if (stateQValue > stateMaxQValue) {
-                stateMaxQValue = stateQValue;
-                maxQAction = validActions[i];
-            }
-            nextState[validActions[i]] = 0;
-        }
-
-        return maxQAction;
-    }
-    int getMinQValueAction(int [] state, int currentPlayer){
-        int[] nextState = state.clone();
-        int[] validActions = getValidActions(state);
-        int minQAction = -1;
-        double stateMinQValue = Double.POSITIVE_INFINITY;
-        double stateQValue;
-
-        for (int i = 0; i < validActions.length; ++i) {
-            nextState[validActions[i]] = currentPlayer;
-            stateQValue = evalState(makeStateKey(nextState));
-            if (stateQValue < stateMinQValue) {
-                stateMinQValue = stateQValue;
-                minQAction = validActions[i];
-            }
-            nextState[validActions[i]] = 0;
-        }
-
-        return minQAction;
-    }
-
-    String makeStateKey(int [] state){
-        StringBuilder sb = new StringBuilder();
-        for (int i: PatternDetect.detect(state, 1)) sb.append(Integer.toString(i));
-        for (int i: PatternDetect.detect(state, 2)) sb.append(Integer.toString(i));
-        return sb.toString();
-    }
-
-    double evalState(String stateKey){
-        //if state has not happened before
-        if (qMap.get(stateKey) == null)
-            qMap.put(stateKey, (rand.nextDouble() * 0.3) - 0.15); //-0.15 ~ +0.15
-
-        return qMap.get(stateKey);
-    }
-
-    int [] getValidActions(int [] state){
-        int [][] state2D = DetectWin_2.convert1Dto2D(state, Conway_V2_base.BOARD_WIDTH);
-        int [] validActions;
-        //boolean empty = true;
-        int upperBound = 0;
-        int lowerBound = state2D.length;
-        int leftBound = 0;
-        int rightBound = state2D.length;
-
-        if (PatternDetect.checkEmpty(state)) {
-            validActions = new int[1];
-            validActions[0] = state.length / 2;
-            return validActions;
-        }
-
-        else {
-            boolean found = false;
-
-            //0, 1, 2, 3...
-            //int[] validActionNums = new int[Conway_V2_base.BOARD_WIDTH * Conway_V2_base.BOARD_WIDTH];
-            //for (int i = 0; i < validActionNums.length; ++i) validActionNums[i] = i;
-            //int[][] validActionNums2D = DetectWin_2.convert1Dto2D(validActionNums, Conway_V2_base.BOARD_WIDTH);
-
-            //find upper bound
-            for (int row = 0; row < state2D.length - 2; ++row) {
-                for (int col = 1; col < state2D.length - 1; ++col) {
-                    if (state2D[row + 1][col] != 0) {
-                        upperBound = row;
-                        found = true;
-                        break;
-                    }
-                }
-                if (found == true) break;
-            }
-
-            found = false;
-            //find lower bound
-            for (int row = state2D.length - 1; row > 1; --row) {
-                for (int col = 1; col < state2D.length - 1; ++col) {
-                    if (state2D[row - 1][col] != 0) {
-                        lowerBound = row;
-                        found = true;
-                        break;
-                    }
-                }
-                if (found == true) break;
-            }
-
-            found = false;
-            //find left bound
-            for (int col = 0; col < state2D.length - 2; ++col) {
-                for (int row = 1; row < state2D.length - 1; ++row) {
-                    if (state2D[row][col + 1] != 0) {
-                        leftBound = col;
-                        found = true;
-                        break;
-                    }
-                }
-                if (found == true) break;
-            }
-
-            found = false;
-            //find right bound
-            for (int col = state2D.length - 1; col > 1; --col) {
-                for (int row = 1; row < state2D.length - 1; ++row) {
-                    if (state2D[row][col - 1] != 0) {
-                        rightBound = col;
-                        found = true;
-                        break;
-                    }
-                }
-                if (found == true) break;
-            }
-
-            //validActions = new int[(lowerBound - upperBound + 1) * (rightBound - leftBound + 1)];
-
-            int emptySpacesInsideValidRegion = 0;
-            for (int row = upperBound; row <= lowerBound; ++row){
-                for (int col = leftBound; col <= rightBound; ++col){
-                    if (state2D[row][col] == 0) ++emptySpacesInsideValidRegion;
-                }
-            }
-
-            validActions = new int[emptySpacesInsideValidRegion];
-
-
-            int counter = 0;
-            int index = 0;
-            for (int row = 1; row < state2D.length - 1; ++row) {
-                for (int col = 1; col < state2D.length - 1; ++col) {
-                    if (row >= upperBound && row <= lowerBound && col >= leftBound && col <= rightBound){
-                        if (state2D[row][col] == 0) {
-                            validActions[index] = counter;
-                            ++index;
-                        }
-                    }
-                    ++counter;
-                }
-            }
-
-//            System.out.println("upper " + upperBound);
-//            System.out.println("lower " + lowerBound);
-//            System.out.println("left " + leftBound);
-//            System.out.println("right " + rightBound);
-            return validActions;
-        }
-    }
+//    int getMaxQValueAction(int [] state, int currentPlayer){
+//        int[] nextState = state.clone();
+//        int[] validActions = getValidActions(state);
+//        int maxQAction = -1;
+//        double stateMaxQValue = Double.NEGATIVE_INFINITY;
+//        double stateQValue;
+//
+//        for (int i = 0; i < validActions.length; ++i) {
+//            nextState[validActions[i]] = currentPlayer;
+//            stateQValue = evalState(makeStateKey(nextState));
+//            if (stateQValue > stateMaxQValue) {
+//                stateMaxQValue = stateQValue;
+//                maxQAction = validActions[i];
+//            }
+//            nextState[validActions[i]] = 0;
+//        }
+//
+//        return maxQAction;
+//    }
+//    int getMinQValueAction(int [] state, int currentPlayer){
+//        int[] nextState = state.clone();
+//        int[] validActions = getValidActions(state);
+//        int minQAction = -1;
+//        double stateMinQValue = Double.POSITIVE_INFINITY;
+//        double stateQValue;
+//
+//        for (int i = 0; i < validActions.length; ++i) {
+//            nextState[validActions[i]] = currentPlayer;
+//            stateQValue = evalState(makeStateKey(nextState));
+//            if (stateQValue < stateMinQValue) {
+//                stateMinQValue = stateQValue;
+//                minQAction = validActions[i];
+//            }
+//            nextState[validActions[i]] = 0;
+//        }
+//
+//        return minQAction;
+//    }
+//    boolean obviousActionNeeded(int [] player1Patterns, int [] player2Patterns){
+//        if (player1Patterns[25] == 1 || player1Patterns[6] == 1 || player1Patterns[20] == 1 || player1Patterns[24] == 1 || player1Patterns[9] == 1) return true;
+//        if (player2Patterns[25] == 1 || player2Patterns[6] == 1 || player2Patterns[20] == 1 || player2Patterns[24] == 1 || player2Patterns[9] == 1) return true;
+//
+//        return false;
+//    }
+//    ArrayList<Integer> scanObviousPatternTypes(int [] player1Patterns, int [] player2Patterns, int currentPlayer){
+//        ArrayList<Integer> patterns = new ArrayList<>();
+//        /*
+//        check for:
+//            oooo-   #25(current) #52(opponent)
+//            -oooo-  #26(current) #53(opponent)
+//            oo-oo   #20(current) #47(opponent)
+//            -ooo--  #24(current) #51(opponent)
+//            -o-oo-  #6(current)  #33
+//            -o-ooo  #9           #36
+//            o-ooo   #8           #35
+//
+//
+//            Priority: If player can win immediately, win immediately
+//                      If enemy will win next turn, block
+//                      If enemy has pattern 24, block
+//                      If we have pattern 24, make it into pattern 26
+//        */
+//
+//        if (currentPlayer == 1){
+//            if (player1Patterns[25] == 1) patterns.add(25);
+//            if (player1Patterns[6] == 1) patterns.add(6);
+//            if (player1Patterns[26] == 1) patterns.add(26);
+//            if (player1Patterns[20] == 1) patterns.add(20);
+//            if (player1Patterns[9] == 1) patterns.add(9);
+//            if (player1Patterns[8] == 1) patterns.add(8);
+//
+//            if (player2Patterns[25] == 1 ) patterns.add(52);
+//            if (player2Patterns[9] == 1) patterns.add(36);
+//            if (player2Patterns[6] == 1) patterns.add(33);
+//            if (player2Patterns[20] == 1) patterns.add(47);
+//            if (player2Patterns[24] == 1) patterns.add(51);
+//            if (player2Patterns[8] == 1) patterns.add(35);
+//
+//            if (player2Patterns[26] == 1) patterns.add(53);
+//
+//            if (player1Patterns[24] == 1) patterns.add(24);
+//        }
+//
+//        else {
+//            if (player2Patterns[25] == 1) patterns.add(25);
+//            if (player2Patterns[6] == 1) patterns.add(6);
+//            if (player2Patterns[26] == 1) patterns.add(26);
+//            if (player2Patterns[20] == 1) patterns.add(20);
+//            if (player2Patterns[9] == 1) patterns.add(9);
+//            if (player2Patterns[8] == 1) patterns.add(8);
+//
+//            if (player1Patterns[25] == 1 ) patterns.add(52);
+//            if (player1Patterns[6] == 1) patterns.add(33);
+//            if (player1Patterns[20] == 1) patterns.add(47);
+//            if (player1Patterns[24] == 1) patterns.add(51);
+//            if (player1Patterns[9] == 1) patterns.add(36);
+//            if (player1Patterns[8] == 1) patterns.add(35);
+//
+//            if (player1Patterns[26] == 1) patterns.add(53);
+//
+//            if (player2Patterns[24] == 1) patterns.add(24);
+//        }
+////        if (currentPlayer == 1){
+////            if (player1Patterns[25] == 1) return 25;
+////            else if (player1Patterns[26] == 1) return 26;
+////            else if (player1Patterns[20] == 1) return 25;
+////
+////            if (player2Patterns[25] == 1 ) return 52;
+////            else if (player2Patterns[20] == 1) return 47;
+////            else if (player2Patterns[24] == 1) return 51;
+////
+////            if (player1Patterns[24] == 1) return 24;
+////        }
+////
+////        else {
+////            if (player2Patterns[25] == 1) return 25;
+////            else if (player2Patterns[26] == 1) return 26;
+////            else if (player2Patterns[20] == 1) return 25;
+////
+////            if (player1Patterns[25] == 1) return 52;
+////            else if (player1Patterns[20] == 1) return 47;
+////            else if (player1Patterns[24] == 1) return 51;
+////
+////            if (player2Patterns[24] == 1) return 24;
+////        }
+//        return patterns;
+//    }
+//    int forcedAction(int [] state, ArrayList<Integer> types, int currentPlayer){
+//        int [] validActions = getValidActions(state);
+//        int [] stateCopy = state.clone();
+//        int [] pattern;
+//        int opponent;
+//        if (currentPlayer == 1) opponent = 2;
+//        else opponent = 1;
+//
+//
+//        if (types.contains(25) || types.contains(26) || types.contains(20) || types.contains(9) || types.contains(8)) {
+//            for (int i : validActions){
+//                stateCopy[i] = currentPlayer;
+//                if (DetectWin_2.detectWin(stateCopy, Conway_V2_base.BOARD_WIDTH, Conway_V2_base.WIN_REQUIRE, currentPlayer)) return i;
+//                stateCopy[i] = 0;
+//            }
+//        }
+//
+//        else if (types.contains(52) || types.contains(47) || types.contains(51) || types.contains(33) || types.contains(36) || types.contains(35)){
+//            for (int i : validActions){
+//                stateCopy[i] = currentPlayer;
+//                pattern = PatternDetect.detect(stateCopy, opponent);
+//                if (!patternContainsType(pattern, 25) && !patternContainsType(pattern, 20)
+//                        && !patternContainsType(pattern, 24) && !patternContainsType(pattern, 6)
+//                        && !patternContainsType(pattern, 9) && !patternContainsType(pattern, 8)) return i;
+//                stateCopy[i] = 0;
+//            }
+//        }
+//
+//        else if (types.contains(53)){
+//            for (int i : validActions){
+//                stateCopy[i] = currentPlayer;
+//                pattern = PatternDetect.detect(stateCopy, opponent);
+//                if (!patternContainsType(pattern, 26)) return i;
+//                stateCopy[i] = 0;
+//            }
+//        }
+//
+//        else if (types.contains(24) || types.contains(6)){
+//            for (int i : validActions){
+//                stateCopy[i] = currentPlayer;
+//                pattern = PatternDetect.detect(stateCopy, currentPlayer);
+//                if (patternContainsType(pattern, 26)) return i;
+//                stateCopy[i] = 0;
+//            }
+//        }
+//
+//        //last resort
+//        return randomMove(state);
+//    }
+//    boolean patternContainsType(int [] pattern, int type){
+//        if (pattern[type] == 1) return true;
+//        return false;
+//    }
+//
+//
+//    String makeStateKey(int [] state){
+//        StringBuilder sb = new StringBuilder();
+//        for (int i: PatternDetect.detect(state, 1)) sb.append(Integer.toString(i));
+//        for (int i: PatternDetect.detect(state, 2)) sb.append(Integer.toString(i));
+//        return sb.toString();
+//    }
+//
+//    double evalState(String stateKey){
+//        //if state has not happened before
+//        if (qMap.get(stateKey) == null)
+//            qMap.put(stateKey, (rand.nextDouble() * 0.3) - 0.15); //-0.15 ~ +0.15
+//
+//        return qMap.get(stateKey);
+//    }
+//
+//    int [] getValidActions(int [] state){
+//        int [][] state2D = DetectWin_2.convert1Dto2D(state, Conway_V2_base.BOARD_WIDTH);
+//        int [] validActions;
+//        //boolean empty = true;
+//        int upperBound = 0;
+//        int lowerBound = state2D.length;
+//        int leftBound = 0;
+//        int rightBound = state2D.length;
+//
+//        if (PatternDetect.isEmpty(state)) {
+//            validActions = new int[1];
+//            validActions[0] = state.length / 2;
+//            return validActions;
+//        }
+//
+//        else {
+//            boolean found = false;
+//
+//            //0, 1, 2, 3...
+//            //int[] validActionNums = new int[Conway_V2_base.BOARD_WIDTH * Conway_V2_base.BOARD_WIDTH];
+//            //for (int i = 0; i < validActionNums.length; ++i) validActionNums[i] = i;
+//            //int[][] validActionNums2D = DetectWin_2.convert1Dto2D(validActionNums, Conway_V2_base.BOARD_WIDTH);
+//
+//            //find upper bound
+//            for (int row = 0; row < state2D.length - 2; ++row) {
+//                for (int col = 1; col < state2D.length - 1; ++col) {
+//                    if (state2D[row + 1][col] != 0) {
+//                        upperBound = row;
+//                        found = true;
+//                        break;
+//                    }
+//                }
+//                if (found == true) break;
+//            }
+//
+//            found = false;
+//            //find lower bound
+//            for (int row = state2D.length - 1; row > 1; --row) {
+//                for (int col = 1; col < state2D.length - 1; ++col) {
+//                    if (state2D[row - 1][col] != 0) {
+//                        lowerBound = row;
+//                        found = true;
+//                        break;
+//                    }
+//                }
+//                if (found == true) break;
+//            }
+//
+//            found = false;
+//            //find left bound
+//            for (int col = 0; col < state2D.length - 2; ++col) {
+//                for (int row = 1; row < state2D.length - 1; ++row) {
+//                    if (state2D[row][col + 1] != 0) {
+//                        leftBound = col;
+//                        found = true;
+//                        break;
+//                    }
+//                }
+//                if (found == true) break;
+//            }
+//
+//            found = false;
+//            //find right bound
+//            for (int col = state2D.length - 1; col > 1; --col) {
+//                for (int row = 1; row < state2D.length - 1; ++row) {
+//                    if (state2D[row][col - 1] != 0) {
+//                        rightBound = col;
+//                        found = true;
+//                        break;
+//                    }
+//                }
+//                if (found == true) break;
+//            }
+//
+//            //validActions = new int[(lowerBound - upperBound + 1) * (rightBound - leftBound + 1)];
+//
+//            int emptySpacesInsideValidRegion = 0;
+//            for (int row = upperBound; row <= lowerBound; ++row){
+//                for (int col = leftBound; col <= rightBound; ++col){
+//                    if (state2D[row][col] == 0) ++emptySpacesInsideValidRegion;
+//                }
+//            }
+//
+//            validActions = new int[emptySpacesInsideValidRegion];
+//
+//
+//            int counter = 0;
+//            int index = 0;
+//            for (int row = 1; row < state2D.length - 1; ++row) {
+//                for (int col = 1; col < state2D.length - 1; ++col) {
+//                    if (row >= upperBound && row <= lowerBound && col >= leftBound && col <= rightBound){
+//                        if (state2D[row][col] == 0) {
+//                            validActions[index] = counter;
+//                            ++index;
+//                        }
+//                    }
+//                    ++counter;
+//                }
+//            }
+//
+////            System.out.println("upper " + upperBound);
+////            System.out.println("lower " + lowerBound);
+////            System.out.println("left " + leftBound);
+////            System.out.println("right " + rightBound);
+//            return validActions;
+//        }
+//    }
 }

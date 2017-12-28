@@ -2,7 +2,7 @@ package com.JavaBeginnerToPro.GomoWhiz.ConwayAI_V2;
 
 import com.JavaBeginnerToPro.GomoWhiz.Version_1.DetectWin_2;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Random;
 
 public abstract class Conway_V2_base {
@@ -11,9 +11,44 @@ public abstract class Conway_V2_base {
     public static final int WIN_REQUIRE = 5;
     protected Random rand = new Random();
 
+    public static void main(String[] args) {
+        int [][] state2D = {
+                {3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3}, //0
+                {3,2,2,1,0,0,0,0,0,0,0,0,0,0,0,0,3}, //1
+                {3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3}, //2
+                {3,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,3}, //3
+                {3,0,0,0,0,0,0,0,0,0,1,0,1,0,0,0,3}, //4
+                {3,0,0,0,0,0,0,0,0,0,1,1,1,1,0,0,3}, //5
+                {3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3}, //6
+                {3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3}, //7
+                {3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3}, //8
+                {3,1,1,0,1,0,0,0,0,0,0,0,0,0,0,0,3}, //9
+                {3,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,3}, //10
+                {3,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,3}, //11
+                {3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3}, //12
+                {3,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,3}, //13
+                {3,0,0,0,1,0,0,0,0,0,1,0,0,1,0,0,3}, //14
+                {3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3}, //15
+                {3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3} //16
+        };
+
+        int counter = 0;
+        int[] state = new int[225];
+        for (int i = 1; i < 16; ++i){
+            for (int j = 1; j < 16; ++j){
+                if (state2D[i][j] == 0) state[counter] = 1;
+                else state[counter] = state2D[i][j];
+                ++counter;
+            }
+        }
+
+        System.out.println(Arrays.toString(getValidActions(state)));
+
+        }
+
     abstract int chooseAction(int [] state, int currentPlayer);
-    int [] getValidActions(int [] state){
-        int [][] state2D = DetectWin_2.convert1Dto2D(state, Conway_V2_base.BOARD_WIDTH);
+    static int [] getValidActions(int [] state){
+        int [][] state2D = DetectWin_2.convert1Dto2D(state, BOARD_WIDTH);
         int [] validActions;
         //boolean empty = true;
         int upperBound = 0;
@@ -21,7 +56,7 @@ public abstract class Conway_V2_base {
         int leftBound = 0;
         int rightBound = state2D.length;
 
-        if (PatternDetect.checkEmpty(state)) {
+        if (PatternDetect.isEmpty(state)) {
             validActions = new int[1];
             validActions[0] = state.length / 2;
             return validActions;
