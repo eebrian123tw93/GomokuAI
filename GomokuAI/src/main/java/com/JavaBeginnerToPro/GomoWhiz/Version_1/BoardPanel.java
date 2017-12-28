@@ -73,6 +73,7 @@ public class BoardPanel extends JXPanel {
             public void componentResized(ComponentEvent e) {
                 super.componentResized(e);
                 init();
+                repaint();
             }
 
         });

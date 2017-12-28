@@ -28,17 +28,9 @@ public class Board implements Comparator<Integer> {
     public int getN() {
         return n;
     }
-
     public int getM() {
         return m;
     }
-
-    /**
-     * Board constructor
-     *
-     * @param n board dimension
-     * @param m winning chain length
-     */
     public Board(int n, int m) {
         this.n = n;
         this.m = m;
@@ -52,12 +44,6 @@ public class Board implements Comparator<Integer> {
         }
         this.winner = '.';
     }
-
-    /**
-     * Copy constructor for Board
-     *
-     * @param other board to copy
-     */
     public Board(Board other) {
         this.n = other.n;
         this.m = other.m;
@@ -71,12 +57,6 @@ public class Board implements Comparator<Integer> {
         this.nextPlayer = other.nextPlayer;
         this.prevPlayer = other.prevPlayer;
     }
-
-    /**
-     * Get set of empty spots on board
-     *
-     * @return ems set of empty locations
-     */
     List<Integer> getEmpties() {
         List<Integer> ems = new ArrayList<>();
 
@@ -93,8 +73,7 @@ public class Board implements Comparator<Integer> {
     List<Integer> getEmpties(int currentPlayer) {
         List<Integer>ems=getEmpties();
         this.currentPlayer=currentPlayer;
-        Collections.sort(ems, this);
-//        ems=ems.subList(0,ems.size()>=10?10:ems.size());
+//        Collections.sort(ems, this);
         return ems;
     }
 
@@ -264,14 +243,6 @@ public class Board implements Comparator<Integer> {
         return false;
     }
 
-    /**
-     * Place a move on the board
-     *
-     * @param p    player's char representation
-     * @param move location
-     * @param out  if true, the move gets printed to System.out
-     * @return move
-     */
     String placeMove(char p, String move, boolean out) {
         int[] ij = parseMove(move);
         board[ij[0]][ij[1]] = p;
@@ -287,12 +258,6 @@ public class Board implements Comparator<Integer> {
         return move;
     }
 
-    /**
-     * Get set of all player's pieces
-     *
-     * @param p player
-     * @return ArrayList of locations
-     */
     ArrayList<String> getPlayerPlaces(char p) {
         ArrayList<String> places = new ArrayList<String>();
         for (int i = 0; i < n; i++) {
@@ -305,12 +270,6 @@ public class Board implements Comparator<Integer> {
         return places;
     }
 
-    /**
-     * Look for empty spots around a location
-     *
-     * @param pos location to look around
-     * @return ArrayList of empty locations
-     */
     ArrayList<String> lookAround(String pos) {
         ArrayList<String> adjacent = new ArrayList<String>();
         int[] coords = parseMove(pos);
@@ -356,13 +315,6 @@ public class Board implements Comparator<Integer> {
         return adjacent;
     }
 
-    /**
-     * Set the board's winner
-     *
-     * @param p  player
-     * @param ij location
-     * @return a player char or 'd' if the board is in a draw state (no empty spots)
-     */
     char setWinner(char p, int[] ij) {
         if (isRowWin(p, ij) || isColWin(p, ij) || isLtrWin(p, ij)
                 || isRtlWin(p, ij)) {
@@ -374,13 +326,6 @@ public class Board implements Comparator<Integer> {
         return '.';
     }
 
-    /**
-     * Check row of last move for win
-     *
-     * @param p
-     * @param ij
-     * @return true if row has win
-     */
     boolean isRowWin(char p, int[] ij) {
         String row = new String(board[ij[0]]);
         if (row.contains(strMatch(p)))
@@ -388,13 +333,6 @@ public class Board implements Comparator<Integer> {
         return false;
     }
 
-    /**
-     * Check column of last move for win
-     *
-     * @param p
-     * @param ij
-     * @return true if column has win
-     */
     boolean isColWin(char p, int[] ij) {
         String column = "";
         for (int i = 0; i < n; i++) {
@@ -405,13 +343,6 @@ public class Board implements Comparator<Integer> {
         return false;
     }
 
-    /**
-     * Check diagonal of last move for win, looking top left to bottom right
-     *
-     * @param p
-     * @param ij
-     * @return true if diagonal has win
-     */
     boolean isLtrWin(char p, int[] ij) {
         int i = ij[0];
         int j = ij[1];
@@ -436,13 +367,6 @@ public class Board implements Comparator<Integer> {
         return false;
     }
 
-    /**
-     * Check diagonal of last move for win, looking top right to bottom left
-     *
-     * @param p
-     * @param ij
-     * @return true if diagonal has win
-     */
     boolean isRtlWin(char p, int[] ij) {
         int i = ij[0];
         int j = ij[1];
@@ -467,24 +391,10 @@ public class Board implements Comparator<Integer> {
         return false;
     }
 
-    /**
-     * Calculate number of near win chains
-     *
-     * @param p
-     * @param away from winning chain
-     * @return sum of all nearWin methods
-     */
     int nearWins(char p, int away) {
         return nearWinRows(p, away) + nearWinCols(p, away);
     }
 
-    /**
-     * Calculate number of near win chains in rows
-     *
-     * @param p
-     * @param away
-     * @return count
-     */
     int nearWinRows(char p, int away) {
         int count = 0;
         int length = m - away;
@@ -511,13 +421,6 @@ public class Board implements Comparator<Integer> {
         return count;
     }
 
-    /**
-     * Calculate number of near win chains in columns
-     *
-     * @param p
-     * @param away
-     * @return count
-     */
     int nearWinCols(char p, int away) {
         int count = 0;
         int length = m - away;
@@ -548,12 +451,6 @@ public class Board implements Comparator<Integer> {
         return count;
     }
 
-    /**
-     * Generate string to match for win and nearWin methods
-     *
-     * @param p
-     * @return match
-     */
     String strMatch(char p) {
         String match = "";
         for (int i = 0; i < m; i++) {
@@ -562,13 +459,6 @@ public class Board implements Comparator<Integer> {
         return match;
     }
 
-    /**
-     * Generate string to match for win and nearWin methods
-     *
-     * @param p
-     * @param length of match string
-     * @return match
-     */
     String strMatch(char p, int length) {
         String match = "";
         for (int i = 0; i < length; i++) {
@@ -577,41 +467,20 @@ public class Board implements Comparator<Integer> {
         return match;
     }
 
-    /**
-     * Parse move from a string into int[]
-     */
     int[] parseMove(String s) {
         String[] ss = s.split(" ");
         int[] ij = {Integer.parseInt(ss[0]), Integer.parseInt(ss[1])};
         return ij;
     }
 
-    /**
-     * Create string move from coordinates
-     *
-     * @param i row index
-     * @param j column index
-     * @return move string
-     */
     String strMove(int i, int j) {
         return i + " " + j;
     }
 
-    /**
-     * Create string move from int[] coordinates
-     *
-     * @param ij coordinates
-     * @return move string
-     */
     String strMove(int[] ij) {
         return ij[0] + " " + ij[1];
     }
 
-    /**
-     * Print a nice board
-     *
-     * @return String representation of board
-     */
     @Override
     public String toString() {
         String str = "";

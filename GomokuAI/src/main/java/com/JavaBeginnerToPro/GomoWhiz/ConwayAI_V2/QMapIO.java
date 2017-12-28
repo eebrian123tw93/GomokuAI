@@ -16,21 +16,24 @@ public class QMapIO {
         Map<String, Double> qTable=null;
         Path path1 = Paths.get(path).toAbsolutePath();
         if(Files.notExists(path1)){
+            qTable = new HashMap<>();
             return qTable;
         }
         try (Stream<String> lines = Files.lines (path1, StandardCharsets.UTF_8))
         {
-
+            System.out.println("Started loading brain");
             qTable=new HashMap<>();
             for (String line : (Iterable<String>) lines::iterator)
             {
                 String row[] = line.split(":");
                 qTable.put(row[0], Double.parseDouble(row[1]));
             }
+            System.out.println("Done loading brain");
 
         }catch (Exception e){
             e.printStackTrace();
         }
+
         return qTable;
     }
 

@@ -10,25 +10,11 @@ import java.util.Random;
  */
 public class Minimax {
 
-    /**
-     * Evaluation function
-     *
-     * @param board node to evaluate
-     * @return score of board
-     */
-    //'o'=me
-    //'x'=them
-//    public double evaluate(Board board) {
-//        int oneAway = board.nearWins(board.prevPlayer, 1);
-//        int twoAway = board.nearWins(board.prevPlayer, 2);
-//        int threeAway = board.nearWins(board.prevPlayer, 3);
-//        double score = oneAway * 100.0 + twoAway * 5.0 + threeAway * 1.0;
-//        return score;
-//    }
-
-    public Minimax(){
-        Board.winStates.clear();
-        Board.winStatesInit();
+    int numplayer;
+    int numOpponent;
+    public Minimax(int numplayer){
+        this.numplayer = numplayer;
+        this.numOpponent = numplayer == 1 ? 2 : 1;
     }
     public int mm(Board board, int d) {
         List<Integer> bestAction = new ArrayList<>();
@@ -56,9 +42,9 @@ public class Minimax {
     }
 
     public int min(Board board, int deep) {
-        if (DetectWin_2.detectWin(transfer(board), board.n, board.winRequire, 1)) {
+        if (DetectWin_2.detectWin(transfer(board), board.n, board.winRequire, numplayer)) {
             return 1;
-        } else if (DetectWin_2.detectWin(transfer(board), board.n, board.winRequire, -1)) {
+        } else if (DetectWin_2.detectWin(transfer(board), board.n, board.winRequire, numOpponent)) {
             return -1;
         }
         if (deep == 0) {
@@ -80,9 +66,9 @@ public class Minimax {
     }
 
     public int max(Board board, int deep) {
-        if (DetectWin_2.detectWin(transfer(board), board.n, board.winRequire, 1)) {
+        if (DetectWin_2.detectWin(transfer(board), board.n, board.winRequire, numplayer)) {
             return 1;
-        } else if (DetectWin_2.detectWin(transfer(board), board.n, board.winRequire, -1)) {
+        } else if (DetectWin_2.detectWin(transfer(board), board.n, board.winRequire, numOpponent)) {
             return -1;
         }
         if (deep == 0) {
@@ -109,9 +95,9 @@ public class Minimax {
         for (int i = 0; i < board.board.length; i++) {
             for (int j = 0; j < board.board[i].length; j++) {
                 if (board.board[i][j] == 'o') {
-                    status[k++] = 1;
+                    status[k++] = numplayer;
                 } else if (board.board[i][j] == 'x') {
-                    status[k++] = -1;
+                    status[k++] =numOpponent;
                 } else {
                     status[k++] = 0;
                 }
@@ -119,15 +105,14 @@ public class Minimax {
         }
         return status;
     }
-
     //'o'=min
     public Board transfer(int[] state) {
         Board board = new Board(GomokuAI.gameBoardWidth, GomokuAI.winRequire);
         int j = 0, k = 0;
         for (int i = 0; i < state.length; i++) {
 //            board[j][k]=
-            if (state[i] == 1) board.board[j][k] = 'o';
-            if (state[i] == 2) board.board[j][k] = 'x';
+            if (state[i] == numplayer) board.board[j][k] = 'o';
+            if (state[i] == numOpponent) board.board[j][k] = 'x';
             if (i % (int) Math.sqrt(state.length) == (int) Math.sqrt(state.length)-1 && i != 0) {
                 j++;
                 k = 0;
