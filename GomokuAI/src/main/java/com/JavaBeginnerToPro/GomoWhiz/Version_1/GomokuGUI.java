@@ -48,15 +48,16 @@ public class GomokuGUI extends JFrame implements KeyListener {
        ((JPanel)getContentPane()).setBorder(new EmptyBorder(30,30,30,30));
         getContentPane().setLayout(new BorderLayout());
         getContentPane().add(new BoardPanel(gameState));
-        setSize(1200, 800);
+        setSize(1280, 720);
 
         String osName=System.getProperty("os.name").toLowerCase();
         if(osName.indexOf("mac")>=0){
             enableOSXFullscreen();
-        }else {
-            setExtendedState(JFrame.MAXIMIZED_BOTH);
-            setUndecorated(true);
         }
+//        else {
+//            setExtendedState(JFrame.MAXIMIZED_BOTH);
+//            setUndecorated(true);
+//        }
         addKeyListener(this);
 
        try {
@@ -145,8 +146,7 @@ public class GomokuGUI extends JFrame implements KeyListener {
 
     }
     @SuppressWarnings({"unchecked", "rawtypes"})
-    public  void requestToggleFullScreen()
-    {
+    public  void requestToggleFullScreen() {
         try {
             Class appClass = Class.forName("com.apple.eawt.Application");
             Class params[] = new Class[]{};

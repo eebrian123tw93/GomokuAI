@@ -1,9 +1,6 @@
 package com.JavaBeginnerToPro.GomoWhiz.minMax;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 /**
  * Board class that contains all board manipulation and look around methods
@@ -12,16 +9,17 @@ import java.util.Random;
  * empty space == '.'
  * Moves are formatted as "row column" (without quotes) where row and column are integers
  */
-public class Board {
+public class Board implements Comparator<Integer> {
     char[][] board;
     int n;
     int m;
     int winRequire;
     static List<Boolean[][]> winStates = new LinkedList<>();
+
     public char[][] getBoard() {
         return board;
     }
-
+    int currentPlayer;
     char nextPlayer;
     char prevPlayer;
     char winner;
@@ -80,19 +78,66 @@ public class Board {
      * @return ems set of empty locations
      */
     List<Integer> getEmpties() {
-        List<Integer> ems = new LinkedList<>();
+        List<Integer> ems = new ArrayList<>();
 
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
                 if (board[i][j] == '.' && hasNeighbor(i, j)) {
                     ems.add(transfer(strMove(i, j)));
                 }
-
             }
         }
+//        Collections.sort(ems, this);
+        return ems;
+    }
+    List<Integer> getEmpties(int currentPlayer) {
+        List<Integer>ems=getEmpties();
+        this.currentPlayer=currentPlayer;
+        Collections.sort(ems, this);
+//        ems=ems.subList(0,ems.size()>=10?10:ems.size());
         return ems;
     }
 
+    public int evaluate(int player) {
+        int point = 0;
+        if (player == 1) {
+            if (DetectWin_2.detectWin(transfer(this), n, winRequire, player)) {
+                point = 105000;
+                return point;
+            }
+            if (DetectWin_2.detectWin(transfer(this), n, winRequire - 1, player)) {
+                point = 1500;
+                return point;
+            }
+            if (DetectWin_2.detectWin(transfer(this), n, winRequire - 2, player)) {
+                point = 15;
+                return point;
+            }
+            if (DetectWin_2.detectWin(transfer(this), n, winRequire - 3, player)) {
+                point = 5;
+                return point;
+            }
+        } else if (player == -1) {
+            if (DetectWin_2.detectWin(transfer(this), n, winRequire, player)) {
+                point = -100000;
+                return point;
+            }
+            if (DetectWin_2.detectWin(transfer(this), n, winRequire - 1, player)) {
+                point = -1000;
+                return point;
+            }
+            if (DetectWin_2.detectWin(transfer(this), n, winRequire - 2, player)) {
+                point = -10;
+                return point;
+            }
+            if (DetectWin_2.detectWin(transfer(this), n, winRequire - 3, player)) {
+                point = -1;
+                return point;
+            }
+        }
+
+        return point;
+    }
 
     public boolean hasNeighbor(int i, int j) {
         if (i == 0) {
@@ -591,12 +636,29 @@ public class Board {
         return Integer.parseInt(xy[0]) * n + Integer.parseInt(xy[1]);
     }
 
+    public int[] transfer(Board board) {
+        int[] status = new int[board.n * board.n];
+        int k = 0;
+        for (int i = 0; i < board.board.length; i++) {
+            for (int j = 0; j < board.board[i].length; j++) {
+                if (board.board[i][j] == 'o') {
+                    status[k++] = 1;
+                } else if (board.board[i][j] == 'x') {
+                    status[k++] = -1;
+                } else {
+                    status[k++] = 0;
+                }
+            }
+        }
+        return status;
+    }
+
     public Board clone() {
         Board board = new Board(this);
         return board;
     }
 
-    public static  void winStatesInit(){
+    public static void winStatesInit() {
         for (int i = 0; i < 15; i++) {
             for (int j = 0; j < 11; j++) {
                 Boolean[][] winState = newBooleanArray();
@@ -638,6 +700,7 @@ public class Board {
             }
         }
     }
+
     public static void main(String[] args) {
 
         winStatesInit();
@@ -709,5 +772,26 @@ public class Board {
             }
         }
         return boolArray;
+    }
+
+
+    @Override
+    public int compare(Integer o1, Integer o2) {
+        int x1 = o1 / n;
+        int y1 = o1 % n;
+        board[x1][y1] = currentPlayer==1?'o':'x';
+
+        int o1Score = evaluate(currentPlayer);
+        board[x1][y1] = '.';
+
+
+        int x2 = o2 / n;
+        int y2 = o2 % n;
+        board[x2][y2] = currentPlayer==1?'o':'x';
+        int o2Score = evaluate(currentPlayer);
+        board[x2][y2] = '.';
+        if (o1Score > o2Score) return 1;
+        if (o1Score == o2Score) return 0;
+        return -1;
     }
 }
