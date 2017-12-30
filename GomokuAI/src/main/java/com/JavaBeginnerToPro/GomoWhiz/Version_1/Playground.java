@@ -28,6 +28,10 @@ public class Playground {
     private GomokuGUI gui;
     private int guiDelayMillis = 00;
 
+    public int[] getState() {
+        return state;
+    }
+
     public static void main(String[] args) {
         int gamesPlayed = 0;
         Playground playground = new Playground();
