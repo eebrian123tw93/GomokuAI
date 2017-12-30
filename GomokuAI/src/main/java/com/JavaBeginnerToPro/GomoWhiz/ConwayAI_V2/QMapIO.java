@@ -11,6 +11,10 @@ import java.util.Map;
 import java.util.stream.Stream;
 
 public class QMapIO {
+//    public static void main(String[] args) {
+//        Map<String, Double> qMap = load("QTable_AI_V2_brain.txt");
+//        save("QTable_AI_V2_brain.txt", qMap);
+//    }
 
     public static Map<String, Double> load(String path) {
         Map<String, Double> qTable=null;
@@ -74,18 +78,5 @@ public class QMapIO {
         catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    public static void main(String [] args)throws  Exception{
-
-        //INDArray input = Nd4j.zeros(4, 2);
-
-
-        //INDArray labels = Nd4j.zeros(4, 2);
-
-        //System.out.println(labels.getDouble(2,1));
-
-
-//       MDP
     }
 }

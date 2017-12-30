@@ -67,8 +67,8 @@ public class PlayWithHumanBoardPanel extends BoardPanel implements MouseListener
     public PlayWithHumanBoardPanel(int[] gameState) {
         super(gameState);
         addMouseListener(this);
-     //   ai=new QTableWithForcedActions(1);
-        ai=new MinMax(1);
+        ai=new QTableWithForcedActions(1);
+        //ai=new MinMax(1);
         playing=true;
 //        Button button=new Button("Restart");
 //        button.addActionListener(new ActionListener() {
