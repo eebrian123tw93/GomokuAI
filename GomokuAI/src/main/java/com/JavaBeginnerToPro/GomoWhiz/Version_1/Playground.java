@@ -24,7 +24,7 @@ public class Playground {
     public int tie = 0;
     private int[] state;
     private java.util.Random rand;
-    boolean displayBoard = true;
+    boolean displayBoard = false;
     private GomokuGUI gui;
     private int guiDelayMillis = 00;
 
@@ -65,7 +65,7 @@ public class Playground {
     }
 
     void play() {
-        state = new int[BOARD_SIZE];
+        for(int i=0;i<state.length;i++)state[i]=0;
         int action;
         int movesRemaining = BOARD_SIZE;
         int currentPlayer;
@@ -91,7 +91,11 @@ public class Playground {
                 ++tie;
                 break;
             }
-
+            try {
+                Thread.sleep(300);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             if (currentPlayer == 1) currentPlayer = 2;
             else currentPlayer = 1;
         }

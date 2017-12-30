@@ -1,12 +1,8 @@
 package com.JavaBeginnerToPro.GomoWhiz.minMax;
 
 
-import com.JavaBeginnerToPro.GomoWhiz.ConwayAI_V2.QMapIO;
 import com.JavaBeginnerToPro.GomoWhiz.ConwayAI_V2.QTable_AI;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -330,7 +326,14 @@ class MoreFast extends Fast {
         }
 
         List<Integer> bestAction = new ArrayList<>();
-        List<Integer> availableCells = board.getEmpties(numplayer,stateKey);
+        List<Integer> availableCells = board.getEmpties(numplayer, stateKey);
+        if(availableCells.size()>2){
+            availableCells=availableCells.subList(0,2);
+        }
+        if(availableCells.size()==1){
+            return availableCells.get(0);
+        }
+
         int max = Integer.MIN_VALUE;
 //        for (int i = 0; i < availableCells.size(); i++) {
 //            int action = availableCells.get(i);
@@ -350,10 +353,8 @@ class MoreFast extends Fast {
 
 //        ExecutorService es = Executors.newCachedThreadPool();
         ExecutorService es;
-        if (availableCells.size() != 0)
-            es = Executors.newFixedThreadPool(availableCells.size());
-        else
-            es = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+
+        es = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors()-1);
         List<FutureTask<ReturnObject>> list = new ArrayList<>();
         for (int i = 0; i < availableCells.size(); i++) {
             int action = availableCells.get(i);
@@ -365,7 +366,7 @@ class MoreFast extends Fast {
                     Board b = board.clone();
                     b.placeMove('o', board.transfer(action), false);
                     stateKey = stateKey ^ Board.zobrist[numplayer][action];
-                    returnObject.best = minAB(b, d - 1, Integer.MIN_VALUE, Integer.MAX_VALUE,stateKey);
+                    returnObject.best = minAB(b, d - 1, Integer.MIN_VALUE, Integer.MAX_VALUE, stateKey);
                     return returnObject;
                 }
 //                long stateKey;
@@ -417,7 +418,7 @@ class MoreFast extends Fast {
         if (deep == 0 || win) {
             return point;
         }
-        List<Integer> availableCells = board.getEmpties(numplayer,stateKey);
+        List<Integer> availableCells = board.getEmpties(numplayer, stateKey);
         if (availableCells.size() == 0) {
             return 0;
         }
@@ -427,7 +428,7 @@ class MoreFast extends Fast {
             Board b = board.clone();
             b.placeMove('o', board.transfer(action), false);
             stateKey = stateKey ^ Board.zobrist[numplayer][action];
-            int currentScore = minAB(b, deep - 1, alpha, beta,stateKey);
+            int currentScore = minAB(b, deep - 1, alpha, beta, stateKey);
             max = Math.max(currentScore, max);
             alpha = Math.max(max, alpha);
             if (beta <= alpha) {
@@ -451,7 +452,7 @@ class MoreFast extends Fast {
         if (deep == 0 || win) {
             return point;
         }
-        List<Integer> availableCells = board.getEmpties(numOpponent,stateKey);
+        List<Integer> availableCells = board.getEmpties(numOpponent, stateKey);
         if (availableCells.size() == 0) {
             return 0;
         }
@@ -461,7 +462,7 @@ class MoreFast extends Fast {
             Board b = board.clone();
             b.placeMove('x', board.transfer(action), false);
             stateKey = stateKey ^ Board.zobrist[numOpponent][action];
-            int currentScore = maxAB(b, deep - 1, alpha, beta,stateKey);
+            int currentScore = maxAB(b, deep - 1, alpha, beta, stateKey);
             min = Math.min(currentScore, min);
             beta = Math.min(beta, min);
             if (beta <= alpha) {

@@ -25,13 +25,15 @@ public class GomokuGUI extends JFrame implements KeyListener {
     JLabel statusLabel;
     Map<String, String> statusString;
     Timer timerTime;
+    Timer screenUpdate;
+
 
     enum Mode {
         Human_VS_Human, AI_VS_AI, AI_VS_Human;
     }
 
     enum Player {
-        Random, human, Minmax;
+        Random, human, Minmax,PureQTable,ForcedActions,MinMaxWithForcedActions,QTableWithForcedActions;
     }
 
     public static void main(String[] args) {
@@ -45,7 +47,7 @@ public class GomokuGUI extends JFrame implements KeyListener {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
         getContentPane().setLayout(new BorderLayout());
-        panel = new BoardPanel(gameState);
+//        panel = new BoardPanel(gameState);
 //       panel = new PlayWithHumanBoardPanel(gameState);
         //getContentPane().add(panel, BorderLayout.CENTER);
 
@@ -69,6 +71,13 @@ public class GomokuGUI extends JFrame implements KeyListener {
                 updateStatusBar();
             }
         });
+        screenUpdate = new Timer(100, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                getContentPane().repaint();
+            }
+        });
+        screenUpdate.start();
         timerTime.start();
         createMenuBar();
         createStatusBar();
@@ -95,8 +104,8 @@ public class GomokuGUI extends JFrame implements KeyListener {
 //            if(mode==Mode.AI_VS_Human){
 //                gameState=panel.getGameState();
 //            }else {
-                gameState = playground.getState();
-                panel.setGameState(gameState);
+            gameState = playground.getState();
+            panel.setGameState(gameState);
 //            }
             for (int i = 0; i < gameState.length; i++) {
                 gameState[i] = 0;
@@ -104,7 +113,17 @@ public class GomokuGUI extends JFrame implements KeyListener {
             panel.playing = true;
             repaint();
             update();
+            if (mode == Mode.AI_VS_AI) {
+                new Thread() {
+                    @Override
+                    public void run() {
+                        playground.play();
+                    }
+
+                }.start();
+            }
         });
+
         game.add(restartMenuItem);
         game.add(exitMenuItem);
         ////////////////Mode///////////////////
@@ -115,6 +134,8 @@ public class GomokuGUI extends JFrame implements KeyListener {
         AI_VS_AI_MenuItem.addActionListener((ActionEvent event) -> {
             if (mode != Mode.AI_VS_AI) {
                 mode = Mode.AI_VS_AI;
+                playerTwo = Player.Random;
+                updatePlayer();
                 updateStatusBar();
                 update();
             }
@@ -124,7 +145,7 @@ public class GomokuGUI extends JFrame implements KeyListener {
         AI_VS_Human_MenuItem.addActionListener((ActionEvent event) -> {
             if (mode != Mode.AI_VS_Human) {
                 mode = Mode.AI_VS_Human;
-                playerTwo=Player.human;
+                playerTwo = Player.human;
                 updateStatusBar();
                 update();
             }
@@ -132,8 +153,10 @@ public class GomokuGUI extends JFrame implements KeyListener {
         JMenuItem Human_VS_Human_MenuItem = new JMenuItem("Human_VS_Human");
         Human_VS_Human_MenuItem.setToolTipText("Human_VS_Human");
         Human_VS_Human_MenuItem.addActionListener((ActionEvent event) -> {
-            if(mode!=Mode.Human_VS_Human) {
+            if (mode != Mode.Human_VS_Human) {
                 mode = Mode.Human_VS_Human;
+                playerTwo=Player.human;
+                playerOne=Player.human;
                 updateStatusBar();
                 update();
             }
@@ -147,28 +170,32 @@ public class GomokuGUI extends JFrame implements KeyListener {
         JMenuItem randomAI = new JMenuItem("Random");
         randomAI.addActionListener((ActionEvent event) -> {
             playerOne = Player.Random;
-            update();
+            updatePlayer();
         });
         JMenuItem conwayQTableAI = new JMenuItem("Pure QTable");
         conwayQTableAI.addActionListener((ActionEvent event) -> {
-            update();
+            playerOne=Player.PureQTable;
+            updatePlayer();
         });
         JMenuItem forcedActionAI = new JMenuItem("Forced actions");
         forcedActionAI.addActionListener((ActionEvent event) -> {
-            update();
+            playerOne=Player.ForcedActions;
+            updatePlayer();
         });
         JMenuItem minMaxAI = new JMenuItem("MinMax");
         minMaxAI.addActionListener((ActionEvent event) -> {
             playerOne = Player.Minmax;
-            update();
+            updatePlayer();
         });
         JMenuItem minMaxForcedAI = new JMenuItem("MinMax with forced actions");
         minMaxForcedAI.addActionListener((ActionEvent event) -> {
-            update();
+            playerOne=Player.MinMaxWithForcedActions;
+            updatePlayer();
         });
         JMenuItem qTableForcedAI = new JMenuItem("QTable with forced actions");
         qTableForcedAI.addActionListener((ActionEvent event) -> {
-            update();
+            playerOne=Player.QTableWithForcedActions;
+            updatePlayer();
         });
         player1Menu.add(randomAI);
         player1Menu.add(conwayQTableAI);
@@ -181,11 +208,41 @@ public class GomokuGUI extends JFrame implements KeyListener {
         ////////////////Player2///////////////////
         JMenu player2Menu = new JMenu("Player2");
         JMenuItem randomAI2 = new JMenuItem("Random");
+        randomAI2.addActionListener((ActionEvent event) -> {
+            if(mode==Mode.AI_VS_Human)return;
+            playerTwo=Player.Random;
+            updatePlayer();
+        });
         JMenuItem conwayQTableAI2 = new JMenuItem("Pure QTable");
+        conwayQTableAI2.addActionListener((ActionEvent event)->{
+            if(mode==Mode.AI_VS_Human)return;
+            playerTwo=Player.PureQTable;
+            updatePlayer();
+        });
         JMenuItem forcedActionAI2 = new JMenuItem("Forced actions");
+        forcedActionAI2.addActionListener((ActionEvent event)->{
+            if(mode==Mode.AI_VS_Human)return;
+            playerTwo=Player.ForcedActions;
+            updatePlayer();
+        });
         JMenuItem minMaxAI2 = new JMenuItem("MinMax");
+        minMaxAI2.addActionListener((ActionEvent event)->{
+            if(mode==Mode.AI_VS_Human)return;
+            playerTwo=Player.Minmax;
+            updatePlayer();
+        });
         JMenuItem minMaxForcedAI2 = new JMenuItem("MinMax with forced actions");
+        minMaxForcedAI2.addActionListener((ActionEvent event)->{
+            if(mode==Mode.AI_VS_Human)return;
+            playerTwo=Player.MinMaxWithForcedActions;
+            updatePlayer();
+        });
         JMenuItem qTableForcedAI2 = new JMenuItem("QTable with forced actions");
+        qTableForcedAI2.addActionListener((ActionEvent event)->{
+            if(mode==Mode.AI_VS_Human)return;
+            playerTwo=Player.QTableWithForcedActions;
+            updatePlayer();
+        });
 
         JMenuItem human2 = new JMenuItem("Human");
         human2.addActionListener((ActionEvent event) -> {
@@ -239,7 +296,7 @@ public class GomokuGUI extends JFrame implements KeyListener {
 //        jFrame.setVisible(true);
     }
 
-    public void updateStatusBar(){
+    public void updateStatusBar() {
         String status = "";
         statusString.replace("Mode:", mode.toString());
         statusString.replace("Player1:", playerOne.toString());
@@ -249,27 +306,69 @@ public class GomokuGUI extends JFrame implements KeyListener {
             status += "\t[" + entry.getKey() + " " + entry.getValue() + "]\t";
         }
         statusLabel.setText(status);
-
     }
+
+    public void updatePlayer(){
+        switch (playerOne) {
+            case Random:
+                playground.setPlayer1(new Random());
+                break;
+            case Minmax:
+                playground.setPlayer1(new MinMax(1));
+                break;
+            case PureQTable:
+                break;
+            case MinMaxWithForcedActions:
+                break;
+            case QTableWithForcedActions:
+                break;
+            case ForcedActions:
+                break;
+            default:
+                break;
+        }
+        switch (playerTwo) {
+            case Random:
+                playground.setPlayer2(new Random());
+                break;
+            case Minmax:
+                playground.setPlayer1(new MinMax(2));
+                break;
+            case PureQTable:
+                break;
+            case MinMaxWithForcedActions:
+                break;
+            case QTableWithForcedActions:
+                break;
+            case ForcedActions:
+                break;
+            default:
+                break;
+        }
+    }
+
     public void update() {
 
         if (mode == Mode.AI_VS_Human) {
-            BoardPanel panel = new PlayWithHumanBoardPanel(playground.getState());
-            if(getContentPane().getComponentCount()>1){
+            panel = new PlayWithHumanBoardPanel(playground.getState());
+            if (getContentPane().getComponentCount() > 1) {
                 getContentPane().remove(1);
             }
-//            this.panel.setEnabled(false);
-            getContentPane().add(panel,BorderLayout.CENTER,1);
+            getContentPane().add(panel, BorderLayout.CENTER, 1);
             repaint();
-        }else if(mode ==Mode.AI_VS_AI){
-            BoardPanel panel = new BoardPanel(playground.getState());
-            if(getContentPane().getComponentCount()>1){
+        } else if (mode == Mode.AI_VS_AI) {
+            panel = new BoardPanel(playground.getState());
+            if (getContentPane().getComponentCount() > 1) {
                 getContentPane().remove(1);
             }
-//            this.panel.setEnabled(false);
-            getContentPane().add(panel,BorderLayout.CENTER,1);
+            getContentPane().add(panel, BorderLayout.CENTER, 1);
             repaint();
         }
+
+
+
+
+
     }
 
     @Override

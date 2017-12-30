@@ -180,7 +180,7 @@ public class Board implements Comparator<Board.ActionValue> {
                 return five;
             } else if (pointOpponent == Score.FIVE) {
                 five.add(action);
-            }else if (pointPlayer == Score.LIVE_FOUR) {
+            } else if (pointPlayer == Score.LIVE_FOUR) {
                 liveFour.add(0, action);
             } else if (pointOpponent == Score.LIVE_FOUR) {
                 liveFour.add(action);
@@ -188,11 +188,11 @@ public class Board implements Comparator<Board.ActionValue> {
                 four.add(0, action);
             } else if (pointOpponent == Score.FOUR) {
                 four.add(action);
-            } else if(pointPlayer==Score.LIVE_THREE){
-                liveThree.add(0,action);
-            }else if(pointOpponent==Score.THREE){
+            } else if (pointPlayer == Score.LIVE_THREE) {
+                liveThree.add(0, action);
+            } else if (pointOpponent == Score.THREE) {
                 liveThree.add(action);
-            }else if (pointPlayer == Score.THREE) {
+            } else if (pointPlayer == Score.THREE) {
                 three.add(0, action);
             } else if (pointOpponent == Score.THREE) {
                 three.add(action);
@@ -207,24 +207,25 @@ public class Board implements Comparator<Board.ActionValue> {
         if (five.size() != 0) {
             return five;
         }
-        if(liveFour.size()!=0){
+        if (liveFour.size() != 0) {
             return liveFour;
         }
         if (four.size() != 0) {
             return four;
         }
-        if(liveThree.size()!=0){
+        if (liveThree.size() != 0) {
             return liveThree;
         }
         if (three.size() != 0) {
-            three=three.subList(0,three.size()>1?1:three.size()-1);
+            three = three.subList(0, three.size() > 1 ? 1 : three.size() - 1);
             return three;
         }
         if (two.size() != 0) {
             two = two.subList(0, two.size() > 1 ? 1 : two.size() - 1);
             return two;
         } else {
-            el = el.subList(0, el.size() > 1 ? 1 : el.size() - 1);
+            if (el.size() > 0)
+                el = el.subList(0, el.size() > 1 ? 1 : el.size() - 1);
             return el;
         }
     }
@@ -325,7 +326,8 @@ public class Board implements Comparator<Board.ActionValue> {
             zobristHash.put(stateKey, evl);
             point = evl;
 
-        ;}
+            ;
+        }
         return point;
     }
 
@@ -837,7 +839,7 @@ public class Board implements Comparator<Board.ActionValue> {
                 if (winState[i][j] && board.board[i][j] == symbol) {
                     count++;
                     liveThreeCount++;
-                }else if (winState[i][j] && board.board[i][j] == '.') {
+                } else if (winState[i][j] && board.board[i][j] == '.') {
                     liveThreeCount++;
                     if (liveThreeCount == 1) {
                         first = true;
@@ -857,9 +859,9 @@ public class Board implements Comparator<Board.ActionValue> {
             score = Score.LIVE_THREE;
         } else if (count == 3) {
             score = Score.THREE;
-        } else if(count==4&&(first||last)){
-            score=Score.LIVE_FOUR;
-        }else if (count == 4) {
+        } else if (count == 4 && (first || last)) {
+            score = Score.LIVE_FOUR;
+        } else if (count == 4) {
             score = Score.FOUR;
         } else if (count == 5) {
             score = Score.FIVE;
