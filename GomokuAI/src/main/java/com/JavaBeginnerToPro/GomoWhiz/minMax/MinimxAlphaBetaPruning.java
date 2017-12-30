@@ -2,12 +2,8 @@ package com.JavaBeginnerToPro.GomoWhiz.minMax;
 
 
 import com.JavaBeginnerToPro.GomoWhiz.ConwayAI_V2.PatternDetect;
-import com.JavaBeginnerToPro.GomoWhiz.ConwayAI_V2.QMapIO;
 import com.JavaBeginnerToPro.GomoWhiz.ConwayAI_V2.QTable_AI;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -315,18 +311,18 @@ class BrianConway extends Fast {
     public BrianConway(int numplayer) {
         super(numplayer);
         qTable_ai = new QTable_AI();
-        qTable_ai.setqMap("QTable_AI_V2_brain.txt");
+        qTable_ai.setQMap("QTable_AI_V2_brain.txt");
     }
 
     @Override
     public int mm(Board board, int d) {
         //forced actions
-//        int [] state = transfer(board);
-//        int [] player1Patterns = PatternDetect.detect(state, 1);
-//        int [] player2Patterns = PatternDetect.detect(state, 2);
-//        if (qTable_ai.obviousActionNeeded(player1Patterns, player2Patterns)){
-//            return qTable_ai.forcedAction(state, qTable_ai.scanObviousPatternTypes(player1Patterns, player2Patterns, numplayer), numplayer);
-//        }
+        int [] state = transfer(board);
+        int [] player1Patterns = PatternDetect.detect(state, 1);
+        int [] player2Patterns = PatternDetect.detect(state, 2);
+        if (qTable_ai.obviousActionNeeded(player1Patterns, player2Patterns)){
+            return qTable_ai.forcedAction(state, qTable_ai.scanObviousPatternTypes(player1Patterns, player2Patterns, numplayer), numplayer);
+        }
 
         List<Integer> bestAction = new ArrayList<>();
         List<Integer> availableCells = Arrays.stream(qTable_ai.getTopFiveQValueActions(transfer(board), numplayer)).boxed().collect(Collectors.toList());

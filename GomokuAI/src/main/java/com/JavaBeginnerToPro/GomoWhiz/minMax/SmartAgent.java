@@ -40,7 +40,7 @@ public class SmartAgent extends Agent {
     }
     public int move(Board board){
         board.nextPlayer='o';
-        return  minimax.mm(board,4);
+        return  minimax.mm(board,1);
 //        return minimax.computerMove;
     }
     public int move(int [] state){

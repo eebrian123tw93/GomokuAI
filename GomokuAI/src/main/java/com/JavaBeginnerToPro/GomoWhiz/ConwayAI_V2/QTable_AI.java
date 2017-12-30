@@ -4,10 +4,9 @@ import com.JavaBeginnerToPro.GomoWhiz.Version_1.BoardPanel;
 import com.JavaBeginnerToPro.GomoWhiz.Version_1.DetectWin_2;
 import com.JavaBeginnerToPro.GomoWhiz.Version_1.GomokuGUI;
 import com.JavaBeginnerToPro.GomoWhiz.minMax.SmartAgent;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /*
     All moves are based on the qMap and forceAction() function
@@ -24,24 +23,24 @@ public class QTable_AI extends Conway_V2_base {
 
     private static Map<String, Double> qMap = new HashMap<>();
 
-    double LEARNING_RATE = 0.5;
-    final double DECAY = 0.9;
-    double RANDOM_MOVE_PROBABILITY = 0.5;
+    double LEARNING_RATE = 0.35;
+    final double DECAY = 1;
+    double RANDOM_MOVE_PROBABILITY = 0.1;
     private static boolean displayBoard = false;
-    static int GAMES_TO_TRAIN = 400000;
+    static int GAMES_TO_TRAIN = 20000;
     static int qMapSaveInterval = 5000;
-
     private static GomokuGUI gui;
+    private String brainFileName;
     int player1Wins = 0;
     int player2Wins = 0;
     int ties = 0;
 
     public static void main(String[] args) {
         QTable_AI qTable_AI = new QTable_AI();
-        qTable_AI.setqMap("QTable_AI_V2_brain.txt");
+        qTable_AI.setQMap("qMap_20k");
         if (displayBoard) gui = new GomokuGUI(new int [225]);
         qTable_AI.train();
-        QMapIO.save("QTable_AI_V2_brain.txt", qMap);
+        qTable_AI.saveQMap();
 //        QTable_AI qTableAi = new QTable_AI();
 //        int [] stateSample = new int[225];
 //        String str = "120221202000200120002002021110212200012102101210000110201002101000202102100200020022120000000120011122120100120112222020010210000022211021200002012101000122012211120010001020010010010100200020221020211101020000000000010111120";
@@ -108,8 +107,12 @@ public class QTable_AI extends Conway_V2_base {
 //            gui = new GomokuGUI(new int[BOARD_SIZE]);
 //        }
     }
-    public void setqMap(String fileName){
+    public void setQMap(String fileName){
+        brainFileName = fileName;
         qMap = QMapIO.load(fileName);
+    }
+    public void saveQMap(){
+        QMapIO.save(brainFileName, qMap);
     }
 
     void train(){
@@ -118,8 +121,7 @@ public class QTable_AI extends Conway_V2_base {
         int gamesPerSecond = 0;
         int gamesPerSecondCounter = 0;
 
-        //while(gamesPlayed < GAMES_TO_TRAIN){
-        while(true){
+        while(gamesPlayed < GAMES_TO_TRAIN){
 
             if (System.currentTimeMillis() - startCountTime >= 1000){
                 gamesPerSecond = gamesPerSecondCounter;
@@ -132,10 +134,10 @@ public class QTable_AI extends Conway_V2_base {
             ++gamesPlayed;
             ++gamesPerSecondCounter;
 
-            if (gamesPlayed % 10000 == 0 && RANDOM_MOVE_PROBABILITY > 0) RANDOM_MOVE_PROBABILITY -= 0.05;
+            if (gamesPlayed % 5000 == 0 && RANDOM_MOVE_PROBABILITY > 0) RANDOM_MOVE_PROBABILITY -= 0.02;
             if (gamesPlayed % qMapSaveInterval == 0){
                 System.out.println("Saved qMap");
-                QMapIO.save("QTable_AI_V2_brain.txt", qMap);
+                QMapIO.save(brainFileName, qMap);
             }
 
             System.out.println("Win/Loss ratio: " + (float) player2Wins / (float) player1Wins + " Games played: " + gamesPlayed + ", " + gamesPerSecond + " games/s");
@@ -213,6 +215,7 @@ public class QTable_AI extends Conway_V2_base {
 
     public int chooseAction(int [] state, int currentPlayer){
         if (PatternDetect.isEmpty(state)) return state.length / 2;
+
         int [] player1Patterns = PatternDetect.detect(state, 1);
         int [] player2Patterns = PatternDetect.detect(state, 2);
 
@@ -235,7 +238,8 @@ public class QTable_AI extends Conway_V2_base {
     int getMaxQValueAction(int [] state, int currentPlayer){
         int[] nextState = state.clone();
         int[] validActions = getValidActions(state);
-        int maxQAction = -1;
+        double [] validActionsQValues = new double [validActions.length];
+        ArrayList<Integer> bestActions = new ArrayList<>();
         double stateMaxQValue = Double.NEGATIVE_INFINITY;
         double stateQValue;
 
@@ -244,17 +248,25 @@ public class QTable_AI extends Conway_V2_base {
             stateQValue = evalState(makeStateKey(nextState));
             if (stateQValue > stateMaxQValue) {
                 stateMaxQValue = stateQValue;
-                maxQAction = validActions[i];
+                //maxQAction = validActions[i];
             }
+            validActionsQValues[i] = stateQValue;
             nextState[validActions[i]] = 0;
         }
 
-        return maxQAction;
+        for (int i = 0; i < validActions.length; ++i){
+            if (validActionsQValues[i] == stateMaxQValue){
+                bestActions.add(validActions[i]);
+            }
+        }
+
+        return bestActions.get(rand.nextInt(bestActions.size()));
     }
     int getMinQValueAction(int [] state, int currentPlayer){
-        int[] nextState = state.clone();
-        int[] validActions = getValidActions(state);
-        int minQAction = -1;
+        int [] nextState = state.clone();
+        int [] validActions = getValidActions(state);
+        double [] validActionsQValues = new double [validActions.length];
+        ArrayList<Integer> bestActions = new ArrayList<>();
         double stateMinQValue = Double.POSITIVE_INFINITY;
         double stateQValue;
 
@@ -263,12 +275,19 @@ public class QTable_AI extends Conway_V2_base {
             stateQValue = evalState(makeStateKey(nextState));
             if (stateQValue < stateMinQValue) {
                 stateMinQValue = stateQValue;
-                minQAction = validActions[i];
+                //minQAction = validActions[i];
             }
+            validActionsQValues[i] = stateQValue;
             nextState[validActions[i]] = 0;
         }
 
-        return minQAction;
+        for (int i = 0; i < validActions.length; ++i){
+            if (validActionsQValues[i] == stateMinQValue){
+                bestActions.add(validActions[i]);
+            }
+        }
+
+        return bestActions.get(rand.nextInt(bestActions.size()));
     }
     double evalReward(int [] state, int movesRemaining){
         if (DetectWin_2.detectWin(state, BOARD_WIDTH, WIN_REQUIRE, 1)){
@@ -440,7 +459,7 @@ public class QTable_AI extends Conway_V2_base {
     double evalState(String stateKey){
         //if state has not happened before
         if (qMap.get(stateKey) == null)
-            qMap.put(stateKey, (rand.nextDouble() * 0.3) - 0.15); //-0.15 ~ +0.15
+            qMap.put(stateKey, (rand.nextDouble() - 0.5)); //-0.5 ~ +0.5
 
         return qMap.get(stateKey);
     }
@@ -473,9 +492,6 @@ public class QTable_AI extends Conway_V2_base {
             nextState[validActions[i]] = 0;
         }
 
-        //System.out.println("Original Actions: " + Arrays.toString(actions));
-        //System.out.println("Original Values: " + Arrays.toString(values));
-
         double maxValue;
         for (int i = 0; i < values.length - 1; ++i){
             for (int j = i + 1; j < values.length; ++j) {
@@ -490,9 +506,6 @@ public class QTable_AI extends Conway_V2_base {
                 }
             }
         }
-
-//        System.out.println("Sorted Actions: " + Arrays.toString(actions));
-//        System.out.println("Sorted Values: " + Arrays.toString(values));
 
         int [] topFive = new int[5];
 
@@ -512,50 +525,6 @@ public class QTable_AI extends Conway_V2_base {
             return topFive;
         }
     }
-//    int [] getTopFiveMaxQValueActions(int [] state, int currentPlayer){
-//        int[] nextState = state.clone();
-//        int[] validActions = getValidActions(state);
-//        int maxQAction = -1;
-//
-//        Map <Integer, Double> actionValuePairs = new HashMap<>();
-//
-//        double stateMaxQValue = Double.NEGATIVE_INFINITY;
-//        double stateQValue;
-//        int [] actions = new int [validActions.length];
-//        double [] values = new double [validActions.length];
-//
-//        for (int i = 0; i < validActions.length; ++i) {
-//            nextState[validActions[i]] = currentPlayer;
-//            actions[i] = validActions[i];
-//            values[i] = evalState(makeStateKey(nextState));
-//            nextState[validActions[i]] = 0;
-//        }
-//
-//        double maxValue = Double.NEGATIVE_INFINITY;
-//        double tempDouble;
-//        int tempInt;
-//
-//        for (int i = 0; i < values.length; ++i){
-//            for (int j = i; j < values.length; ++j) {
-//                if (maxValue < values[j]) {
-//                    tempDouble = values[i];
-//                    values[i] = values[j];
-//                    values[j] = tempDouble;
-//                    tempInt = actions[i];
-//                    actions[i] = actions[j];
-//                    actions[j] = tempInt;
-//                }
-//            }
-//        }
-//
-//        int [] topFive = new int[5];
-//
-//        //max
-//        for (int i = 0; i < 5; ++i) topFive[i] = actions[i];
-//
-//        return topFive;
-//    }
-    //int [] getTopFiveMinQValueActions(int [] state, int player){}
 
     void showGUI(int [] state){
         try {

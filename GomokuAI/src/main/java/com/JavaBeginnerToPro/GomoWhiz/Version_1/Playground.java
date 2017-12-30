@@ -15,7 +15,7 @@ import static org.encog.persist.EncogDirectoryPersistence.loadObject;
 
 public class Playground {
     AI player1, player2;
-    public static final int GAMES_TO_PLAY = 1000;
+    public static final int GAMES_TO_PLAY = 100;
     public static final int BOARD_WIDTH = 15;
     public static final int BOARD_SIZE = BOARD_WIDTH * BOARD_WIDTH;
     public static final int WIN_REQUIRE = 5;
@@ -25,8 +25,8 @@ public class Playground {
     private int[] state;
     private java.util.Random rand;
     boolean displayBoard = true;
-    GomokuGUI gui;
-    int guiDelayMillis = 100;
+    private GomokuGUI gui;
+    private int guiDelayMillis = 00;
 
     public static void main(String[] args) {
         int gamesPlayed = 0;
@@ -37,18 +37,18 @@ public class Playground {
             playground.play();
             ++gamesPlayed;
 
-            if (gamesPlayed % 1000 == 0) {
-                System.out.println("Player 1 wins: " + playground.player1Win + " Player 2 wins: " + playground.player2Win + " ties: " + playground.tie);
-            }
+//            if (gamesPlayed % 1000 == 0) {
+//                System.out.println("Player 1 wins: " + playground.player1Win + " Player 2 wins: " + playground.player2Win + " ties: " + playground.tie);
+//            }
 
-            //System.out.println("Player 1 wins: " + playground.player1Win + " Player 2 wins: " + playground.player2Win + " ties: " + playground.tie);
+            System.out.println("Player 1 wins: " + playground.player1Win + " Player 2 wins: " + playground.player2Win + " ties: " + playground.tie);
         }
         System.out.println("run time = " + (System.currentTimeMillis() - startTime) / 1000);
     }
 
     Playground() {
         player2 = new QTableWithForcedActions(2);
-        player1 = new MinMaxWithForcedActions(1);
+        player1 = new ForcedActions(1);
         rand = new java.util.Random();
         state = new int[BOARD_SIZE];
     }
@@ -326,7 +326,7 @@ class QTableWithForcedActions extends AI {
     QTableWithForcedActions(int ourPlayerNum) {
         this.ourPlayerNum = ourPlayerNum;
         qTable_ai = new QTable_AI();
-        qTable_ai.setqMap("QTable_AI_V2_brain.txt");
+        qTable_ai.setQMap("QTable_AI_V2_brain.txt");
     }
 
     public int move(int[] state) {
@@ -495,12 +495,12 @@ class PureQTable extends AI {
         }
     }
 }
-class forcedActions extends AI {
+class ForcedActions extends AI {
     //pure forced actions, if no obvious actions detected, random play
     private int ourPlayerNum;
     private QTable_AI qTableAi = new QTable_AI();
 
-    public forcedActions(int ourPlayerNum){
+    public ForcedActions(int ourPlayerNum){
         this.ourPlayerNum = ourPlayerNum;
     }
     public int move(int [] state){
