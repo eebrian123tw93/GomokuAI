@@ -10,11 +10,14 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.FutureTask;
 
 public class PlayWithHumanBoardPanel extends BoardPanel implements MouseListener {
     List<List<Rectangle>> humanClickAreas;
     AI ai;
-
+    boolean aiMoving=false;
     @Override
     public void init() {
         super.init();
@@ -122,6 +125,7 @@ public class PlayWithHumanBoardPanel extends BoardPanel implements MouseListener
     public void mousePressed(MouseEvent e) {
         if(!playing)return;
         boolean move=false;
+        if(aiMoving)return;
         for (int i = 0; i < humanClickAreas.size(); i++) {
             for (int j = 0; j < humanClickAreas.get(i).size(); j++) {
                 if (humanClickAreas.get(i).get(j).contains(e.getPoint())) {
@@ -140,7 +144,16 @@ public class PlayWithHumanBoardPanel extends BoardPanel implements MouseListener
         }
         //(playing=DetectWin.detectWin(getGameState(),15,5,1))
         if(move&&playing){
-            getGameState()[ai.move(getGameState())]=getBlackPlayer();
+
+            new Thread(){
+                @Override
+                public void run() {
+                    aiMoving=true;
+                    getGameState()[ai.move(getGameState())]=getBlackPlayer();
+                    aiMoving=false;
+                }
+            }.start();
+
         }
 
         if(DetectWin.detectWin(getGameState(),15,5,getBlackPlayer())){
