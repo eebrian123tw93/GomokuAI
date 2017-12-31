@@ -11,7 +11,7 @@ public class NN_AI_V2 extends QTable_AI{
 
     NN_AI_V2(){
         createNN();
-        GAMES_TO_TRAIN = 100000;
+//        GAMES_TO_TRAIN = 100000;
         //GAMES_TO_PLAY = 10000;
     }
 

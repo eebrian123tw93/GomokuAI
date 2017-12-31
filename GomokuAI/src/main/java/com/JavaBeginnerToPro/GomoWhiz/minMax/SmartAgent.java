@@ -11,22 +11,23 @@ public class SmartAgent extends Agent {
 
     Minimax minimax;
     int deepMax;
-    public SmartAgent(int boardWidth, int winRequire,int numPlayer) {
-        super(boardWidth, winRequire,numPlayer);
+
+    public SmartAgent(int boardWidth, int winRequire, int numPlayer) {
+        super(boardWidth, winRequire, numPlayer);
 //        minimax = new Minimax(numplayer);
 //        minimax=new BrianConway(numplayer);
 //        minimax=new MinimxAlphaBetaPruning(numplayer);
 //        minimax=new Fast(numplayer);
-        minimax=new MoreFast(numplayer);
+        setMinimax(1);
         Board.winStatesInit();
-        Board.zobristHash=new HashMap<>();
-        deepMax=4;
+        Board.zobristHash = new HashMap<>();
+        deepMax = 4;
     }
 
     public String firstTurn() {
         // pick default first move
-        int center=board.n/2;
-        String move = center+" "+center;
+        int center = board.n / 2;
+        String move = center + " " + center;
         board.placeMove(me, move, true);
         return move;
     }
@@ -40,22 +41,40 @@ public class SmartAgent extends Agent {
     public String pickMove() {
 
 
-        int move=minimax.mm(board, GomokuAI.winRequire);
+        int move = minimax.mm(board, GomokuAI.winRequire);
 
         return board.transfer(move);
     }
-    public int move(Board board){
-        board.nextPlayer='o';int action=0;
+
+    public int move(Board board) {
+        board.nextPlayer = 'o';
+        int action = 0;
 //        for(int i=2;i<=deepMax;i+=2){
-            action=minimax.mm(board,deepMax);
+        action = minimax.mm(board, deepMax);
 //            if(board.evaluate(action,numplayer)==Score.FIVE){
 //                return action;
 //            }
 //        }
-        return  action;
+        return action;
 //        return minimax.computerMove;
     }
-    public int move(int [] state){
+
+    public int move(int[] state) {
         return move(minimax.transfer(state));
+    }
+
+    public void setMinimax(int i) {
+        switch (i) {
+            case 1:
+                minimax = new MoreFast(numplayer);
+                break;
+            case 2:
+                minimax = new BrianConway(numplayer);
+                break;
+            case 3:
+                break;
+            default:
+                break;
+        }
     }
 }

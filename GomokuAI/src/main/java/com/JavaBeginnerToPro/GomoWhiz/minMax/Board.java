@@ -17,7 +17,8 @@ public class Board implements Comparator<Board.ActionValue> {
     static List<boolean[][]> winStates = new ArrayList<>();
     final static long[][] zobrist = createZobrist();
     static Map<Long, Integer> zobristHash;
-
+    static int numplayer;
+    static int numOppenent;
     public char[][] getBoard() {
         return board;
     }
@@ -84,8 +85,8 @@ public class Board implements Comparator<Board.ActionValue> {
 
         for (int i = 0; i < ems.size(); i++) {
             int action = ems.get(i);
-            int pointPlayer = evaluate(action, 1);
-            int pointOpponent = evaluate(action, 2);
+            int pointPlayer = evaluate(action, numplayer);
+            int pointOpponent = evaluate(action, numOppenent);
             if (pointPlayer == Score.FIVE) {
                 five.add(action);
                 return five;
@@ -173,8 +174,8 @@ public class Board implements Comparator<Board.ActionValue> {
 
         for (int i = 0; i < ems.size(); i++) {
             int action = ems.get(i);
-            int pointPlayer = evaluate(action, 1, stateKey);
-            int pointOpponent = evaluate(action, 2, stateKey);
+            int pointPlayer = evaluate(action, numplayer, stateKey);
+            int pointOpponent = evaluate(action, numOppenent, stateKey);
             if (pointPlayer == Score.FIVE) {
                 five.add(action);
                 return five;
@@ -724,9 +725,9 @@ public class Board implements Comparator<Board.ActionValue> {
         for (int i = 0; i < board.board.length; i++) {
             for (int j = 0; j < board.board[i].length; j++) {
                 if (board.board[i][j] == 'o') {
-                    status[k++] = 1;
+                    status[k++] = numplayer;
                 } else if (board.board[i][j] == 'x') {
-                    status[k++] = -1;
+                    status[k++] = numOppenent;
                 } else {
                     status[k++] = 0;
                 }
@@ -810,12 +811,9 @@ public class Board implements Comparator<Board.ActionValue> {
         System.out.println(Long.MAX_VALUE);
         System.out.println(max);
         System.out.println(min);
-        Random random = new Random();
         for (int i = 0; i < zobrist.length; i++) {
             for (int j = 0; j < zobrist[i].length; j++) {
                 zobrist[i][j] = (long) (Math.random() * (max - min + 1)) + min;
-//                zobrist[i][j]=UUID.randomUUID().getMostSignificantBits();
-                System.out.println(zobrist[i][j]);
             }
         }
         return zobrist;

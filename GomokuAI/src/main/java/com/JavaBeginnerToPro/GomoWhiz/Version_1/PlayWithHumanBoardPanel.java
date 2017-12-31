@@ -1,5 +1,6 @@
 package com.JavaBeginnerToPro.GomoWhiz.Version_1;
 
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -9,6 +10,7 @@ import java.util.List;
 public class PlayWithHumanBoardPanel extends BoardPanel implements MouseListener {
     List<List<Rectangle>> humanClickAreas;
     AI AI;
+    Playground playground;
     boolean aiMoving=false;
     @Override
     public void init() {
@@ -59,12 +61,21 @@ public class PlayWithHumanBoardPanel extends BoardPanel implements MouseListener
         rectangle.setLocation(point);
         rectangles.add(rectangle);
         humanClickAreas.add(rectangles);
+
         System.out.println();
     }
+    public PlayWithHumanBoardPanel(int[] gameState,Playground playground) {
+        this(gameState);
+        this.playground=playground;
+    }
 
+    public void setAI(){
+        AI=playground.getAI1();
+    }
     public PlayWithHumanBoardPanel(int[] gameState) {
         super(gameState);
         addMouseListener(this);
+
 //        AI=new QTableWithForcedActions(1);
         AI =new MinMax(1);
         playing=true;
@@ -82,18 +93,22 @@ public class PlayWithHumanBoardPanel extends BoardPanel implements MouseListener
 //            }
 //        });
 //        add(button);
+        if(rightPanel!=null){
+            updateRightPanel();
+        }
+
     }
 
     public static void main(String[] args) {
 //        java.util.Random random = new Random();
-//        int[] state = new int[225];
+        int[] state = new int[225];
 //        for (int i = 0; i < state.length; i++) {
 ////            state[i] = random.nextInt(3) - 1;
 //            state[i] = 0;
 //        }
-//        JFrame frame = new JFrame();
-//        frame.setVisible(true);
-//        frame.add(new PlayWithHumanBoardPanel(state));
+        JFrame frame = new JFrame();
+        frame.setVisible(true);
+        frame.add(new PlayWithHumanBoardPanel(state,new Playground()));
 
     }
 
@@ -142,15 +157,16 @@ public class PlayWithHumanBoardPanel extends BoardPanel implements MouseListener
                 public void run() {
                     aiMoving=true;
                     getGameState()[AI.move(getGameState())]=getBlackPlayer();
+                    if(DetectWin.detectWin(getGameState(),15,5,getBlackPlayer())){
+                        playing=false;
+                    }
                     aiMoving=false;
                 }
             }.start();
 
         }
 
-        if(DetectWin.detectWin(getGameState(),15,5,getBlackPlayer())){
-            playing=false;
-        }
+
         repaint();
 
 

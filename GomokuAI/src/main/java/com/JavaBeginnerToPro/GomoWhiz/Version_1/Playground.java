@@ -3,6 +3,7 @@ package com.JavaBeginnerToPro.GomoWhiz.Version_1;
 import com.JavaBeginnerToPro.GomoWhiz.ConwayAI_V2.PatternDetect;
 import com.JavaBeginnerToPro.GomoWhiz.ConwayAI_V2.QMapIO;
 import com.JavaBeginnerToPro.GomoWhiz.ConwayAI_V2.QTable_AI;
+import com.JavaBeginnerToPro.GomoWhiz.minMax.Agent;
 import com.JavaBeginnerToPro.GomoWhiz.minMax.SmartAgent;
 import org.encog.ml.data.basic.BasicMLData;
 import org.encog.neural.networks.BasicNetwork;
@@ -14,13 +15,17 @@ import static org.encog.persist.EncogDirectoryPersistence.loadObject;
 
 
 public class Playground {
-    private AI AI1, AI2;
+    private AI AI1;
+
+
+
+    private AI AI2;
 
     public static final int GAMES_TO_PLAY = 10000;
     public static final int BOARD_WIDTH = 15;
     public static final int BOARD_SIZE = BOARD_WIDTH * BOARD_WIDTH;
     public static final int WIN_REQUIRE = 5;
-    public boolean displayBoard = true;
+    public boolean displayBoard = false;
     public int player1Win = 0;
     public int player2Win = 0;
     public int tie = 0;
@@ -55,7 +60,9 @@ public class Playground {
         rand = new java.util.Random();
         state = new int[BOARD_SIZE];
     }
-
+    public AI getAI1() {
+        return AI1;
+    }
     public void setAI1(AI AI1) {
         this.AI1 = AI1;
     }
@@ -110,6 +117,13 @@ public class Playground {
             if (gamesPlayed > 0) {
                 player1WinPercent = (float) player1Win / gamesPlayed * 100;
                 player2WinPercent = (float) player2Win / gamesPlayed * 100;
+            }
+            if(gui==null){
+                try {
+                    Thread.sleep(200);
+                }catch (Exception e){
+
+                }
             }
         }
 
@@ -329,6 +343,7 @@ class MinMaxWithForcedActions extends AI {
     MinMaxWithForcedActions(int ourPlayerNum) {
         this.ourPlayerNum = ourPlayerNum;
         smartAgent = new SmartAgent(15, 5, ourPlayerNum);
+        smartAgent.setMinimax(2);
     }
     public int move(int[] state) {
         if (PatternDetect.isEmpty(state)) return state.length / 2;
