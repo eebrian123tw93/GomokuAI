@@ -159,5 +159,4 @@ public abstract class Conway_V2_base {
         int [] validActions = getValidActions(state);
         return validActions[rand.nextInt(validActions.length)];
     }
-
 }

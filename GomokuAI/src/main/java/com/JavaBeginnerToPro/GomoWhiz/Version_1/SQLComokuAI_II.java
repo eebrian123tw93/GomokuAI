@@ -5,7 +5,11 @@ import com.JavaBeginnerToPro.GomoWhiz.minMax.Board;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.Statement;
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -20,7 +24,7 @@ public class SQLComokuAI_II extends SQLGomokuAI {
             sb.append(state[i] + 2);
         }
         sb.append("]");
-        String key = sb.append(currentPlayer + 2).toString(); //key = state + player
+        String key = sb.append(currentPlayer + 2).toString(); //key = state + AI
         //if this game state hasn't happened before
         QTableRow qTableRow;
         if ((qTableRow = findByStateKey(key)) == null) {

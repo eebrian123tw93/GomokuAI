@@ -26,14 +26,14 @@ public class GomokuGUI extends JFrame implements KeyListener {
     Map<String, String> statusString;
     Timer timerTime;
     Timer screenUpdate;
+    private int screenDelay = 700;
 
 
     enum Mode {
         Human_VS_Human, AI_VS_AI, AI_VS_Human;
     }
-
     enum Player {
-        Random, human, Minmax,PureQTable,ForcedActions,MinMaxWithForcedActions,QTableWithForcedActions;
+        Random, human, Minmax, PureQTable, ForcedActions, MinMaxWithForcedActions, QTableWithForcedActions;
     }
 
     public static void main(String[] args) {
@@ -71,7 +71,7 @@ public class GomokuGUI extends JFrame implements KeyListener {
                 updateStatusBar();
             }
         });
-        screenUpdate = new Timer(100, new ActionListener() {
+        screenUpdate = new Timer(screenDelay, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 getContentPane().repaint();
@@ -311,10 +311,10 @@ public class GomokuGUI extends JFrame implements KeyListener {
     public void updatePlayer(){
         switch (playerOne) {
             case Random:
-                playground.setPlayer1(new Random());
+                playground.setAI1(new Random());
                 break;
             case Minmax:
-                playground.setPlayer1(new MinMax(1));
+                playground.setAI1(new MinMax(1));
                 break;
             case PureQTable:
                 break;
@@ -329,10 +329,10 @@ public class GomokuGUI extends JFrame implements KeyListener {
         }
         switch (playerTwo) {
             case Random:
-                playground.setPlayer2(new Random());
+                playground.setAI2(new Random());
                 break;
             case Minmax:
-                playground.setPlayer1(new MinMax(2));
+                playground.setAI1(new MinMax(2));
                 break;
             case PureQTable:
                 break;
@@ -348,7 +348,6 @@ public class GomokuGUI extends JFrame implements KeyListener {
     }
 
     public void update() {
-
         if (mode == Mode.AI_VS_Human) {
             panel = new PlayWithHumanBoardPanel(playground.getState());
             if (getContentPane().getComponentCount() > 1) {
@@ -364,11 +363,6 @@ public class GomokuGUI extends JFrame implements KeyListener {
             getContentPane().add(panel, BorderLayout.CENTER, 1);
             repaint();
         }
-
-
-
-
-
     }
 
     @Override

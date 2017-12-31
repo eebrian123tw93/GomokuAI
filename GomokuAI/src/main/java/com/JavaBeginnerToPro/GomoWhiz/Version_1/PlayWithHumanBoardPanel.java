@@ -1,22 +1,14 @@
 package com.JavaBeginnerToPro.GomoWhiz.Version_1;
 
-import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.io.File;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.FutureTask;
 
 public class PlayWithHumanBoardPanel extends BoardPanel implements MouseListener {
     List<List<Rectangle>> humanClickAreas;
-    AI ai;
+    AI AI;
     boolean aiMoving=false;
     @Override
     public void init() {
@@ -73,8 +65,8 @@ public class PlayWithHumanBoardPanel extends BoardPanel implements MouseListener
     public PlayWithHumanBoardPanel(int[] gameState) {
         super(gameState);
         addMouseListener(this);
-//        ai=new QTableWithForcedActions(1);
-        ai=new MinMax(1);
+//        AI=new QTableWithForcedActions(1);
+        AI =new MinMax(1);
         playing=true;
 //        Button button=new Button("Restart");
 //        button.addActionListener(new ActionListener() {
@@ -149,7 +141,7 @@ public class PlayWithHumanBoardPanel extends BoardPanel implements MouseListener
                 @Override
                 public void run() {
                     aiMoving=true;
-                    getGameState()[ai.move(getGameState())]=getBlackPlayer();
+                    getGameState()[AI.move(getGameState())]=getBlackPlayer();
                     aiMoving=false;
                 }
             }.start();

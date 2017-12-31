@@ -23,7 +23,7 @@ public class SQLvsMini extends SQLComokuAI_II {
         String currentStateKey;
         String nextStateKey;
 
-        //choose first player
+        //choose first AI
         if (rand.nextBoolean()) currentPlayer = 1;
         else currentPlayer = -1;
 //        currentPlayer = -1;
@@ -49,11 +49,11 @@ public class SQLvsMini extends SQLComokuAI_II {
             if (reward == 1 || reward == -1 || movesRemaining <= 0) {
                 gameEnded = true;
                 if (reward == 1) {
-                    ++wins; //player 1 win
-                    //System.out.println("player 1 win");
+                    ++wins; //AI 1 win
+                    //System.out.println("AI 1 win");
                 } else if (reward == -1) {
-                    ++losses; //player -1 win
-                    //System.out.println("player -1 win");
+                    ++losses; //AI -1 win
+                    //System.out.println("AI -1 win");
                 } else if (movesRemaining <= 0) {
                     ++ties;//tie
                     //System.out.println("tie");
@@ -128,7 +128,7 @@ public class SQLvsMini extends SQLComokuAI_II {
             sb.append(state[i] + 2);
         }
         sb.append("]");
-        String key = sb.append(currentPlayer + 2).toString(); //key = state + player
+        String key = sb.append(currentPlayer + 2).toString(); //key = state + AI
         //if this game state hasn't happened before
         QTableRow qTableRow;
         if ((qTableRow = findByStateKey(key)) == null) {

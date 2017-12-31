@@ -1,6 +1,6 @@
 ///*
-//* in GomokuAI_2, it is player 1 and player 2 instead of 1 and -1
-//* player 1 and player 2 have their Q tables stored in different Maps
+//* in GomokuAI_2, it is AI 1 and AI 2 instead of 1 and -1
+//* AI 1 and AI 2 have their Q tables stored in different Maps
 //* */
 //
 //package com.JavaBeginnerToPro.GomoWhiz;
@@ -9,7 +9,7 @@
 //import java.util.Map;
 //
 //public class GomokuAI_2 extends GomokuAI{
-//    static Map<String, HashMap<Integer, Double>> qMap2; //qMap for player 2
+//    static Map<String, HashMap<Integer, Double>> qMap2; //qMap for AI 2
 //
 //    public static void main(String[] args) {
 //        GomokuAI_2 gomokuAI_2 = new GomokuAI_2();
@@ -38,7 +38,7 @@
 //        String currentStateKey;
 //        String nextStateKey;
 //
-//        //choose first player
+//        //choose first AI
 //        if (rand.nextBoolean()) currentPlayer = 1;
 //        else currentPlayer = 2;
 //
@@ -59,12 +59,12 @@
 ////            if (reward == 1 || reward == -1 || movesRemaining <= 0) {
 ////                gameEnded = true;
 ////                if (reward == 1) {
-////                    ++wins; //player 1 win
-////                    //System.out.println("player 1 win");
+////                    ++wins; //AI 1 win
+////                    //System.out.println("AI 1 win");
 ////                }
 ////                else if (reward == -1){
-////                    ++losses; //player 2 win
-////                    //System.out.println("player 2 win");
+////                    ++losses; //AI 2 win
+////                    //System.out.println("AI 2 win");
 ////                }
 ////                else if (movesRemaining <= 0){
 ////                    ++ties;//tie
@@ -77,11 +77,11 @@
 //                gameEnded = true;
 //                if (reward == 1.5){
 //                    reward2 = -1.5;
-//                    ++wins; // player 1 win
+//                    ++wins; // AI 1 win
 //                }
 //                else if (reward2 == 1.5){
 //                    reward = -1.5;
-//                    ++losses; //player 2 win
+//                    ++losses; //AI 2 win
 //                }
 //                else if (movesRemaining <= 0){
 //                    reward = -1;
@@ -134,9 +134,9 @@
 //    int chooseAction(String stateKey, int currentPlayer, int[] currentState) {
 //
 //        if (learningMode == false) {
-//            //player 1 looks for the maximum Q values (because it gets a positive reward when winning)
+//            //AI 1 looks for the maximum Q values (because it gets a positive reward when winning)
 //            if (currentPlayer == 1) return getMaxQValueAction(stateKey, currentPlayer);
-//                //player 2 looks for the minimum Q values (because it gets a negative reward when winning)
+//                //AI 2 looks for the minimum Q values (because it gets a negative reward when winning)
 //            else return getMinQValueAction(stateKey, currentPlayer);
 //            //else if (currentPlayer == 2) return getMaxQValueAction(stateKey, currentPlayer);
 //        }
@@ -185,9 +185,9 @@
 //        return minQValueAction;
 //    }
 //
-//    double evalReward(int[] state, int player) {
-//        if (player == 1 && DetectWin_2.detectWin(state, gameBoardWidth, winRequire, 1)) return 1.5;
-//        else if (player == 2 && DetectWin_2.detectWin(state, gameBoardWidth, winRequire, 2)) return 1.5;
+//    double evalReward(int[] state, int AI) {
+//        if (AI == 1 && DetectWin_2.detectWin(state, gameBoardWidth, winRequire, 1)) return 1.5;
+//        else if (AI == 2 && DetectWin_2.detectWin(state, gameBoardWidth, winRequire, 2)) return 1.5;
 //        else return 0;
 //    }
 //
@@ -250,8 +250,8 @@
 //
 //}
 /*
- * in GomokuAI_2, it is player 1 and player 2 instead of 1 and -1
- * player 1 and player 2 have their Q tables stored in different Maps
+ * in GomokuAI_2, it is AI 1 and AI 2 instead of 1 and -1
+ * AI 1 and AI 2 have their Q tables stored in different Maps
  * */
 
 package com.JavaBeginnerToPro.GomoWhiz.Version_1;
@@ -260,7 +260,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class GomokuAI_2 extends GomokuAI{
-    static Map<String, HashMap<Integer, Double>> qMap2; //qMap for player 2
+    static Map<String, HashMap<Integer, Double>> qMap2; //qMap for AI 2
 
     public static void main(String[] args) {
         GomokuAI_2 gomokuAI_2 = new GomokuAI_2("selfPlay");
@@ -292,7 +292,7 @@ public class GomokuAI_2 extends GomokuAI{
         String currentStateKey;
         String nextStateKey;
 
-        //choose first player
+        //choose first AI
         if (rand.nextBoolean()) currentPlayer = 1;
         else currentPlayer = 2;
 
@@ -312,12 +312,12 @@ public class GomokuAI_2 extends GomokuAI{
             if (reward == 1 || reward == -1 || movesRemaining <= 0) {
                 gameEnded = true;
                 if (reward == 1) {
-                    ++wins; //player 1 win
-                    //System.out.println("player 1 win");
+                    ++wins; //AI 1 win
+                    //System.out.println("AI 1 win");
                 }
                 else if (reward == -1){
-                    ++losses; //player 2 win
-                    //System.out.println("player 2 win");
+                    ++losses; //AI 2 win
+                    //System.out.println("AI 2 win");
                 }
                 else if (movesRemaining <= 0){
                     ++ties;//tie
@@ -367,9 +367,9 @@ public class GomokuAI_2 extends GomokuAI{
     int chooseAction(String stateKey, int currentPlayer, int[] currentState) {
 
         if (learningMode == false) {
-            //player 1 looks for the maximum Q values (because it gets a positive reward when winning)
+            //AI 1 looks for the maximum Q values (because it gets a positive reward when winning)
             if (currentPlayer == 1) return getMaxQValueAction(stateKey, currentPlayer);
-                //player 2 looks for the minimum Q values (because it gets a negative reward when winning)
+                //AI 2 looks for the minimum Q values (because it gets a negative reward when winning)
             else return getMinQValueAction(stateKey, currentPlayer);
             //else if (currentPlayer == 2) return getMaxQValueAction(stateKey, currentPlayer);
         }

@@ -78,10 +78,10 @@ public class QTicTacToe extends JFrame {
                 System.out.println("**************************************************************************************");
                 printGrid(curState);
             }
-            // set starting player
+            // set starting AI
             int curPlayer = rand.nextInt(2) + 1; // random
 //             if(playOptimal)
-//             curPlayer = 2; // player 1 always starts in the last 1000 games
+//             curPlayer = 2; // AI 1 always starts in the last 1000 games
 
             // play a single game
             do {
@@ -91,7 +91,7 @@ public class QTicTacToe extends JFrame {
                 // choose an action
                 int action = chooseAction(stateKey, curPlayer, curState);
                 if (verbose)
-                    System.out.println("Player = " + curPlayer + " action = " + action);
+                    System.out.println("AI = " + curPlayer + " action = " + action);
                 // calculate next state
                 int[] nextState = new int[curState.length];
                 System.arraycopy(curState, 0, nextState, 0, curState.length);
@@ -153,13 +153,13 @@ public class QTicTacToe extends JFrame {
         // testing
         if (playOptimal) {
             if (curPlayer == 1)
-                return getMaxQAction(stateKey);  // player 1 plays best policy
-                //return randomMove(curState); // player 1 plays random
-                //return getMinQAction(stateKey); // player 1 plays worst policy
+                return getMaxQAction(stateKey);  // AI 1 plays best policy
+                //return randomMove(curState); // AI 1 plays random
+                //return getMinQAction(stateKey); // AI 1 plays worst policy
             else
-                //return getMinQAction(stateKey); // player 2 plays best policy
-                //return randomMove(curState); // player 2 plays random
-                return getMaxQAction(stateKey); // player 2 plays worst policy
+                //return getMinQAction(stateKey); // AI 2 plays best policy
+                //return randomMove(curState); // AI 2 plays random
+                return getMaxQAction(stateKey); // AI 2 plays worst policy
         }
         // learning
         else {
