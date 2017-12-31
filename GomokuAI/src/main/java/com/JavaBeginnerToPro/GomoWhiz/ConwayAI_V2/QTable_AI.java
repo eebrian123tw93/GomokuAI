@@ -38,7 +38,7 @@ public class QTable_AI extends Conway_V2_base {
     public static void main(String[] args) {
         QTable_AI qTable_AI = new QTable_AI();
         qTable_AI.setQMap("qMap_20k");
-        if (displayBoard) qTable_AI.gui = new PureGUI(new int [225]);
+        if (displayBoard) qTable_AI.gui = new PureGUI(new int [Conway_V2_base.BOARD_SIZE]);
         qTable_AI.train();
         qTable_AI.saveQMap();
 //        QTable_AI qTableAi = new QTable_AI();

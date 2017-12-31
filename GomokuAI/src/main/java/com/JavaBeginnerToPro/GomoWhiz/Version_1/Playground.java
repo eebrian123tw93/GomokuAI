@@ -16,7 +16,7 @@ import static org.encog.persist.EncogDirectoryPersistence.loadObject;
 public class Playground {
     private AI AI1, AI2;
 
-    public static final int GAMES_TO_PLAY = 100;
+    public static final int GAMES_TO_PLAY = 10000;
     public static final int BOARD_WIDTH = 15;
     public static final int BOARD_SIZE = BOARD_WIDTH * BOARD_WIDTH;
     public static final int WIN_REQUIRE = 5;
