@@ -5,6 +5,7 @@ import org.jdesktop.swingx.JXPanel;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.BevelBorder;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -189,6 +190,16 @@ public class GomokuGUI extends JFrame implements KeyListener {
         JMenuItem conwayQTableAI = new JMenuItem("Pure QTable");
         conwayQTableAI.addActionListener((ActionEvent event) -> {
             playerOne = Player.PureQTable;
+            JFileChooser chooser = new JFileChooser();
+            FileNameExtensionFilter filter = new FileNameExtensionFilter(
+                    "文字檔", "txt");
+            chooser.setFileFilter(filter);
+            int returnVal = chooser.showOpenDialog(this);
+            if(returnVal == JFileChooser.APPROVE_OPTION) {
+                System.out.println("You chose to open this file: " +
+                        chooser.getSelectedFile().getName());
+                brainTextPath=chooser.getSelectedFile().getName();
+            }
             updatePlayer();
         });
         JMenuItem forcedActionAI = new JMenuItem("Forced actions");
@@ -209,6 +220,16 @@ public class GomokuGUI extends JFrame implements KeyListener {
         JMenuItem qTableForcedAI = new JMenuItem("QTable with forced actions");
         qTableForcedAI.addActionListener((ActionEvent event) -> {
             playerOne = Player.QTableWithForcedActions;
+            JFileChooser chooser = new JFileChooser();
+            FileNameExtensionFilter filter = new FileNameExtensionFilter(
+                    "文字檔", "txt");
+            chooser.setFileFilter(filter);
+            int returnVal = chooser.showOpenDialog(this);
+            if(returnVal == JFileChooser.APPROVE_OPTION) {
+                System.out.println("You chose to open this file: " +
+                        chooser.getSelectedFile().getName());
+                brainTextPath=chooser.getSelectedFile().getName();
+            }
             updatePlayer();
         });
         player1Menu.add(randomAI);
@@ -231,6 +252,16 @@ public class GomokuGUI extends JFrame implements KeyListener {
         conwayQTableAI2.addActionListener((ActionEvent event) -> {
             if (mode == Mode.AI_VS_Human) return;
             playerTwo = Player.PureQTable;
+            JFileChooser chooser = new JFileChooser();
+            FileNameExtensionFilter filter = new FileNameExtensionFilter(
+                    "文字檔", "txt");
+            chooser.setFileFilter(filter);
+            int returnVal = chooser.showOpenDialog(this);
+            if(returnVal == JFileChooser.APPROVE_OPTION) {
+                System.out.println("You chose to open this file: " +
+                        chooser.getSelectedFile().getName());
+                brainTextPath=chooser.getSelectedFile().getName();
+            }
             updatePlayer();
         });
         JMenuItem forcedActionAI2 = new JMenuItem("Forced actions");
@@ -255,6 +286,16 @@ public class GomokuGUI extends JFrame implements KeyListener {
         qTableForcedAI2.addActionListener((ActionEvent event) -> {
             if (mode == Mode.AI_VS_Human) return;
             playerTwo = Player.QTableWithForcedActions;
+            JFileChooser chooser = new JFileChooser();
+            FileNameExtensionFilter filter = new FileNameExtensionFilter(
+                    "文字檔", "txt" );
+            chooser.setFileFilter(filter);
+            int returnVal = chooser.showOpenDialog(this);
+            if(returnVal == JFileChooser.APPROVE_OPTION) {
+                System.out.println("You chose to open this file: " +
+                        chooser.getSelectedFile().getName());
+                brainTextPath=chooser.getSelectedFile().getName();
+            }
             updatePlayer();
         });
 
@@ -305,7 +346,7 @@ public class GomokuGUI extends JFrame implements KeyListener {
             status += "\t[" + entry.getKey() + " " + entry.getValue() + "]\t";
         }
         statusLabel = new JLabel(status);
-        statusLabel.setHorizontalAlignment(SwingConstants.LEFT);
+        statusLabel.setHorizontalAlignment(SwingConstants.CENTER);
         statusPanel.add(statusLabel);
 //        jFrame.setVisible(true);
     }
