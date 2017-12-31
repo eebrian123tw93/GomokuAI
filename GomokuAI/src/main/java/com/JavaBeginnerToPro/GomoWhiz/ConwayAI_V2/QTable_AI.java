@@ -2,7 +2,7 @@ package com.JavaBeginnerToPro.GomoWhiz.ConwayAI_V2;
 
 import com.JavaBeginnerToPro.GomoWhiz.Version_1.BoardPanel;
 import com.JavaBeginnerToPro.GomoWhiz.Version_1.DetectWin_2;
-import com.JavaBeginnerToPro.GomoWhiz.Version_1.GomokuGUI;
+import com.JavaBeginnerToPro.GomoWhiz.Version_1.PureGUI;
 import com.JavaBeginnerToPro.GomoWhiz.minMax.SmartAgent;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,18 +27,18 @@ public class QTable_AI extends Conway_V2_base {
     final double DECAY = 1;
     double RANDOM_MOVE_PROBABILITY = 0.1;
     private static boolean displayBoard = false;
-    static int GAMES_TO_TRAIN = 20000;
-    static int qMapSaveInterval = 5000;
-    private static GomokuGUI gui;
+    private static int GAMES_TO_TRAIN = 20000;
+    private static int qMapSaveInterval = 5000;
+    private PureGUI gui;
     private String brainFileName;
-    int player1Wins = 0;
-    int player2Wins = 0;
-    int ties = 0;
+    private int player1Wins = 0;
+    private int player2Wins = 0;
+    private int ties = 0;
 
     public static void main(String[] args) {
         QTable_AI qTable_AI = new QTable_AI();
         qTable_AI.setQMap("qMap_20k");
-        if (displayBoard) gui = new GomokuGUI(new int [225]);
+        if (displayBoard) qTable_AI.gui = new PureGUI(new int [225]);
         qTable_AI.train();
         qTable_AI.saveQMap();
 //        QTable_AI qTableAi = new QTable_AI();
@@ -305,6 +305,7 @@ public class QTable_AI extends Conway_V2_base {
         return 0;
     }
 
+    //forced action functions
     public boolean obviousActionNeeded(int [] player1Patterns, int [] player2Patterns){
         if (player1Patterns[25] == 1 || player1Patterns[6] == 1 || player1Patterns[20] == 1 || player1Patterns[24] == 1 || player1Patterns[9] == 1) return true;
         if (player2Patterns[25] == 1 || player2Patterns[6] == 1 || player2Patterns[20] == 1 || player2Patterns[24] == 1 || player2Patterns[9] == 1) return true;

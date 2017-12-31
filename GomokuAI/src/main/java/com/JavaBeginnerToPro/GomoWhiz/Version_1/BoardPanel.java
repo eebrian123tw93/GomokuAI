@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.util.Random;
 
 public class BoardPanel extends JXPanel {
+    boolean playing=false;
     public Rectangle[][] getRectangles() {
         return rectangles;
     }

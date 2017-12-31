@@ -1,4 +1,4 @@
-package com.JavaBeginnerToPro.GomoWhiz.Version_1;
+package com.JavaBeginnerToPro.GomoWhiz.minMax;
 
 public class DetectWin {
 
@@ -137,38 +137,38 @@ public class DetectWin {
     }
 
 
-//    static boolean detectWin(int[] state, int gameBoardWidth, int winRequire, int AI) {
+//    static boolean detectWin(int[] state, int gameBoardWidth, int winRequire, int player) {
 //
-////        if ((state[0] == state[1] && state[1] == state[2] && state[0] == AI) // horizontal
-////                || (state[3] == state[4] && state[4] == state[5] && state[3] == AI)
-////                || (state[6] == state[7] && state[7] == state[8] && state[6] == AI)
-////                || (state[0] == state[3] && state[3] == state[6] && state[0] == AI) // vertical
-////                || (state[1] == state[4] && state[4] == state[7] && state[1] == AI)
-////                || (state[2] == state[5] && state[5] == state[8] && state[2] == AI)
-////                || (state[0] == state[4] && state[4] == state[8] && state[0] == AI) // diagonal
-////                || (state[2] == state[4] && state[4] == state[6] && state[2] == AI))
+////        if ((state[0] == state[1] && state[1] == state[2] && state[0] == player) // horizontal
+////                || (state[3] == state[4] && state[4] == state[5] && state[3] == player)
+////                || (state[6] == state[7] && state[7] == state[8] && state[6] == player)
+////                || (state[0] == state[3] && state[3] == state[6] && state[0] == player) // vertical
+////                || (state[1] == state[4] && state[4] == state[7] && state[1] == player)
+////                || (state[2] == state[5] && state[5] == state[8] && state[2] == player)
+////                || (state[0] == state[4] && state[4] == state[8] && state[0] == player) // diagonal
+////                || (state[2] == state[4] && state[4] == state[6] && state[2] == player))
 ////            return true;
 ////        else return false;
 //
-//        if (checkVertical(state, gameBoardWidth, winRequire, AI) ||
-//                checkHorizontal(state, gameBoardWidth, winRequire, AI) ||
-//                checkUpLeftToDownRight(state, gameBoardWidth, winRequire, AI) ||
-//                checkUpRightToDownLeft(state, gameBoardWidth, winRequire, AI))
+//        if (checkVertical(state, gameBoardWidth, winRequire, player) ||
+//                checkHorizontal(state, gameBoardWidth, winRequire, player) ||
+//                checkUpLeftToDownRight(state, gameBoardWidth, winRequire, player) ||
+//                checkUpRightToDownLeft(state, gameBoardWidth, winRequire, player))
 //            return true;
 //        else return false;
 //    }
 //
-//    static boolean checkVertical(int [] state, int gameBoardWidth, int winRequire, int AI){
+//    static boolean checkVertical(int [] state, int gameBoardWidth, int winRequire, int player){
 //        int inARow = 0;
 //        int currentCheckIndex = 0;
 //        int inARowCheckIndex = 0;
 //
 //        while(currentCheckIndex < state.length){
 //            inARow = 0;
-//            if(state[currentCheckIndex] != AI) ++currentCheckIndex;
+//            if(state[currentCheckIndex] != player) ++currentCheckIndex;
 //            else {
 //                inARowCheckIndex = currentCheckIndex;
-//                while(state[inARowCheckIndex] == AI){
+//                while(state[inARowCheckIndex] == player){
 //                    ++inARow;
 //                    inARowCheckIndex += gameBoardWidth;
 //                    if (inARowCheckIndex >= state.length) break;
@@ -180,7 +180,7 @@ public class DetectWin {
 //
 //        return false;
 //    }
-//    static boolean checkHorizontal(int [] state, int gameBoardWidth, int winRequire, int AI){
+//    static boolean checkHorizontal(int [] state, int gameBoardWidth, int winRequire, int player){
 //        int inARow = 0;
 //        int currentCheckIndex = 0;
 //        int checkCount = 0;
@@ -191,7 +191,7 @@ public class DetectWin {
 //                checkCount = 0;
 //            }
 //
-//            if(state[currentCheckIndex] == AI) ++inARow;
+//            if(state[currentCheckIndex] == player) ++inARow;
 //            else inARow = 0;
 //
 //            ++currentCheckIndex;
@@ -202,17 +202,17 @@ public class DetectWin {
 //
 //        return false;
 //    }
-//    static boolean checkUpLeftToDownRight(int [] state, int gameBoardWidth, int winRequire, int AI){
+//    static boolean checkUpLeftToDownRight(int [] state, int gameBoardWidth, int winRequire, int player){
 //        int inARow = 0;
 //        int currentCheckIndex = 0;
 //        int inARowCheckIndex = 0;
 //
 //        while(currentCheckIndex < state.length){
 //            inARow = 0;
-//            if(state[currentCheckIndex] != AI) ++currentCheckIndex;
+//            if(state[currentCheckIndex] != player) ++currentCheckIndex;
 //            else {
 //                inARowCheckIndex = currentCheckIndex;
-//                while(state[inARowCheckIndex] == AI){
+//                while(state[inARowCheckIndex] == player){
 //                    ++inARow;
 //                    inARowCheckIndex += (gameBoardWidth + 1);
 //                    if (inARowCheckIndex >= state.length) break;
@@ -224,17 +224,17 @@ public class DetectWin {
 //
 //        return false;
 //    }
-//    static boolean checkUpRightToDownLeft(int [] state, int gameBoardWidth, int winRequire, int AI){
+//    static boolean checkUpRightToDownLeft(int [] state, int gameBoardWidth, int winRequire, int player){
 //        int inARow = 0;
 //        int currentCheckIndex = 0;
 //        int inARowCheckIndex = 0;
 //
 //        while(currentCheckIndex < state.length){
 //            inARow = 0;
-//            if(state[currentCheckIndex] != AI) ++currentCheckIndex;
+//            if(state[currentCheckIndex] != player) ++currentCheckIndex;
 //            else {
 //                inARowCheckIndex = currentCheckIndex;
-//                while(state[inARowCheckIndex] == AI){
+//                while(state[inARowCheckIndex] == player){
 //                    ++inARow;
 //                    inARowCheckIndex += (gameBoardWidth - 1);
 //                    if (inARowCheckIndex >= state.length) break;

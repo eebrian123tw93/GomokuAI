@@ -14,54 +14,60 @@ import static org.encog.persist.EncogDirectoryPersistence.loadObject;
 
 
 public class Playground {
-    AI player1, player2;
+    private AI AI1, AI2;
+
     public static final int GAMES_TO_PLAY = 100;
     public static final int BOARD_WIDTH = 15;
     public static final int BOARD_SIZE = BOARD_WIDTH * BOARD_WIDTH;
     public static final int WIN_REQUIRE = 5;
+    public boolean displayBoard = true;
     public int player1Win = 0;
     public int player2Win = 0;
     public int tie = 0;
+    private static int gamesPlayed = 0;
+    private static float player1WinPercent = 0;
+    private static float player2WinPercent = 0;
+
     private int[] state;
     private java.util.Random rand;
-    boolean displayBoard = true;
-    private GomokuGUI gui;
-    private int guiDelayMillis = 00;
+    private PureGUI gui;
+    private int guiDelayMillis = 0;
 
     public static void main(String[] args) {
-        int gamesPlayed = 0;
         Playground playground = new Playground();
-        playground.gui = new GomokuGUI(playground.state);
+        if (playground.displayBoard == true) playground.gui = new PureGUI(playground.state, "Player 1 win percent", "Player 2 win percent", "Games played");
+
+        playground.setAI1(new ForcedActions(1));
+        playground.setAI2(new QTableWithForcedActions(2, "qMap_20k"));
+
         long startTime = System.currentTimeMillis();
+
         while (gamesPlayed < GAMES_TO_PLAY) {
             playground.play();
             ++gamesPlayed;
-
-//            if (gamesPlayed % 1000 == 0) {
-//                System.out.println("Player 1 wins: " + playground.player1Win + " Player 2 wins: " + playground.player2Win + " ties: " + playground.tie);
-//            }
-
-            System.out.println("Player 1 wins: " + playground.player1Win + " Player 2 wins: " + playground.player2Win + " ties: " + playground.tie);
+            System.out.println("AI 1 wins: " + playground.player1Win + " AI 2 wins: " + playground.player2Win + " ties: " + playground.tie);
         }
+
         System.out.println("run time = " + (System.currentTimeMillis() - startTime) / 1000);
     }
 
     Playground() {
-        player2 = new QTableWithForcedActions(2);
-        player1 = new ForcedActions(1);
         rand = new java.util.Random();
         state = new int[BOARD_SIZE];
     }
 
-    public void setPlayer1(AI player1) {
-        this.player1 = player1;
+    public void setAI1(AI AI1) {
+        this.AI1 = AI1;
     }
-    public void setPlayer2(AI player2) {
-        this.player2 = player2;
+    public void setAI2(AI AI2) {
+        this.AI2 = AI2;
+    }
+    public int[] getState() {
+        return state;
     }
 
     void play() {
-        state = new int[BOARD_SIZE];
+        for(int i=0;i<state.length;i++)state[i]=0;
         int action;
         int movesRemaining = BOARD_SIZE;
         int currentPlayer;
@@ -70,26 +76,41 @@ public class Playground {
         else currentPlayer = 2;
 
         while (true) {
-            if (currentPlayer == 1) action = player1.move(state);
-            else action = player2.move(state);
+            if (currentPlayer == 1) action = AI1.move(state);
+            else action = AI2.move(state);
             state[action] = currentPlayer;
             --movesRemaining;
 
-            if (displayBoard) showGUI(state);
+            if (displayBoard) {
+                showGUI(state);
+                try {
+                    Thread.sleep(guiDelayMillis);
+                }
+                catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
 
             if (DetectWin_2.detectWin(state, BOARD_WIDTH, WIN_REQUIRE, 1)) {
                 ++player1Win;
                 break;
-            } else if (DetectWin_2.detectWin(state, BOARD_WIDTH, WIN_REQUIRE, 2)) {
+            }
+            else if (DetectWin_2.detectWin(state, BOARD_WIDTH, WIN_REQUIRE, 2)) {
                 ++player2Win;
                 break;
-            } else if (movesRemaining == 0) {
+            }
+            else if (movesRemaining == 0) {
                 ++tie;
                 break;
             }
 
             if (currentPlayer == 1) currentPlayer = 2;
             else currentPlayer = 1;
+
+            if (gamesPlayed > 0) {
+                player1WinPercent = (float) player1Win / gamesPlayed * 100;
+                player2WinPercent = (float) player2Win / gamesPlayed * 100;
+            }
         }
 
     }
@@ -97,6 +118,7 @@ public class Playground {
     void showGUI(int[] state) {
         try {
             ((BoardPanel) gui.getContentPane().getComponent(0)).setGameState(state);
+            gui.updateStatusBar(Float.toString(player1WinPercent) + "%", Float.toString(player2WinPercent) + "%", Integer.toString(gamesPlayed));
             gui.repaint();
             Thread.sleep(guiDelayMillis);
         } catch (InterruptedException e) {
@@ -112,6 +134,7 @@ abstract class AI {
     abstract public int move(int[] state);
 
     int randomMove(int[] state) {
+        if (PatternDetect.isEmpty(state)) return state.length / 2;
         ArrayList<Integer> moveList = new ArrayList<Integer>();
         for (int i = 0; i < state.length; i++)
             if (state[i] == 0)
@@ -126,11 +149,15 @@ class Random extends AI {
     }
 }
 
+//verion 1 AI's
 class TableBased2_Conway extends AI {
     private Map<String, HashMap<Integer, Double>> qMap;
-    private String brainFileName = "qMap9_3p2.txt";
+    private String brainFileName;
+    private int ourPlayerNum;
 
-    TableBased2_Conway() {
+    TableBased2_Conway(int ourPlayerNum, String brainFileName) {
+        this.ourPlayerNum = ourPlayerNum;
+        this.brainFileName = brainFileName;
         qMap = QTableDAO.load(brainFileName);
     }
 
@@ -154,7 +181,6 @@ class TableBased2_Conway extends AI {
         }
         return maxQValueAction;
     }
-
     int getMinQValueAction(String stateKey) {
         double minQValue = Double.MAX_VALUE;
         int minQValueAction = -1;
@@ -168,22 +194,11 @@ class TableBased2_Conway extends AI {
         }
         return minQValueAction;
     }
-
     String stateToString(int[] state) {
         StringBuilder sb = new StringBuilder();
         for (int i : state) sb.append(Integer.toString(i));
         return sb.toString();
     }
-
-//    GomokuAI_2 gomokuAI_2 = new GomokuAI_2("playVs");
-//
-//    TableBased2_Conway(){
-//        gomokuAI_2.qMap = QTableDAO.load(brainFileName);
-//    }
-//
-//    public int move(int [] state){
-//        return gomokuAI_2.chooseAction(gomokuAI_2.makeStateKey(state, 1), 1, state);
-//    }
 }
 class NN_ConwayP1 extends AI {
     //GomokuAI_NN gomokuAI_NN = new GomokuAI_NN();
@@ -289,7 +304,13 @@ class NN_ConwayP2 extends AI {
         return action;
     }
 }
+class SQL_AI extends AI {
+    public int move (int [] state){
+        return randomMove(state);
+    }
+}
 
+//version 2 AI's
 class MinMax extends AI {
     private SmartAgent smartAgent;
 
@@ -323,10 +344,10 @@ class QTableWithForcedActions extends AI {
     private int ourPlayerNum;
     private QTable_AI qTable_ai;
 
-    QTableWithForcedActions(int ourPlayerNum) {
+    QTableWithForcedActions(int ourPlayerNum, String brainName) {
         this.ourPlayerNum = ourPlayerNum;
         qTable_ai = new QTable_AI();
-        qTable_ai.setQMap("QTable_AI_V2_brain.txt");
+        qTable_ai.setQMap(brainName);
     }
 
     public int move(int[] state) {
@@ -338,12 +359,13 @@ class PureQTable extends AI {
     private Map<String, Double> qMap;
     private int ourPlayerNum;
 
-    public PureQTable(int ourPlayerNum) {
-        qMap = QMapIO.load("QTable_AI_V2_brain.txt");
+    public PureQTable(int ourPlayerNum, String brainName) {
+        qMap = QMapIO.load(brainName);
         this.ourPlayerNum = ourPlayerNum;
     }
 
     public int move(int[] state) {
+        if (PatternDetect.isEmpty(state)) return state.length / 2;
         String stateKey = makeStateKey(state);
         if (ourPlayerNum == 1 && qMap.get(stateKey) != null) return getMaxQValueAction(state, ourPlayerNum);
         else if (ourPlayerNum == 2 && qMap.get(stateKey) != null) return getMinQValueAction(state, ourPlayerNum);

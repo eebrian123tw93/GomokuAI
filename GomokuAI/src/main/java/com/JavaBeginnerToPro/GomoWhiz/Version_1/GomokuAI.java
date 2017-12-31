@@ -110,7 +110,7 @@ public class GomokuAI {
         String currentStateKey;
         String nextStateKey;
 
-        //choose first player
+        //choose first AI
         if (rand.nextBoolean()) currentPlayer = 1;
         else currentPlayer = -1;
 
@@ -128,12 +128,12 @@ public class GomokuAI {
             if (reward == 1 || reward == -1 || movesRemaining <= 0) {
                 gameEnded = true;
                 if (reward == 1) {
-                    ++wins; //player 1 win
-                    //System.out.println("player 1 win");
+                    ++wins; //AI 1 win
+                    //System.out.println("AI 1 win");
                 }
                 else if (reward == -1){
-                    ++losses; //player -1 win
-                    //System.out.println("player -1 win");
+                    ++losses; //AI -1 win
+                    //System.out.println("AI -1 win");
                 }
                 else if (movesRemaining <= 0){
                     ++ties;//tie
@@ -168,7 +168,7 @@ public class GomokuAI {
     }
 
     String makeStateKey(int[] state, int currentPlayer) {
-//        String key = Arrays.toString(state) + Integer.toString(currentPlayer); //key = state + player
+//        String key = Arrays.toString(state) + Integer.toString(currentPlayer); //key = state + AI
 //        //if this game state hasn't happened before
 //        if (qMap.get(key) == null) qMap.put(key, createActionQValueMap(state));
 //        return key;
@@ -183,7 +183,7 @@ public class GomokuAI {
     }
 
 //    String makeStateKey_Better(int [] state, int currentPlayer){
-//        //String key = Arrays.toString(state) + Integer.toString(currentPlayer); //key = state + player
+//        //String key = Arrays.toString(state) + Integer.toString(currentPlayer); //key = state + AI
 ////        String key = new String();
 ////        for (int i: state) key += Integer.toString(i);
 ////        key += Integer.toString(currentPlayer);
@@ -207,14 +207,14 @@ public class GomokuAI {
         return vals;
     }
 
-    //chooses an action for the player
+    //chooses an action for the AI
     //int[] currentState is for choosing random moves
     int chooseAction(String stateKey, int currentPlayer, int[] currentState) {
 
         if (learningMode == false) {
-            //player 1 looks for the maximum Q values (because it gets a positive reward when winning)
+            //AI 1 looks for the maximum Q values (because it gets a positive reward when winning)
             if (currentPlayer == 1) return getMaxQValueAction(stateKey);
-            //player -1 looks for the minimum Q values (because it gets a negative reward when winning)
+            //AI -1 looks for the minimum Q values (because it gets a negative reward when winning)
             else if (currentPlayer == -1) return getMinQValueAction(stateKey);
             //else if (currentPlayer == -1) return getMaxQValueAction(stateKey);
         }

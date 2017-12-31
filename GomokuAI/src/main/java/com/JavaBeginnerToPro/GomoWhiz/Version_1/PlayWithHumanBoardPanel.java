@@ -1,17 +1,15 @@
 package com.JavaBeginnerToPro.GomoWhiz.Version_1;
 
-import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 public class PlayWithHumanBoardPanel extends BoardPanel implements MouseListener {
     List<List<Rectangle>> humanClickAreas;
-    AI ai;
-    boolean playing=false;
+    AI AI;
+    boolean aiMoving=false;
     @Override
     public void init() {
         super.init();
@@ -67,8 +65,8 @@ public class PlayWithHumanBoardPanel extends BoardPanel implements MouseListener
     public PlayWithHumanBoardPanel(int[] gameState) {
         super(gameState);
         addMouseListener(this);
-        ai=new QTableWithForcedActions(1);
-        //ai=new MinMax(1);
+//        AI=new QTableWithForcedActions(1);
+        AI =new MinMax(1);
         playing=true;
 //        Button button=new Button("Restart");
 //        button.addActionListener(new ActionListener() {
@@ -87,16 +85,15 @@ public class PlayWithHumanBoardPanel extends BoardPanel implements MouseListener
     }
 
     public static void main(String[] args) {
-        java.util.Random random = new Random();
-        int[] state = new int[225];
-        for (int i = 0; i < state.length; i++) {
-//            state[i] = random.nextInt(3) - 1;
-            state[i] = 0;
-        }
-        JFrame frame = new JFrame();
-        frame.setVisible(true);
-        frame.add(new PlayWithHumanBoardPanel(state));
-
+//        java.util.Random random = new Random();
+//        int[] state = new int[225];
+//        for (int i = 0; i < state.length; i++) {
+////            state[i] = random.nextInt(3) - 1;
+//            state[i] = 0;
+//        }
+//        JFrame frame = new JFrame();
+//        frame.setVisible(true);
+//        frame.add(new PlayWithHumanBoardPanel(state));
 
     }
 
@@ -120,6 +117,7 @@ public class PlayWithHumanBoardPanel extends BoardPanel implements MouseListener
     public void mousePressed(MouseEvent e) {
         if(!playing)return;
         boolean move=false;
+        if(aiMoving)return;
         for (int i = 0; i < humanClickAreas.size(); i++) {
             for (int j = 0; j < humanClickAreas.get(i).size(); j++) {
                 if (humanClickAreas.get(i).get(j).contains(e.getPoint())) {
@@ -138,7 +136,16 @@ public class PlayWithHumanBoardPanel extends BoardPanel implements MouseListener
         }
         //(playing=DetectWin.detectWin(getGameState(),15,5,1))
         if(move&&playing){
-            getGameState()[ai.move(getGameState())]=getBlackPlayer();
+
+            new Thread(){
+                @Override
+                public void run() {
+                    aiMoving=true;
+                    getGameState()[AI.move(getGameState())]=getBlackPlayer();
+                    aiMoving=false;
+                }
+            }.start();
+
         }
 
         if(DetectWin.detectWin(getGameState(),15,5,getBlackPlayer())){

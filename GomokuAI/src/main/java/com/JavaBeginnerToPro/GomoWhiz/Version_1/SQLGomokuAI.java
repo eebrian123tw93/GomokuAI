@@ -229,7 +229,7 @@ public class SQLGomokuAI extends GomokuAI {
             sb.append(state[i] + 2);
         }
         sb.append("]");
-        String key = sb.append(currentPlayer + 2).toString(); //key = state + player
+        String key = sb.append(currentPlayer + 2).toString(); //key = state + AI
         //if this game state hasn't happened before
         if (key.trim().length() == 1) {
             System.out.println();

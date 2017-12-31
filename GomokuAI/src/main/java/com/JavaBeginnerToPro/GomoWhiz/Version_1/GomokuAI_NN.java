@@ -21,7 +21,7 @@ GomokuAI_NN:
                       the replay memory fills up to a certain amount, train the network with it
 
 
-    Conway_V2_base input is gameBoard state + current player
+    Conway_V2_base input is gameBoard state + current AI
 */
 
 /*
@@ -182,9 +182,9 @@ public class GomokuAI_NN extends GomokuAI_2{
 
 //    int chooseAction(String stateKey, int currentPlayer, int[] currentState){
 //        if (learningMode == false) {
-//            //player 1 looks for the maximum Q values (because it gets a positive reward when winning)
+//            //AI 1 looks for the maximum Q values (because it gets a positive reward when winning)
 //            if (currentPlayer == 1) return getMaxQValueAction(stateKey, currentPlayer);
-//                //player 2 looks for the minimum Q values (because it gets a negative reward when winning)
+//                //AI 2 looks for the minimum Q values (because it gets a negative reward when winning)
 //            else return getMinQValueAction(stateKey, currentPlayer);
 //            //else if (currentPlayer == 2) return getMaxQValueAction(stateKey, currentPlayer);
 //        }
@@ -213,9 +213,9 @@ public class GomokuAI_NN extends GomokuAI_2{
 }
 //    int chooseAction(String stateKey, int currentPlayer, int [] currentState, int [] validActions) {
 //        if (learningMode == false) {
-//            //player 1 looks for the maximum Q values (because it gets a positive reward when winning)
+//            //AI 1 looks for the maximum Q values (because it gets a positive reward when winning)
 //            if (currentPlayer == 1) return getMaxQValueAction(stateKey, validActions);
-//                //player 2 looks for the minimum Q values (because it gets a negative reward when winning)
+//                //AI 2 looks for the minimum Q values (because it gets a negative reward when winning)
 //            else return getMinQValueAction(stateKey, validActions);
 //        }
 //
@@ -259,7 +259,7 @@ public class GomokuAI_NN extends GomokuAI_2{
 ////        }
 //    }
 
-//    //getMinQValue only used by player 2
+//    //getMinQValue only used by AI 2
 //    double getMinQValue(String stateKey, int [] state){
 //        double [] nnOutputs = network2.compute(new BasicMLData(stringKeyToDoubleKey(stateKey))).getData();
 //        int [] validActions = getValidActions(state);
@@ -270,7 +270,7 @@ public class GomokuAI_NN extends GomokuAI_2{
 //        return  minQValue;
 //    }
 //
-//    //getMaxQValue only used by player 1
+//    //getMaxQValue only used by AI 1
 //    double getMaxQValue(String stateKey, int [] state){
 //        double [] nnOutputs = network1.compute(new BasicMLData(stringKeyToDoubleKey(stateKey))).getData();
 //        int [] validActions = getValidActions(state);
@@ -310,7 +310,7 @@ public class GomokuAI_NN extends GomokuAI_2{
         ResilientPropagation train;
         int epoch = 0;
 
-        //train player 1 Conway_V2_base
+        //train AI 1 Conway_V2_base
         if (player == 1) {
             stateKeys = new double[qMap.size()][GAMEBOARD_SIZE];
             qValues = new double[qMap.size()][GAMEBOARD_SIZE];
@@ -330,7 +330,7 @@ public class GomokuAI_NN extends GomokuAI_2{
             train = new ResilientPropagation(network1, trainingSet);
         }
 
-        //train player 2 Conway_V2_base
+        //train AI 2 Conway_V2_base
         else {
             stateKeys = new double[qMap2.size()][GAMEBOARD_SIZE];
             qValues = new double[qMap2.size()][GAMEBOARD_SIZE];
@@ -360,14 +360,14 @@ public class GomokuAI_NN extends GomokuAI_2{
     }
 
 //    //train the Conway_V2_base with a single state key and qValues
-//    void trainNN(double [] stateKey, double [] qValues, int player){
+//    void trainNN(double [] stateKey, double [] qValues, int AI){
 //        double [][] trainingInput = {stateKey};
 //        double [][] trainingIdeal = {qValues};
 //        MLDataSet trainingSet = new BasicMLDataSet(trainingInput, trainingIdeal);
 //
 //        ResilientPropagation train;
 //
-//        if (player == 1) train = new ResilientPropagation(network1, trainingSet);
+//        if (AI == 1) train = new ResilientPropagation(network1, trainingSet);
 //        else train = new ResilientPropagation(network2, trainingSet);
 //
 //        //int epoch = 1;
@@ -381,12 +381,12 @@ public class GomokuAI_NN extends GomokuAI_2{
 //    }
 //
 //    //train the Conway_V2_base with multiple state keys and qValues
-//    void trainNN(double [][] stateKeys, double [][] qValues, int player){
+//    void trainNN(double [][] stateKeys, double [][] qValues, int AI){
 //        double [][] trainingInput = stateKeys.clone();
 //        double [][] trainingIdeal = qValues.clone();
 //        MLDataSet trainingSet = new BasicMLDataSet(trainingInput, trainingIdeal);
 //        ResilientPropagation train;
-//        if (player == 1) train = new ResilientPropagation(network1, trainingSet);
+//        if (AI == 1) train = new ResilientPropagation(network1, trainingSet);
 //        else train = new ResilientPropagation(network2, trainingSet);
 //
 //        //int epoch = 1;
