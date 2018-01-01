@@ -3,36 +3,35 @@ package com.JavaBeginnerToPro.GomoWhiz.Version_1;
 import com.JavaBeginnerToPro.GomoWhiz.ConwayAI_V2.PatternDetect;
 import com.JavaBeginnerToPro.GomoWhiz.ConwayAI_V2.QMapIO;
 import com.JavaBeginnerToPro.GomoWhiz.ConwayAI_V2.QTable_AI;
-import com.JavaBeginnerToPro.GomoWhiz.minMax.Agent;
 import com.JavaBeginnerToPro.GomoWhiz.minMax.SmartAgent;
 import org.encog.ml.data.basic.BasicMLData;
 import org.encog.neural.networks.BasicNetwork;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+
 import static org.encog.persist.EncogDirectoryPersistence.loadObject;
 
 
 public class Playground {
-    private AI AI1;
-
-
-
-    private AI AI2;
-
-    public static final int GAMES_TO_PLAY = 10000;
+    public static final int GAMES_TO_PLAY = 100;
     public static final int BOARD_WIDTH = 15;
     public static final int BOARD_SIZE = BOARD_WIDTH * BOARD_WIDTH;
     public static final int WIN_REQUIRE = 5;
-    public boolean displayBoard = false;
-    public int player1Win = 0;
-    public int player2Win = 0;
-    public int tie = 0;
+
+    private int player1Win = 0;
+    private int player2Win = 0;
+    private int tie = 0;
+
+    private boolean displayBoard = false;
     private static int gamesPlayed = 0;
     private static float player1WinPercent = 0;
     private static float player2WinPercent = 0;
 
+    private AI AI1;
+    private AI AI2;
     private int[] state;
     private java.util.Random rand;
     private PureGUI gui;
@@ -42,8 +41,9 @@ public class Playground {
         Playground playground = new Playground();
         if (playground.displayBoard == true) playground.gui = new PureGUI(playground.state, "Player 1 win percent", "Player 2 win percent", "Games played");
 
-        playground.setAI1(new ForcedActions(1));
-        playground.setAI2(new QTableWithForcedActions(2, "qMap_20k"));
+        playground.setAI1(new QTableWithForcedActions(1, "qMap_20k"));
+        //playground.setAI2(new QTableWithForcedActions(2, "qMap_20k"));
+        playground.setAI2(new MinMaxWithForcedActions(2));
 
         long startTime = System.currentTimeMillis();
 
@@ -60,6 +60,7 @@ public class Playground {
         rand = new java.util.Random();
         state = new int[BOARD_SIZE];
     }
+
     public AI getAI1() {
         return AI1;
     }
@@ -118,10 +119,12 @@ public class Playground {
                 player1WinPercent = (float) player1Win / gamesPlayed * 100;
                 player2WinPercent = (float) player2Win / gamesPlayed * 100;
             }
-            if(gui==null){
+
+            if(gui == null){
                 try {
                     Thread.sleep(200);
-                }catch (Exception e){
+                }
+                catch (Exception e){
 
                 }
             }
@@ -343,7 +346,7 @@ class MinMaxWithForcedActions extends AI {
     MinMaxWithForcedActions(int ourPlayerNum) {
         this.ourPlayerNum = ourPlayerNum;
         smartAgent = new SmartAgent(15, 5, ourPlayerNum);
-        smartAgent.setMinimax(2);
+        smartAgent.setMinimax(1);
     }
     public int move(int[] state) {
         if (PatternDetect.isEmpty(state)) return state.length / 2;

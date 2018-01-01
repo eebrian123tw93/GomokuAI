@@ -1,19 +1,28 @@
 package com.JavaBeginnerToPro.GomoWhiz.Version_1;
 
-import org.jdesktop.swingx.JXPanel;
-
-import javax.imageio.ImageIO;
-import javax.swing.*;
+import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JPanel;
+import javax.swing.SwingConstants;
+import javax.swing.Timer;
 import javax.swing.border.BevelBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Image;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.Date;
 import java.util.Map;
@@ -22,9 +31,8 @@ import java.util.TreeMap;
 //import java.util.Timer;
 
 public class GomokuGUI extends JFrame implements KeyListener {
+
     BoardPanel panel;
-
-
     Playground playground;
     Mode mode;
     Player playerOne;

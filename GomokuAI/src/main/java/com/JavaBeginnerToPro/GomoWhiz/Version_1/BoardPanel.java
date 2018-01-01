@@ -1,12 +1,18 @@
 package com.JavaBeginnerToPro.GomoWhiz.Version_1;
 
 import org.jdesktop.swingx.JXPanel;
-import org.jdesktop.swingx.border.DropShadowBorder;
 
 import javax.imageio.ImageIO;
-import javax.swing.*;
+import javax.swing.BoxLayout;
 import javax.swing.border.BevelBorder;
-import java.awt.*;
+import java.awt.BasicStroke;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.geom.AffineTransform;
