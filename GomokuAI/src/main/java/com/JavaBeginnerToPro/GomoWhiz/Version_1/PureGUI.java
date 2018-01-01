@@ -87,9 +87,10 @@ public class PureGUI extends JFrame implements KeyListener {
         statusPanel.setBackground(Color.WHITE);
         statusPanel.setBorder(new BevelBorder(BevelBorder.LOWERED));
         jFrame.getContentPane().add(statusPanel, BorderLayout.SOUTH);
-        statusPanel.setPreferredSize(new Dimension(jFrame.getWidth(), 30));
+        statusPanel.setPreferredSize(new Dimension(jFrame.getWidth(), 60));
         statusPanel.setLayout(new BoxLayout(statusPanel, BoxLayout.X_AXIS));
         statusLabel = new JLabel("Info");
+        statusLabel.setFont(new Font(statusLabel.getFont().getFontName(), Font.PLAIN, 24));
         statusLabel.setHorizontalAlignment(SwingConstants.LEFT);
         statusPanel.add(statusLabel);
     }

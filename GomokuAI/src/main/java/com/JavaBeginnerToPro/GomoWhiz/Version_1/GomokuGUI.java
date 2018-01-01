@@ -1,8 +1,24 @@
 package com.JavaBeginnerToPro.GomoWhiz.Version_1;
 
-import javax.swing.*;
+import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JPanel;
+import javax.swing.SwingConstants;
+import javax.swing.Timer;
 import javax.swing.border.BevelBorder;
-import java.awt.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Image;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -15,9 +31,8 @@ import java.util.TreeMap;
 //import java.util.Timer;
 
 public class GomokuGUI extends JFrame implements KeyListener {
+
     BoardPanel panel;
-
-
     Playground playground;
     Mode mode;
     Player playerOne;
@@ -26,12 +41,13 @@ public class GomokuGUI extends JFrame implements KeyListener {
     Map<String, String> statusString;
     Timer timerTime;
     Timer screenUpdate;
-    private int screenDelay = 700;
-
+    private int screenDelay = 100;
+    String brainTextPath;
 
     enum Mode {
         Human_VS_Human, AI_VS_AI, AI_VS_Human;
     }
+
     enum Player {
         Random, human, Minmax, PureQTable, ForcedActions, MinMaxWithForcedActions, QTableWithForcedActions;
     }
@@ -81,9 +97,11 @@ public class GomokuGUI extends JFrame implements KeyListener {
         timerTime.start();
         createMenuBar();
         createStatusBar();
+        updatePlayer();
         update();
         setVisible(true);
     }
+
 
     public void createMenuBar() {
         JMenuBar menuBar = new JMenuBar();
@@ -114,6 +132,11 @@ public class GomokuGUI extends JFrame implements KeyListener {
             repaint();
             update();
             if (mode == Mode.AI_VS_AI) {
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
                 new Thread() {
                     @Override
                     public void run() {
@@ -155,8 +178,8 @@ public class GomokuGUI extends JFrame implements KeyListener {
         Human_VS_Human_MenuItem.addActionListener((ActionEvent event) -> {
             if (mode != Mode.Human_VS_Human) {
                 mode = Mode.Human_VS_Human;
-                playerTwo=Player.human;
-                playerOne=Player.human;
+                playerTwo = Player.human;
+                playerOne = Player.human;
                 updateStatusBar();
                 update();
             }
@@ -174,12 +197,22 @@ public class GomokuGUI extends JFrame implements KeyListener {
         });
         JMenuItem conwayQTableAI = new JMenuItem("Pure QTable");
         conwayQTableAI.addActionListener((ActionEvent event) -> {
-            playerOne=Player.PureQTable;
+            playerOne = Player.PureQTable;
+            JFileChooser chooser = new JFileChooser();
+            FileNameExtensionFilter filter = new FileNameExtensionFilter(
+                    "文字檔", "txt");
+            chooser.setFileFilter(filter);
+            int returnVal = chooser.showOpenDialog(this);
+            if(returnVal == JFileChooser.APPROVE_OPTION) {
+                System.out.println("You chose to open this file: " +
+                        chooser.getSelectedFile().getName());
+                brainTextPath=chooser.getSelectedFile().getName();
+            }
             updatePlayer();
         });
         JMenuItem forcedActionAI = new JMenuItem("Forced actions");
         forcedActionAI.addActionListener((ActionEvent event) -> {
-            playerOne=Player.ForcedActions;
+            playerOne = Player.ForcedActions;
             updatePlayer();
         });
         JMenuItem minMaxAI = new JMenuItem("MinMax");
@@ -189,12 +222,22 @@ public class GomokuGUI extends JFrame implements KeyListener {
         });
         JMenuItem minMaxForcedAI = new JMenuItem("MinMax with forced actions");
         minMaxForcedAI.addActionListener((ActionEvent event) -> {
-            playerOne=Player.MinMaxWithForcedActions;
+            playerOne = Player.MinMaxWithForcedActions;
             updatePlayer();
         });
         JMenuItem qTableForcedAI = new JMenuItem("QTable with forced actions");
         qTableForcedAI.addActionListener((ActionEvent event) -> {
-            playerOne=Player.QTableWithForcedActions;
+            playerOne = Player.QTableWithForcedActions;
+            JFileChooser chooser = new JFileChooser();
+            FileNameExtensionFilter filter = new FileNameExtensionFilter(
+                    "文字檔", "txt");
+            chooser.setFileFilter(filter);
+            int returnVal = chooser.showOpenDialog(this);
+            if(returnVal == JFileChooser.APPROVE_OPTION) {
+                System.out.println("You chose to open this file: " +
+                        chooser.getSelectedFile().getName());
+                brainTextPath=chooser.getSelectedFile().getName();
+            }
             updatePlayer();
         });
         player1Menu.add(randomAI);
@@ -209,38 +252,58 @@ public class GomokuGUI extends JFrame implements KeyListener {
         JMenu player2Menu = new JMenu("Player2");
         JMenuItem randomAI2 = new JMenuItem("Random");
         randomAI2.addActionListener((ActionEvent event) -> {
-            if(mode==Mode.AI_VS_Human)return;
-            playerTwo=Player.Random;
+            if (mode == Mode.AI_VS_Human) return;
+            playerTwo = Player.Random;
             updatePlayer();
         });
         JMenuItem conwayQTableAI2 = new JMenuItem("Pure QTable");
-        conwayQTableAI2.addActionListener((ActionEvent event)->{
-            if(mode==Mode.AI_VS_Human)return;
-            playerTwo=Player.PureQTable;
+        conwayQTableAI2.addActionListener((ActionEvent event) -> {
+            if (mode == Mode.AI_VS_Human) return;
+            playerTwo = Player.PureQTable;
+            JFileChooser chooser = new JFileChooser();
+            FileNameExtensionFilter filter = new FileNameExtensionFilter(
+                    "文字檔", "txt");
+            chooser.setFileFilter(filter);
+            int returnVal = chooser.showOpenDialog(this);
+            if(returnVal == JFileChooser.APPROVE_OPTION) {
+                System.out.println("You chose to open this file: " +
+                        chooser.getSelectedFile().getName());
+                brainTextPath=chooser.getSelectedFile().getName();
+            }
             updatePlayer();
         });
         JMenuItem forcedActionAI2 = new JMenuItem("Forced actions");
-        forcedActionAI2.addActionListener((ActionEvent event)->{
-            if(mode==Mode.AI_VS_Human)return;
-            playerTwo=Player.ForcedActions;
+        forcedActionAI2.addActionListener((ActionEvent event) -> {
+            if (mode == Mode.AI_VS_Human) return;
+            playerTwo = Player.ForcedActions;
             updatePlayer();
         });
         JMenuItem minMaxAI2 = new JMenuItem("MinMax");
-        minMaxAI2.addActionListener((ActionEvent event)->{
-            if(mode==Mode.AI_VS_Human)return;
-            playerTwo=Player.Minmax;
+        minMaxAI2.addActionListener((ActionEvent event) -> {
+            if (mode == Mode.AI_VS_Human) return;
+            playerTwo = Player.Minmax;
             updatePlayer();
         });
         JMenuItem minMaxForcedAI2 = new JMenuItem("MinMax with forced actions");
-        minMaxForcedAI2.addActionListener((ActionEvent event)->{
-            if(mode==Mode.AI_VS_Human)return;
-            playerTwo=Player.MinMaxWithForcedActions;
+        minMaxForcedAI2.addActionListener((ActionEvent event) -> {
+            if (mode == Mode.AI_VS_Human) return;
+            playerTwo = Player.MinMaxWithForcedActions;
             updatePlayer();
         });
         JMenuItem qTableForcedAI2 = new JMenuItem("QTable with forced actions");
-        qTableForcedAI2.addActionListener((ActionEvent event)->{
-            if(mode==Mode.AI_VS_Human)return;
-            playerTwo=Player.QTableWithForcedActions;
+        qTableForcedAI2.addActionListener((ActionEvent event) -> {
+            if (mode == Mode.AI_VS_Human) return;
+            playerTwo = Player.QTableWithForcedActions;
+            JFileChooser chooser = new JFileChooser();
+            FileNameExtensionFilter filter = new FileNameExtensionFilter(
+                    "文字檔", "txt" );
+            chooser.setFileFilter(filter);
+            int returnVal = chooser.showOpenDialog(this);
+            if(returnVal == JFileChooser.APPROVE_OPTION) {
+                System.out.println("You chose to open this file: " +
+                        chooser.getSelectedFile().getName());
+                brainTextPath=chooser.getSelectedFile().getName();
+            }
             updatePlayer();
         });
 
@@ -283,15 +346,15 @@ public class GomokuGUI extends JFrame implements KeyListener {
         statusPanel.setLayout(new BoxLayout(statusPanel, BoxLayout.X_AXIS));
 
         statusString.put("Mode:", mode.toString());
-        statusString.put("Player1:", playerOne.toString());
-        statusString.put("Player2:", playerTwo.toString());
+        statusString.put("Player1 | BLACK :", playerOne.toString());
+        statusString.put("Player2 | WHITE:", playerTwo.toString());
         statusString.put("Time:", new Date().toString());
         String status = "";
         for (Map.Entry<String, String> entry : statusString.entrySet()) {
             status += "\t[" + entry.getKey() + " " + entry.getValue() + "]\t";
         }
         statusLabel = new JLabel(status);
-        statusLabel.setHorizontalAlignment(SwingConstants.LEFT);
+        statusLabel.setHorizontalAlignment(SwingConstants.CENTER);
         statusPanel.add(statusLabel);
 //        jFrame.setVisible(true);
     }
@@ -299,8 +362,8 @@ public class GomokuGUI extends JFrame implements KeyListener {
     public void updateStatusBar() {
         String status = "";
         statusString.replace("Mode:", mode.toString());
-        statusString.replace("Player1:", playerOne.toString());
-        statusString.replace("Player2:", playerTwo.toString());
+        statusString.replace("Player1 | BLACK :", playerOne.toString());
+        statusString.replace("Player2 | WHITE:", playerTwo.toString());
         statusString.replace("Time:", new Date().toString());
         for (Map.Entry<String, String> entry : statusString.entrySet()) {
             status += "\t[" + entry.getKey() + " " + entry.getValue() + "]\t";
@@ -308,7 +371,7 @@ public class GomokuGUI extends JFrame implements KeyListener {
         statusLabel.setText(status);
     }
 
-    public void updatePlayer(){
+    public void updatePlayer() {
         switch (playerOne) {
             case Random:
                 playground.setAI1(new Random());
@@ -317,12 +380,16 @@ public class GomokuGUI extends JFrame implements KeyListener {
                 playground.setAI1(new MinMax(1));
                 break;
             case PureQTable:
+                playground.setAI1(new PureQTable(1, brainTextPath));
                 break;
             case MinMaxWithForcedActions:
+                playground.setAI1(new MinMaxWithForcedActions(1));
                 break;
             case QTableWithForcedActions:
+                playground.setAI1(new QTableWithForcedActions(1, brainTextPath));
                 break;
             case ForcedActions:
+                playground.setAI1(new ForcedActions(1));
                 break;
             default:
                 break;
@@ -332,15 +399,19 @@ public class GomokuGUI extends JFrame implements KeyListener {
                 playground.setAI2(new Random());
                 break;
             case Minmax:
-                playground.setAI1(new MinMax(2));
+                playground.setAI2(new MinMax(2));
                 break;
             case PureQTable:
+                playground.setAI2(new PureQTable(2, brainTextPath));
                 break;
             case MinMaxWithForcedActions:
+                playground.setAI2(new MinMaxWithForcedActions(2));
                 break;
             case QTableWithForcedActions:
+                playground.setAI2(new QTableWithForcedActions(2, brainTextPath));
                 break;
             case ForcedActions:
+                playground.setAI2(new ForcedActions(2));
                 break;
             default:
                 break;
@@ -349,7 +420,8 @@ public class GomokuGUI extends JFrame implements KeyListener {
 
     public void update() {
         if (mode == Mode.AI_VS_Human) {
-            panel = new PlayWithHumanBoardPanel(playground.getState());
+            panel = new PlayWithHumanBoardPanel(playground.getState(),playground);
+            ((PlayWithHumanBoardPanel)panel).setAI();
             if (getContentPane().getComponentCount() > 1) {
                 getContentPane().remove(1);
             }
@@ -441,5 +513,7 @@ public class GomokuGUI extends JFrame implements KeyListener {
             System.out.println("An exception occurred while trying to toggle full screen mode");
         }
     }
+
+
 }
 

@@ -25,14 +25,14 @@ public class QMapIO {
         }
         try (Stream<String> lines = Files.lines (path1, StandardCharsets.UTF_8))
         {
-            System.out.println("Started loading brain");
+            System.out.println("Started loading " + path);
             qTable=new HashMap<>();
             for (String line : (Iterable<String>) lines::iterator)
             {
                 String row[] = line.split(":");
                 qTable.put(row[0], Double.parseDouble(row[1]));
             }
-            System.out.println("Done loading brain");
+            System.out.println("Done loading " + path);
 
         }catch (Exception e){
             e.printStackTrace();

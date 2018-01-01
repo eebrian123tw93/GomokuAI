@@ -15,6 +15,8 @@ public class Agent {
         this.isFirst = isFirst;
         this.numplayer = numplayer;
         this.numOpponent = numplayer == 1 ? 2 : 1;
+        Board.numplayer=numplayer;
+        Board.numOppenent=numOpponent;
     }
 
     public String receiveTurn(String move) {
