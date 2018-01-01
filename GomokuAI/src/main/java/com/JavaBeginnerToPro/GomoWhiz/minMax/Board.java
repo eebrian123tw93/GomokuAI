@@ -808,9 +808,6 @@ public class Board implements Comparator<Board.ActionValue> {
         long zobrist[][] = new long[3][15 * 15];
         long max = (long) Math.pow(2, 63) - 1;
         long min = (long) Math.pow(2, 62);
-        System.out.println(Long.MAX_VALUE);
-        System.out.println(max);
-        System.out.println(min);
         for (int i = 0; i < zobrist.length; i++) {
             for (int j = 0; j < zobrist[i].length; j++) {
                 zobrist[i][j] = (long) (Math.random() * (max - min + 1)) + min;

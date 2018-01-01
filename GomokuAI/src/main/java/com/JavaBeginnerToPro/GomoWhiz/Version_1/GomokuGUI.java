@@ -1,24 +1,9 @@
 package com.JavaBeginnerToPro.GomoWhiz.Version_1;
 
-import javax.swing.BoxLayout;
-import javax.swing.ImageIcon;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JPanel;
-import javax.swing.SwingConstants;
-import javax.swing.Timer;
+import javax.swing.*;
 import javax.swing.border.BevelBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Image;
-import java.awt.Window;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -43,6 +28,7 @@ public class GomokuGUI extends JFrame implements KeyListener {
     Timer screenUpdate;
     private int screenDelay = 100;
     String brainTextPath;
+    JFileChooser chooser;
 
     enum Mode {
         Human_VS_Human, AI_VS_AI, AI_VS_Human;
@@ -197,18 +183,10 @@ public class GomokuGUI extends JFrame implements KeyListener {
         });
         JMenuItem conwayQTableAI = new JMenuItem("Pure QTable");
         conwayQTableAI.addActionListener((ActionEvent event) -> {
-            playerOne = Player.PureQTable;
-            JFileChooser chooser = new JFileChooser();
-            FileNameExtensionFilter filter = new FileNameExtensionFilter(
-                    "文字檔", "txt");
-            chooser.setFileFilter(filter);
-            int returnVal = chooser.showOpenDialog(this);
-            if(returnVal == JFileChooser.APPROVE_OPTION) {
-                System.out.println("You chose to open this file: " +
-                        chooser.getSelectedFile().getName());
-                brainTextPath=chooser.getSelectedFile().getName();
+            if (jFileChooserDialog()) {
+                playerOne = Player.PureQTable;
+                updatePlayer();
             }
-            updatePlayer();
         });
         JMenuItem forcedActionAI = new JMenuItem("Forced actions");
         forcedActionAI.addActionListener((ActionEvent event) -> {
@@ -227,18 +205,11 @@ public class GomokuGUI extends JFrame implements KeyListener {
         });
         JMenuItem qTableForcedAI = new JMenuItem("QTable with forced actions");
         qTableForcedAI.addActionListener((ActionEvent event) -> {
-            playerOne = Player.QTableWithForcedActions;
-            JFileChooser chooser = new JFileChooser();
-            FileNameExtensionFilter filter = new FileNameExtensionFilter(
-                    "文字檔", "txt");
-            chooser.setFileFilter(filter);
-            int returnVal = chooser.showOpenDialog(this);
-            if(returnVal == JFileChooser.APPROVE_OPTION) {
-                System.out.println("You chose to open this file: " +
-                        chooser.getSelectedFile().getName());
-                brainTextPath=chooser.getSelectedFile().getName();
+            if (jFileChooserDialog()) {
+                playerOne = Player.QTableWithForcedActions;
+                updatePlayer();
             }
-            updatePlayer();
+
         });
         player1Menu.add(randomAI);
         player1Menu.add(conwayQTableAI);
@@ -259,18 +230,12 @@ public class GomokuGUI extends JFrame implements KeyListener {
         JMenuItem conwayQTableAI2 = new JMenuItem("Pure QTable");
         conwayQTableAI2.addActionListener((ActionEvent event) -> {
             if (mode == Mode.AI_VS_Human) return;
-            playerTwo = Player.PureQTable;
-            JFileChooser chooser = new JFileChooser();
-            FileNameExtensionFilter filter = new FileNameExtensionFilter(
-                    "文字檔", "txt");
-            chooser.setFileFilter(filter);
-            int returnVal = chooser.showOpenDialog(this);
-            if(returnVal == JFileChooser.APPROVE_OPTION) {
-                System.out.println("You chose to open this file: " +
-                        chooser.getSelectedFile().getName());
-                brainTextPath=chooser.getSelectedFile().getName();
+
+            if (jFileChooserDialog()) {
+                playerTwo = Player.PureQTable;
+                updatePlayer();
             }
-            updatePlayer();
+
         });
         JMenuItem forcedActionAI2 = new JMenuItem("Forced actions");
         forcedActionAI2.addActionListener((ActionEvent event) -> {
@@ -293,18 +258,11 @@ public class GomokuGUI extends JFrame implements KeyListener {
         JMenuItem qTableForcedAI2 = new JMenuItem("QTable with forced actions");
         qTableForcedAI2.addActionListener((ActionEvent event) -> {
             if (mode == Mode.AI_VS_Human) return;
-            playerTwo = Player.QTableWithForcedActions;
-            JFileChooser chooser = new JFileChooser();
-            FileNameExtensionFilter filter = new FileNameExtensionFilter(
-                    "文字檔", "txt" );
-            chooser.setFileFilter(filter);
-            int returnVal = chooser.showOpenDialog(this);
-            if(returnVal == JFileChooser.APPROVE_OPTION) {
-                System.out.println("You chose to open this file: " +
-                        chooser.getSelectedFile().getName());
-                brainTextPath=chooser.getSelectedFile().getName();
+            if (jFileChooserDialog()) {
+                playerTwo = Player.QTableWithForcedActions;
+                updatePlayer();
             }
-            updatePlayer();
+
         });
 
         JMenuItem human2 = new JMenuItem("Human");
@@ -349,26 +307,26 @@ public class GomokuGUI extends JFrame implements KeyListener {
         statusString.put("Player1 | BLACK :", playerOne.toString());
         statusString.put("Player2 | WHITE:", playerTwo.toString());
         statusString.put("Time:", new Date().toString());
-        String status = "";
+        StringBuilder stringBuilder = new StringBuilder();
         for (Map.Entry<String, String> entry : statusString.entrySet()) {
-            status += "\t[" + entry.getKey() + " " + entry.getValue() + "]\t";
+            stringBuilder.append("\t[").append(entry.getKey()).append(" ").append(entry.getValue()).append("]\t");
         }
-        statusLabel = new JLabel(status);
+        statusLabel = new JLabel(stringBuilder.toString());
         statusLabel.setHorizontalAlignment(SwingConstants.CENTER);
         statusPanel.add(statusLabel);
 //        jFrame.setVisible(true);
     }
 
     public void updateStatusBar() {
-        String status = "";
         statusString.replace("Mode:", mode.toString());
         statusString.replace("Player1 | BLACK :", playerOne.toString());
         statusString.replace("Player2 | WHITE:", playerTwo.toString());
         statusString.replace("Time:", new Date().toString());
+        StringBuilder stringBuilder = new StringBuilder();
         for (Map.Entry<String, String> entry : statusString.entrySet()) {
-            status += "\t[" + entry.getKey() + " " + entry.getValue() + "]\t";
+            stringBuilder.append("\t[").append(entry.getKey()).append(" ").append(entry.getValue()).append("]\t");
         }
-        statusLabel.setText(status);
+        statusLabel.setText(stringBuilder.toString());
     }
 
     public void updatePlayer() {
@@ -420,8 +378,8 @@ public class GomokuGUI extends JFrame implements KeyListener {
 
     public void update() {
         if (mode == Mode.AI_VS_Human) {
-            panel = new PlayWithHumanBoardPanel(playground.getState(),playground);
-            ((PlayWithHumanBoardPanel)panel).setAI();
+            panel = new PlayWithHumanBoardPanel(playground.getState(), playground);
+            ((PlayWithHumanBoardPanel) panel).setAI();
             if (getContentPane().getComponentCount() > 1) {
                 getContentPane().remove(1);
             }
@@ -435,6 +393,23 @@ public class GomokuGUI extends JFrame implements KeyListener {
             getContentPane().add(panel, BorderLayout.CENTER, 1);
             repaint();
         }
+    }
+
+    public boolean jFileChooserDialog() {
+        if (chooser == null) {
+            chooser = new JFileChooser(System.getProperty("user.home")+"/Desktop");
+//            FileNameExtensionFilter filter = new FileNameExtensionFilter(
+//                    "文字檔", "txt");
+//            chooser.setFileFilter(filter);
+        }
+        int returnVal = chooser.showOpenDialog(this);
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+            System.out.println("You chose to open this file: " +
+                    chooser.getSelectedFile().getName());
+            brainTextPath = chooser.getSelectedFile().getName();
+            return true;
+        }
+        return false;
     }
 
     @Override
