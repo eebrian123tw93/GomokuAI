@@ -1,56 +1,81 @@
-package com.JavaBeginnerToPro.GomoWhiz.ConwayAI_V2;
+package com.JavaBeginnerToPro.GomoWhiz.utilities;
 
-import com.JavaBeginnerToPro.GomoWhiz.Version_1.DetectWin_2;
+import com.JavaBeginnerToPro.GomoWhiz.QLearning.PatternDetect;
+import com.JavaBeginnerToPro.GomoWhiz.QLearning.QMapIO;
 
-import java.util.Arrays;
-import java.util.Random;
+import java.util.Map;
 
-public abstract class Conway_V2_base {
-    public static final int BOARD_WIDTH = 15;
-    public static final int BOARD_SIZE = BOARD_WIDTH * BOARD_WIDTH;
-    public static final int WIN_REQUIRE = 5;
-    protected Random rand = new Random();
+public class PureQTable extends AI {
+    //only gets moves from qMap, otherwise random
+    private Map<String, Double> qMap;
+    private int ourPlayerNum;
 
-    public static void main(String[] args) {
-        int [][] state2D = {
-                {3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3}, //0
-                {3,2,2,1,0,0,0,0,0,0,0,0,0,0,0,0,3}, //1
-                {3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3}, //2
-                {3,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,3}, //3
-                {3,0,0,0,0,0,0,0,0,0,1,0,1,0,0,0,3}, //4
-                {3,0,0,0,0,0,0,0,0,0,1,1,1,1,0,0,3}, //5
-                {3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3}, //6
-                {3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3}, //7
-                {3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3}, //8
-                {3,1,1,0,1,0,0,0,0,0,0,0,0,0,0,0,3}, //9
-                {3,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,3}, //10
-                {3,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,3}, //11
-                {3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3}, //12
-                {3,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,3}, //13
-                {3,0,0,0,1,0,0,0,0,0,1,0,0,1,0,0,3}, //14
-                {3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3}, //15
-                {3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3} //16
-        };
+    public PureQTable(int ourPlayerNum, String brainName) {
+        qMap = QMapIO.load(brainName);
+        this.ourPlayerNum = ourPlayerNum;
+    }
 
-        int counter = 0;
-        int[] state = new int[225];
-        for (int i = 1; i < 16; ++i){
-            for (int j = 1; j < 16; ++j){
-                if (state2D[i][j] == 0) state[counter] = 1;
-                else state[counter] = state2D[i][j];
-                ++counter;
+    public int move(int[] state) {
+        if (PatternDetect.isEmpty(state)) return state.length / 2;
+        String stateKey = makeStateKey(state);
+        if (ourPlayerNum == 1 && qMap.get(stateKey) != null) return getMaxQValueAction(state, ourPlayerNum);
+        else if (ourPlayerNum == 2 && qMap.get(stateKey) != null) return getMinQValueAction(state, ourPlayerNum);
+        else return randomMove(state);
+    }
+
+    private String makeStateKey(int[] state) {
+        StringBuilder sb = new StringBuilder();
+        for (int i : PatternDetect.detect(state, 1)) sb.append(Integer.toString(i));
+        for (int i : PatternDetect.detect(state, 2)) sb.append(Integer.toString(i));
+        return sb.toString();
+    }
+    private int getMaxQValueAction(int [] state, int currentPlayer){
+        int[] nextState = state.clone();
+        int[] validActions = getValidActions(state);
+        int maxQAction = -1;
+        double stateMaxQValue = Double.NEGATIVE_INFINITY;
+        double stateQValue;
+
+        for (int i = 0; i < validActions.length; ++i) {
+            nextState[validActions[i]] = currentPlayer;
+            stateQValue = evalState(makeStateKey(nextState));
+            if (stateQValue > stateMaxQValue) {
+                stateMaxQValue = stateQValue;
+                maxQAction = validActions[i];
             }
+            nextState[validActions[i]] = 0;
         }
 
-        System.out.println(Arrays.toString(getValidActions(state)));
+        return maxQAction;
+    }
+    private int getMinQValueAction(int [] state, int currentPlayer){
+        int[] nextState = state.clone();
+        int[] validActions = getValidActions(state);
+        int minQAction = -1;
+        double stateMinQValue = Double.POSITIVE_INFINITY;
+        double stateQValue;
 
+        for (int i = 0; i < validActions.length; ++i) {
+            nextState[validActions[i]] = currentPlayer;
+            stateQValue = evalState(makeStateKey(nextState));
+            if (stateQValue < stateMinQValue) {
+                stateMinQValue = stateQValue;
+                minQAction = validActions[i];
+            }
+            nextState[validActions[i]] = 0;
         }
+        return minQAction;
+    }
+    private double evalState(String stateKey){
+        //if state has not happened before
+        if (qMap.get(stateKey) == null)
+            qMap.put(stateKey, (rand.nextDouble() * 0.3) - 0.15); //-0.15 ~ +0.15
 
-    abstract int chooseAction(int [] state, int currentPlayer);
-    static int [] getValidActions(int [] state){
-        int [][] state2D = DetectWin_2.convert1Dto2D(state, BOARD_WIDTH);
+        return qMap.get(stateKey);
+    }
+    private static int [] getValidActions(int [] state){
+        int [][] state2D = DetectWin.convert1Dto2D(state, Playground.BOARD_WIDTH);
         int [] validActions;
-        //boolean empty = true;
         int upperBound = 0;
         int lowerBound = state2D.length;
         int leftBound = 0;
@@ -64,11 +89,6 @@ public abstract class Conway_V2_base {
 
         else {
             boolean found = false;
-
-            //0, 1, 2, 3...
-            //int[] validActionNums = new int[Conway_V2_base.BOARD_WIDTH * Conway_V2_base.BOARD_WIDTH];
-            //for (int i = 0; i < validActionNums.length; ++i) validActionNums[i] = i;
-            //int[][] validActionNums2D = DetectWin_2.convert1Dto2D(validActionNums, Conway_V2_base.BOARD_WIDTH);
 
             //find upper bound
             for (int row = 0; row < state2D.length - 2; ++row) {
@@ -121,8 +141,6 @@ public abstract class Conway_V2_base {
                 if (found == true) break;
             }
 
-            //validActions = new int[(lowerBound - upperBound + 1) * (rightBound - leftBound + 1)];
-
             int emptySpacesInsideValidRegion = 0;
             for (int row = upperBound; row <= lowerBound; ++row){
                 for (int col = leftBound; col <= rightBound; ++col){
@@ -131,7 +149,6 @@ public abstract class Conway_V2_base {
             }
 
             validActions = new int[emptySpacesInsideValidRegion];
-
 
             int counter = 0;
             int index = 0;
@@ -147,16 +164,7 @@ public abstract class Conway_V2_base {
                 }
             }
 
-//            System.out.println("upper " + upperBound);
-//            System.out.println("lower " + lowerBound);
-//            System.out.println("left " + leftBound);
-//            System.out.println("right " + rightBound);
             return validActions;
         }
-    }
-    int randomMove(int[] state) {
-        //ArrayList<Integer> moveList = new ArrayList<>();
-        int [] validActions = getValidActions(state);
-        return validActions[rand.nextInt(validActions.length)];
     }
 }

@@ -1,6 +1,8 @@
 package com.JavaBeginnerToPro.GomoWhiz.minMax;
 
-import com.JavaBeginnerToPro.GomoWhiz.Version_1.GomokuAI;
+import com.JavaBeginnerToPro.GomoWhiz.QLearning.AI_Base;
+import com.JavaBeginnerToPro.GomoWhiz.utilities.DetectWin;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -42,9 +44,9 @@ public class Minimax {
     }
 
     public int min(Board board, int deep) {
-        if (DetectWin_2.detectWin(transfer(board), board.n, board.winRequire, numplayer)) {
+        if (DetectWin.detectWin(transfer(board), board.n, board.winRequire, numplayer)) {
             return 1;
-        } else if (DetectWin_2.detectWin(transfer(board), board.n, board.winRequire, numOpponent)) {
+        } else if (DetectWin.detectWin(transfer(board), board.n, board.winRequire, numOpponent)) {
             return -1;
         }
         if (deep == 0) {
@@ -66,9 +68,9 @@ public class Minimax {
     }
 
     public int max(Board board, int deep) {
-        if (DetectWin_2.detectWin(transfer(board), board.n, board.winRequire, numplayer)) {
+        if (DetectWin.detectWin(transfer(board), board.n, board.winRequire, numplayer)) {
             return 1;
-        } else if (DetectWin_2.detectWin(transfer(board), board.n, board.winRequire, numOpponent)) {
+        } else if (DetectWin.detectWin(transfer(board), board.n, board.winRequire, numOpponent)) {
             return -1;
         }
         if (deep == 0) {
@@ -107,7 +109,7 @@ public class Minimax {
     }
     //'o'=min
     public Board transfer(int[] state) {
-        Board board = new Board(GomokuAI.gameBoardWidth, GomokuAI.winRequire);
+        Board board = new Board(AI_Base.BOARD_WIDTH, AI_Base.WIN_REQUIRE);
         int j = 0, k = 0;
         for (int i = 0; i < state.length; i++) {
 //            board[j][k]=

@@ -1,5 +1,7 @@
 package com.JavaBeginnerToPro.GomoWhiz.minMax;
 
+import com.JavaBeginnerToPro.GomoWhiz.utilities.DetectWin;
+
 import java.util.*;
 
 /**
@@ -134,20 +136,6 @@ public class Board implements Comparator<Board.ActionValue> {
 
         this.currentPlayer = currentPlayer;
         List<Integer> ems = getEmpties();
-
-//        if (currentPlayer == 2) {
-//            List<ActionValue>sort=new ArrayList<>();
-//            for(int i=0;i<ems.size();i++){
-//                sort.add(new ActionValue(ems.get(i),evaluate(ems.get(i),currentPlayer)));
-//            }
-//            Collections.sort(sort, this);
-//            if(sort.size()>0){
-//                ems=new ArrayList<>();
-//                ems.add(sort.get(0).action);
-//            }
-//
-//        }
-
         return ems;
     }
 
@@ -234,7 +222,7 @@ public class Board implements Comparator<Board.ActionValue> {
     public int evaluate(int player) {
         int point = 0;
         if (player == 1) {
-            if (DetectWin_2.detectWin(transfer(this), n, winRequire, player)) {
+            if (DetectWin.detectWin(transfer(this), n, winRequire, player)) {
                 point = Score.FIVE;
                 return point;
             }
@@ -251,7 +239,7 @@ public class Board implements Comparator<Board.ActionValue> {
                 return point;
             }
         } else if (player == 2) {
-            if (DetectWin_2.detectWin(transfer(this), n, winRequire, player)) {
+            if (DetectWin.detectWin(transfer(this), n, winRequire, player)) {
                 point = Score.FIVE;
                 return point;
             }
@@ -276,52 +264,16 @@ public class Board implements Comparator<Board.ActionValue> {
         int y1 = action % n;
         board[x1][y1] = player == 1 ? 'o' : 'x';
         int point = 0;
-//        if (player == 1) {
-//            if (DetectWin_2.detectWin(transfer(this), n, winRequire, player)) {
-//                point = Score.FIVE;
-//                return point;
-//            }
-//            if (DetectBoard_2.detectWin(transfer(this), n, winRequire - 1, player,action)) {
-//                point = Score.FOUR;
-//                return point;
-//            }
-//            if (DetectBoard_2.detectWin(transfer(this), n, winRequire - 2, player,action)) {
-//                point = Score.THREE;
-//                return point;
-//            }
-//            if (DetectBoard_2.detectWin(transfer(this), n, winRequire - 3, player,action)) {
-//                point = Score.TWO;
-//                return point;
-//            }
-//        } else if (player == 2) {
-//            if (DetectWin_2.detectWin(transfer(this), n, winRequire, player)) {
-//                point = Score.FIVE;
-//                return point;
-//            }
-//            if (DetectBoard_2.detectWin(transfer(this), n, winRequire - 1, player,action)) {
-//                point = Score.FOUR;
-//                return point;
-//            }
-//            if (DetectBoard_2.detectWin(transfer(this), n, winRequire - 2, player,action)) {
-//                point = Score.THREE;
-//                return point;
-//            }
-//            if (DetectBoard_2.detectWin(transfer(this), n, winRequire - 3, player,action)) {
-//                point = Score.TWO;
-//                return point;
-//            }
-//        }
         for (int i = 0; i < winStates.size(); i++) {
             point = Math.max(evl(this, winStates.get(i), player), point);
         }
-//        point=evaluate(player);
         board[x1][y1] = '.';
         return point;
     }
 
     public int evaluate(int action, int player, long stateKey) {
         stateKey = stateKey ^ Board.zobrist[player][action];
-        Integer point = 0;
+        Integer point;
         if ((point = zobristHash.get(stateKey)) == null) {
             int evl = evaluate(action, player);
             zobristHash.put(stateKey, evl);
@@ -461,224 +413,12 @@ public class Board implements Comparator<Board.ActionValue> {
         int[] ij = parseMove(move);
         board[ij[0]][ij[1]] = p;
         if (out)
-//			System.out.println(move);
             prevPlayer = p;
-        // sets next and prev player
         if (p == 'x')
             nextPlayer = 'o';
         else
             nextPlayer = 'x';
-//        winner = setWinner(p, ij);
         return move;
-    }
-
-    ArrayList<String> getPlayerPlaces(char p) {
-        ArrayList<String> places = new ArrayList<String>();
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
-                if (board[i][j] == p) {
-                    places.add(i + " " + j);
-                }
-            }
-        }
-        return places;
-    }
-
-    ArrayList<String> lookAround(String pos) {
-        ArrayList<String> adjacent = new ArrayList<String>();
-        int[] coords = parseMove(pos);
-        int i = coords[0];
-        int j = coords[1];
-        String x;
-        if (i - 1 >= 0) {
-            if (board[i - 1][j] == '.') {
-                x = strMove(i - 1, j);
-                adjacent.add(x);
-            }
-            if (j - 1 >= 0) {
-                if (board[i - 1][j - 1] == '.') {
-                    x = strMove(i - 1, j - 1);
-                    adjacent.add(x);
-                }
-            }
-        }
-        if (j + 1 < n) {
-            if (board[i][j + 1] == '.') {
-                x = strMove(i, j + 1);
-                adjacent.add(x);
-            }
-            if (i - 1 >= 0) {
-                if (board[i - 1][j + 1] == '.') {
-                    x = strMove(i - 1, j + 1);
-                    adjacent.add(x);
-                }
-            }
-        }
-        if (i + 1 < n) {
-            if (board[i + 1][j] == '.') {
-                x = strMove(i + 1, j);
-                adjacent.add(x);
-            }
-            if (j + 1 < n) {
-                if (board[i + 1][j + 1] == '.') {
-                    x = strMove(i + 1, j - 1);
-                    adjacent.add(x);
-                }
-            }
-        }
-        return adjacent;
-    }
-
-//    char setWinner(char p, int[] ij) {
-//        if (isRowWin(p, ij) || isColWin(p, ij) || isLtrWin(p, ij)
-//                || isRtlWin(p, ij)) {
-//            return p;
-//        }
-//        if (getEmpties().isEmpty()) {
-//            return 'd';
-//        }
-//        return '.';
-//    }
-
-    boolean isRowWin(char p, int[] ij) {
-        String row = new String(board[ij[0]]);
-        if (row.contains(strMatch(p)))
-            return true;
-        return false;
-    }
-
-    boolean isColWin(char p, int[] ij) {
-        String column = "";
-        for (int i = 0; i < n; i++) {
-            column += board[i][ij[1]];
-        }
-        if (column.contains(strMatch(p)))
-            return true;
-        return false;
-    }
-
-    boolean isLtrWin(char p, int[] ij) {
-        int i = ij[0];
-        int j = ij[1];
-        String match = strMatch(p, m);
-        String diag = "";
-        // going up and left
-        while (i >= 0 && j >= 0) {
-            diag = String.valueOf(board[i][j]) + diag;
-            i--;
-            j--;
-        }
-        i = ij[0] + 1;
-        j = ij[1] + 1;
-        // going down and right
-        while (i < n && j < n) {
-            diag += String.valueOf(board[i][j]);
-            i++;
-            j++;
-        }
-        if (diag.contains(match))
-            return true;
-        return false;
-    }
-
-    boolean isRtlWin(char p, int[] ij) {
-        int i = ij[0];
-        int j = ij[1];
-        String match = strMatch(p, m);
-        String diag = "";
-        // going up and right
-        while (i >= 0 && j < n) {
-            diag = String.valueOf(board[i][j]) + diag;
-            i--;
-            j++;
-        }
-        i = ij[0] + 1;
-        j = ij[1] - 1;
-        // going down and left
-        while (i < n && j >= 0) {
-            diag += String.valueOf(board[i][j]);
-            i++;
-            j--;
-        }
-        if (diag.contains(match))
-            return true;
-        return false;
-    }
-
-    int nearWins(char p, int away) {
-        return nearWinRows(p, away) + nearWinCols(p, away);
-    }
-
-    int nearWinRows(char p, int away) {
-        int count = 0;
-        int length = m - away;
-        String match1 = strMatch(p, length);
-        String match2 = '.' + match1;
-        match1 += '.';
-        for (int i = 0; i < n; i++) {
-            String row = new String(board[i]);
-            if (row.contains(match1)) {
-                int x = row.indexOf(match1);
-                while (x >= 0) {
-                    count++;
-                    x = row.indexOf(match1, match1.length() + x);
-                }
-            }
-            if (row.contains(match2)) {
-                int x = row.indexOf(match2);
-                while (x >= 0) {
-                    count++;
-                    x = row.indexOf(match2, match2.length() + x);
-                }
-            }
-        }
-        return count;
-    }
-
-    int nearWinCols(char p, int away) {
-        int count = 0;
-        int length = m - away;
-        String match1 = strMatch(p, length);
-        String match2 = '.' + match1;
-        match1 += '.';
-        for (int j = 0; j < n; j++) {
-            String column = "";
-            for (int i = 0; i < n; i++) {
-                column += board[i][j];
-            }
-            if (column.contains(match1)) {
-                int x = column.indexOf(match1);
-                while (x >= 0) {
-                    count++;
-                    x = column.indexOf(match1, match1.length() + x);
-                }
-            }
-            if (column.contains(match2)) {
-                int x = column.indexOf(match2);
-                while (x >= 0) {
-                    count++;
-                    x = column.indexOf(match2, match2.length() + x);
-                }
-            }
-        }
-
-        return count;
-    }
-
-    String strMatch(char p) {
-        String match = "";
-        for (int i = 0; i < m; i++) {
-            match += Character.toString(p);
-        }
-        return match;
-    }
-
-    String strMatch(char p, int length) {
-        String match = "";
-        for (int i = 0; i < length; i++) {
-            match += Character.toString(p);
-        }
-        return match;
     }
 
     int[] parseMove(String s) {
@@ -689,10 +429,6 @@ public class Board implements Comparator<Board.ActionValue> {
 
     String strMove(int i, int j) {
         return i + " " + j;
-    }
-
-    String strMove(int[] ij) {
-        return ij[0] + " " + ij[1];
     }
 
     @Override
@@ -782,26 +518,6 @@ public class Board implements Comparator<Board.ActionValue> {
                 winStates.add(winState);
             }
         }
-    }
-
-    public static void main(String[] args) {
-//        UUID a=UUID.randomUUID();
-//        System.out.println(a.getLeastSignificantBits());
-        long zobrist[][] = new long[3][15 * 15];
-        long max = (long) Math.pow(2, 63) - 1;
-        long min = (long) Math.pow(2, 62);
-        System.out.println(Long.MAX_VALUE);
-        System.out.println(max);
-        System.out.println(min);
-        Random random = new Random();
-        for (int i = 0; i < zobrist.length; i++) {
-            for (int j = 0; j < zobrist[i].length; j++) {
-                zobrist[i][j] = (long) (Math.random() * (max - min + 1)) + min;
-//                zobrist[i][j]=UUID.randomUUID().getMostSignificantBits();
-                System.out.println(zobrist[i][j]);
-            }
-        }
-
     }
 
     public static long[][] createZobrist() {

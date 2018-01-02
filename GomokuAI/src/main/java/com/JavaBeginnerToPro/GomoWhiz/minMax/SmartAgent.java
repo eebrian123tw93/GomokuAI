@@ -1,6 +1,7 @@
 package com.JavaBeginnerToPro.GomoWhiz.minMax;
 
-import com.JavaBeginnerToPro.GomoWhiz.Version_1.GomokuAI;
+
+import com.JavaBeginnerToPro.GomoWhiz.QLearning.AI_Base;
 
 import java.util.HashMap;
 
@@ -16,7 +17,7 @@ public class SmartAgent extends Agent {
         super(boardWidth, winRequire, numPlayer);
 //        minimax = new Minimax(numplayer);
 //        minimax=new BrianConway(numplayer);
-//        minimax=new MinimxAlphaBetaPruning(numplayer);
+//        minimax=new MinimaxAlphaBetaPruning(numplayer);
 //        minimax=new Fast(numplayer);
         setMinimax(1);
         Board.winStatesInit();
@@ -41,7 +42,7 @@ public class SmartAgent extends Agent {
     public String pickMove() {
 
 
-        int move = minimax.mm(board, GomokuAI.winRequire);
+        int move = minimax.mm(board, AI_Base.WIN_REQUIRE);
 
         return board.transfer(move);
     }
@@ -67,9 +68,6 @@ public class SmartAgent extends Agent {
         switch (i) {
             case 1:
                 minimax = new MoreFast(numplayer);
-                break;
-            case 2:
-                minimax = new BrianConway(numplayer);
                 break;
             case 3:
                 break;

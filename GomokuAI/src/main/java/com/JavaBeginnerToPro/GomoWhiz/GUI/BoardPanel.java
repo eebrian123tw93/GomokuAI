@@ -1,14 +1,11 @@
-package com.JavaBeginnerToPro.GomoWhiz.Version_1;
+package com.JavaBeginnerToPro.GomoWhiz.GUI;
 
-import org.jdesktop.swingx.JXPanel;
 
 import javax.imageio.ImageIO;
-import javax.swing.BoxLayout;
-import javax.swing.border.BevelBorder;
+import javax.swing.JPanel;
 import java.awt.BasicStroke;
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
@@ -22,7 +19,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Random;
 
-public class BoardPanel extends JXPanel {
+public class BoardPanel extends JPanel {
     boolean playing = false;
 
     public Rectangle[][] getRectangles() {
@@ -51,7 +48,7 @@ public class BoardPanel extends JXPanel {
 
     private int blackPlayer = 1;
     private int whitePlayer = 2;
-    RightPanel rightPanel;
+    //RightPanel rightPanel;
     private BufferedImage blackChessImage;
     private BufferedImage whiteChessImage;
     private BufferedImage woodImage;
@@ -128,9 +125,6 @@ public class BoardPanel extends JXPanel {
         } catch (Exception e) {
 
         }
-        if (rightPanel != null) {
-           updateRightPanel();
-        }
     }
 
     @Override
@@ -190,22 +184,5 @@ public class BoardPanel extends JXPanel {
         for (int i = 0; i < randomTable.length; i++) {
             randomTable[i] = random.nextInt(4);
         }
-    }
-
-
-    public void creatRightPanel() {
-
-            rightPanel = new RightPanel();
-           updateRightPanel();
-
-    }
-    public void updateRightPanel(){
-        rightPanel.setBorder(new BevelBorder(BevelBorder.LOWERED));
-
-        add(rightPanel, BorderLayout.WEST);
-//        getContentPane().add(new RightPanel(),BorderLayout.CENTER);
-        int width = rectangles[0][0].getLocation().x - rightPanel.getX()-rectSize-10;
-        rightPanel.setPreferredSize(new Dimension(width, getHeight()));
-        rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.Y_AXIS));
     }
 }

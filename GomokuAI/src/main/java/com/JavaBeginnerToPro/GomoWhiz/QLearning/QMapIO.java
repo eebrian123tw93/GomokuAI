@@ -1,4 +1,5 @@
-package com.JavaBeginnerToPro.GomoWhiz.ConwayAI_V2;
+package com.JavaBeginnerToPro.GomoWhiz.QLearning;
+
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -11,10 +12,6 @@ import java.util.Map;
 import java.util.stream.Stream;
 
 public class QMapIO {
-//    public static void main(String[] args) {
-//        Map<String, Double> qMap = load("QTable_AI_V2_brain.txt");
-//        save("QTable_AI_V2_brain.txt", qMap);
-//    }
 
     public static Map<String, Double> load(String path) {
         Map<String, Double> qTable=null;
@@ -47,9 +44,11 @@ public class QMapIO {
 
         try {
             Files.deleteIfExists(path1);
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             e.printStackTrace();
         }
+
         if(Files.notExists(path1)){
             try {
                 Files.createFile(path1);

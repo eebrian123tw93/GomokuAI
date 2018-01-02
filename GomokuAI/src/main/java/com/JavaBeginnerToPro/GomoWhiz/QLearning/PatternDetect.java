@@ -1,43 +1,6 @@
-package com.JavaBeginnerToPro.GomoWhiz.ConwayAI_V2;
+package com.JavaBeginnerToPro.GomoWhiz.QLearning;
 
-
-//o----
-//-o----
-//--o---
-//o-o--
-//-o-o--
-//o-oo-
-//-o-oo-
-//-o-oo
-//o-ooo
-//-o-ooo
-//o-oooo
-//o--o-
-//-o--o-
-//o--ooo
-//o---o
-//o---oo
-//o----o
-//oo---
-//-oo---
-//--oo--
-//oo-oo
-//oo-ooo
-//oo--oo
-//ooo--
-//-ooo--
-//oooo-
-//-oooo-
-//ooooo-
-
-/*
-* input a 1d array state, output the patterns detected (an int array)
-* ONLY for 15*15, 5 in a row! (Gomoku rules only)
-* */
-
-import com.JavaBeginnerToPro.GomoWhiz.Version_1.DetectWin_2;
-
-import java.util.Arrays;
+import com.JavaBeginnerToPro.GomoWhiz.utilities.DetectWin;
 
 public class PatternDetect {
     private static int [][] patterns = {
@@ -68,63 +31,18 @@ public class PatternDetect {
             {0, 1, 1, 1, 0, 0}, //24
             {1, 1, 1, 1, 0}, //25
             {0, 1, 1, 1, 1, 0} //26
-            //{1, 1, 1, 1, 1, 0},
     };
-
-
-
-    public static void main(String[] args) {
-//        int [] stateSample = new int[225];
-//        String str = "120221202000200120002002021110212200012102101210000110201002101000202102100200020022120000000120011122120100120112222020010210000022211021200002012101000122012211120010001020010010010100200020221020211101020000000000010111120";
-//        //System.out.println(patterns.length);
-//        for (int i = 0; i < str.length(); ++i){
-//            stateSample[i] = str.charAt(i) - '0';
-//        }
-//
-//
-//        //System.out.println(Arrays.toString(stateSample));
-//        //System.out.println(str);
-//        //System.out.println(Arrays.toString(detect(stateSample, 1)));
-//
-//        int [] detected = detect(stateSample, 1);
-//        for (int i = 0; i < detected.length; ++i){
-//            if (detected[i] == 1) System.out.print(i + ", ");
-//        }
-        int [] state = new int[225];
-        int [] detected = detect(state, 2);
-        for (int i = 0; i < detected.length; ++i){
-            if (detected[i] == 1) System.out.print(i + ", ");
-        }
-    }
 
     public static int[] detect(int [] state, int player){
         int [] patternsDetected = new int[patterns.length];
 
         //state2D is a 2D array representation of the board. The borders around the board are marked by the number 3.
-        int [][] state2D = DetectWin_2.convert1Dto2D(state, Conway_V2_base.BOARD_WIDTH);
-//        int [][] state2D = {
-//                {3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3}, //0
-//                {3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3}, //1
-//                {3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3}, //2
-//                {3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3}, //3
-//                {3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3}, //4
-//                {3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3}, //5
-//                {3,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,3}, //6
-//                {3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3}, //7
-//                {3,0,0,0,0,0,0,0,0,0,0,0,2,0,0,0,3}, //8
-//                {3,0,2,1,0,0,0,0,0,0,0,0,0,0,0,0,3}, //9
-//                {3,0,2,1,0,0,0,0,0,0,2,2,0,1,2,0,3}, //10
-//                {3,0,2,0,1,0,0,0,0,2,0,1,0,0,0,0,3}, //11
-//                {3,0,0,0,0,0,0,1,0,0,0,1,1,1,0,0,3}, //12
-//                {3,0,0,0,0,2,0,0,1,0,0,1,1,1,1,0,3}, //13
-//                {3,0,0,0,1,0,0,0,0,1,1,0,0,0,2,0,3}, //14
-//                {3,0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,3}, //15
-//                {3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3} //16
-//        };
+        int [][] state2D = DetectWin.convert1Dto2D(state, AI_Base.BOARD_WIDTH);
 
         for (int i = 0; i < patterns.length; ++i){
             if (checkPattern(state2D, patterns[i], player)) patternsDetected[i] = 1;
         }
+
         return patternsDetected;
     }
 
@@ -146,8 +64,8 @@ public class PatternDetect {
             }
         }
 
-        for(int row = 1; row < Conway_V2_base.BOARD_WIDTH + 1; ++row){
-            for (int col = 1; col < Conway_V2_base.BOARD_WIDTH + 1; ++col){
+        for(int row = 1; row < AI_Base.BOARD_WIDTH + 1; ++row){
+            for (int col = 1; col < AI_Base.BOARD_WIDTH + 1; ++col){
                 if (state2D[row][col] == pattern[0]){
                     correct = 1;
                     patternArrayIndex = 1;

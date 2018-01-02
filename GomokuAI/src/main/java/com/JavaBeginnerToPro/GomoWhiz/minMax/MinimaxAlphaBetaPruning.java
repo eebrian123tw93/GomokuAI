@@ -1,18 +1,16 @@
 package com.JavaBeginnerToPro.GomoWhiz.minMax;
 
 
-import com.JavaBeginnerToPro.GomoWhiz.ConwayAI_V2.QTable_AI;
+import com.JavaBeginnerToPro.GomoWhiz.utilities.DetectWin;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.*;
-import java.util.stream.Collectors;
 
-public class MinimxAlphaBetaPruning extends Minimax {
+public class MinimaxAlphaBetaPruning extends Minimax {
 
-    public MinimxAlphaBetaPruning(int numplayer) {
+    public MinimaxAlphaBetaPruning(int numplayer) {
         super(numplayer);
     }
 
@@ -47,7 +45,7 @@ public class MinimxAlphaBetaPruning extends Minimax {
 
     public int minAB(Board board, int deep, int alpha, int beta) {
 
-        boolean win = DetectWin_2.detectWin(transfer(board), board.n, board.winRequire, numplayer) || DetectWin_2.detectWin(transfer(board), board.n, board.winRequire, numOpponent);
+        boolean win = DetectWin.detectWin(transfer(board), board.n, board.winRequire, numplayer) || DetectWin.detectWin(transfer(board), board.n, board.winRequire, numOpponent);
 
         int point = 0;
 //        for (Boolean[][] winState : Board.winStates) {
@@ -81,36 +79,36 @@ public class MinimxAlphaBetaPruning extends Minimax {
     public int evaluate(Board board, int player) {
         int point = 0;
         if (player == numplayer) {
-            if (DetectWin_2.detectWin(transfer(board), board.n, board.winRequire, player)) {
+            if (DetectWin.detectWin(transfer(board), board.n, board.winRequire, player)) {
                 point = 6;
                 return point;
             }
-//            if (DetectWin_2.detectWin(transfer(board), board.n, board.winRequire - 1, player)) {
+//            if (DetectWin.detectWin(transfer(board), board.n, board.winRequire - 1, player)) {
 //                point = 4;
 //                return point;
 //            }
-//            if (DetectWin_2.detectWin(transfer(board), board.n, board.winRequire - 2, player)) {
+//            if (DetectWin.detectWin(transfer(board), board.n, board.winRequire - 2, player)) {
 //                point = 3;
 //                return point;
 //            }
-//            if (DetectWin_2.detectWin(transfer(board), board.n, board.winRequire - 3, player)) {
+//            if (DetectWin.detectWin(transfer(board), board.n, board.winRequire - 3, player)) {
 //                point = 2;
 //                return point;
 //            }
         } else if (player == numOpponent) {
-            if (DetectWin_2.detectWin(transfer(board), board.n, board.winRequire, player)) {
+            if (DetectWin.detectWin(transfer(board), board.n, board.winRequire, player)) {
                 point = -5;
                 return point;
             }
-//            if (DetectWin_2.detectWin(transfer(board), board.n, board.winRequire - 1, player)) {
+//            if (DetectWin.detectWin(transfer(board), board.n, board.winRequire - 1, player)) {
 //                point = -4;
 //                return point;
 //            }
-//            if (DetectWin_2.detectWin(transfer(board), board.n, board.winRequire - 2, player)) {
+//            if (DetectWin.detectWin(transfer(board), board.n, board.winRequire - 2, player)) {
 //                point = -3;
 //                return point;
 //            }
-//            if (DetectWin_2.detectWin(transfer(board), board.n, board.winRequire - 3, player)) {
+//            if (DetectWin.detectWin(transfer(board), board.n, board.winRequire - 3, player)) {
 //                point = -2;
 //                return point;
 //            }
@@ -174,7 +172,7 @@ public class MinimxAlphaBetaPruning extends Minimax {
     }
 
     public int maxAB(Board board, int deep, int alpha, int beta) {
-        boolean win = DetectWin_2.detectWin(transfer(board), board.n, board.winRequire, numplayer) || DetectWin_2.detectWin(transfer(board), board.n, board.winRequire, numOpponent);
+        boolean win = DetectWin.detectWin(transfer(board), board.n, board.winRequire, numplayer) || DetectWin.detectWin(transfer(board), board.n, board.winRequire, numOpponent);
         int point = 0;
 //        for (Boolean[][] winState : Board.winStates) {
 //            point += eval(board, winState, -1);
@@ -203,7 +201,7 @@ public class MinimxAlphaBetaPruning extends Minimax {
     }
 }
 
-class Fast extends MinimxAlphaBetaPruning {
+class Fast extends MinimaxAlphaBetaPruning {
     public Fast(int numplayer) {
         super(numplayer);
     }
@@ -335,23 +333,6 @@ class MoreFast extends Fast {
         }
 
         int max = Integer.MIN_VALUE;
-//        for (int i = 0; i < availableCells.size(); i++) {
-//            int action = availableCells.get(i);
-//            Board b = board.clone();
-//            b.placeMove('o', board.transfer(action), false);
-//            int best = minAB(b, d - 1, Integer.MIN_VALUE, Integer.MAX_VALUE);
-//            if (best == max) {
-//                bestAction.add(action);
-//            }
-//            if (best > max) {
-//                max = best;
-//                bestAction.clear();
-//                bestAction.add(action);
-//            }
-//
-//        }
-
-//        ExecutorService es = Executors.newCachedThreadPool();
         ExecutorService es;
 
         es = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors()-1);
@@ -369,7 +350,6 @@ class MoreFast extends Fast {
                     returnObject.best = minAB(b, d - 1, Integer.MIN_VALUE, Integer.MAX_VALUE, stateKey);
                     return returnObject;
                 }
-//                long stateKey;
             });
             es.execute(futureTask);
             list.add(futureTask);
@@ -409,7 +389,7 @@ class MoreFast extends Fast {
     }
 
     public int maxAB(Board board, int deep, int alpha, int beta, long stateKey) {
-        boolean win = DetectWin_2.detectWin(transfer(board), board.n, board.winRequire, numplayer) || DetectWin_2.detectWin(transfer(board), board.n, board.winRequire, numOpponent);
+        boolean win = DetectWin.detectWin(transfer(board), board.n, board.winRequire, numplayer) || DetectWin.detectWin(transfer(board), board.n, board.winRequire, numOpponent);
         int point = 0;
 //        for (Boolean[][] winState : Board.winStates) {
 //            point += eval(board, winState, -1);
@@ -440,7 +420,7 @@ class MoreFast extends Fast {
 
     public int minAB(Board board, int deep, int alpha, int beta, long stateKey) {
 
-        boolean win = DetectWin_2.detectWin(transfer(board), board.n, board.winRequire, numplayer) || DetectWin_2.detectWin(transfer(board), board.n, board.winRequire, numOpponent);
+        boolean win = DetectWin.detectWin(transfer(board), board.n, board.winRequire, numplayer) || DetectWin.detectWin(transfer(board), board.n, board.winRequire, numOpponent);
 
         int point = 0;
 //        for (Boolean[][] winState : Board.winStates) {
@@ -472,134 +452,3 @@ class MoreFast extends Fast {
         return min;
     }
 }
-
-class BrianConway extends Fast {
-    QTable_AI qTable_ai;
-
-    public BrianConway(int numplayer) {
-        super(numplayer);
-//        Path path = Paths.get("QTable_AI_V2_brain.txt").toAbsolutePath();
-//        if (Files.exists(path)) {
-//            QTable_AI.qMap = QMapIO.load("QTable_AI_V2_brain.txt");
-//        }
-        qTable_ai = new QTable_AI();
-        qTable_ai.setQMap("QTable_AI_V2_brain.txt");
-    }
-
-    @Override
-    public int mm(Board board, int d) {
-        List<Integer> bestAction = new ArrayList<>();
-        List<Integer> availableCells = Arrays.stream(qTable_ai.getTopFiveQValueActions(transfer(board), 1)).boxed().collect(Collectors.toList());
-        int max = Integer.MIN_VALUE;
-        ExecutorService es;
-        if (availableCells.size() != 0)
-            es = Executors.newFixedThreadPool(availableCells.size());
-        else
-            es = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
-        List<FutureTask<ReturnObject>> list = new ArrayList<>();
-        for (int i = 0; i < availableCells.size(); i++) {
-            int action = availableCells.get(i);
-            FutureTask<ReturnObject> futureTask = new FutureTask<ReturnObject>(new CallableTask(action, board, d));
-            es.execute(futureTask);
-            list.add(futureTask);
-        }
-
-        //
-        for (int i = 0; i < availableCells.size(); i++) {
-            try {
-                ReturnObject returnObject = list.get(i).get();
-//                returnObject.action;
-
-                if (returnObject.best == max) {
-                    bestAction.add(returnObject.action);
-                }
-                if (returnObject.best > max) {
-                    max = returnObject.best;
-                    bestAction.clear();
-                    bestAction.add(returnObject.action);
-                }
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (ExecutionException e) {
-                e.printStackTrace();
-            }
-
-        }
-        es.shutdown();
-        Runtime.getRuntime().gc();
-        try {
-            es.awaitTermination(5, TimeUnit.SECONDS);
-        } catch (Exception e) {
-
-        }
-        if (bestAction.size() == 0) {
-            if (availableCells.size() == 0) return board.transfer(board.strMove(board.n / 2, board.n / 2));
-            return availableCells.get(new Random().nextInt(availableCells.size()));
-        }
-
-        return bestAction.get(new Random().nextInt(bestAction.size()));
-    }
-
-    @Override
-    public int minAB(Board board, int deep, int alpha, int beta) {
-
-        boolean win = DetectWin_2.detectWin(transfer(board), board.n, board.winRequire, numplayer) || DetectWin_2.detectWin(transfer(board), board.n, board.winRequire, numOpponent);
-
-        int point = 0;
-        point = evaluate(board, numplayer);
-
-        if (deep == 0 || win) {
-            return point;
-        }
-        List<Integer> availableCells = Arrays.stream(qTable_ai.getTopFiveQValueActions(transfer(board), numOpponent)).boxed().collect(Collectors.toList());
-        if (availableCells.size() == 0) {
-            return 0;
-        }
-        int min = Integer.MAX_VALUE;
-        for (int i = 0; i < availableCells.size(); i++) {
-            int action = availableCells.get(i);
-            Board b = board.clone();
-            b.placeMove('x', board.transfer(action), false);
-            int currentScore = maxAB(b, deep - 1, alpha, beta);
-            min = Math.min(currentScore, min);
-            beta = Math.min(beta, min);
-            if (beta <= alpha) {
-                break;
-            }
-        }
-        return min;
-    }
-
-    public int maxAB(Board board, int deep, int alpha, int beta) {
-        boolean win = DetectWin_2.detectWin(transfer(board), board.n, board.winRequire, numplayer) || DetectWin_2.detectWin(transfer(board), board.n, board.winRequire, numOpponent);
-        int point = 0;
-//        for (Boolean[][] winState : Board.winStates) {
-//            point += eval(board, winState, -1);
-//        }
-        point = evaluate(board, numOpponent);
-        if (deep == 0 || win) {
-            return point;
-        }
-        List<Integer> availableCells = Arrays.stream(qTable_ai.getTopFiveQValueActions(transfer(board), numplayer)).boxed().collect(Collectors.toList());
-        if (availableCells.size() == 0) {
-            return 0;
-        }
-        int max = Integer.MIN_VALUE;
-        for (int i = 0; i < availableCells.size(); i++) {
-            int action = availableCells.get(i);
-            Board b = board.clone();
-            b.placeMove('o', board.transfer(action), false);
-            int currentScore = minAB(b, deep - 1, alpha, beta);
-            max = Math.max(currentScore, max);
-            alpha = Math.max(max, alpha);
-            if (beta <= alpha) {
-                break;
-            }
-        }
-        return max;
-    }
-}
-
-
-
-

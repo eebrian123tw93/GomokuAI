@@ -1,8 +1,9 @@
-package com.JavaBeginnerToPro.GomoWhiz.Version_1;
+package com.JavaBeginnerToPro.GomoWhiz.GUI;
+
+import com.JavaBeginnerToPro.GomoWhiz.utilities.*;
 
 import javax.swing.*;
 import javax.swing.border.BevelBorder;
-import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -105,12 +106,8 @@ public class GomokuGUI extends JFrame implements KeyListener {
         restartMenuItem.setToolTipText("Restart Game");
         restartMenuItem.addActionListener((ActionEvent event) -> {
             int[] gameState;
-//            if(mode==Mode.AI_VS_Human){
-//                gameState=panel.getGameState();
-//            }else {
             gameState = playground.getState();
             panel.setGameState(gameState);
-//            }
             for (int i = 0; i < gameState.length; i++) {
                 gameState[i] = 0;
             }
@@ -272,8 +269,6 @@ public class GomokuGUI extends JFrame implements KeyListener {
             }
         });
 
-//        player1Menu.add(human);
-
         player2Menu.add(randomAI2);
         player2Menu.add(conwayQTableAI2);
         player2Menu.add(forcedActionAI2);
@@ -281,9 +276,6 @@ public class GomokuGUI extends JFrame implements KeyListener {
         player2Menu.add(minMaxForcedAI2);
         player2Menu.add(qTableForcedAI2);
         player2Menu.add(human2);
-
-//
-
 
         menuBar.add(game);
         menuBar.add(modeMenu);

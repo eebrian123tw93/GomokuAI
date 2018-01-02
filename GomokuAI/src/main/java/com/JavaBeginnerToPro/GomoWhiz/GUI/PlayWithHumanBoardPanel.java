@@ -1,4 +1,8 @@
-package com.JavaBeginnerToPro.GomoWhiz.Version_1;
+package com.JavaBeginnerToPro.GomoWhiz.GUI;
+
+import com.JavaBeginnerToPro.GomoWhiz.utilities.DetectWin;
+import com.JavaBeginnerToPro.GomoWhiz.utilities.MinMax;
+import com.JavaBeginnerToPro.GomoWhiz.utilities.Playground;
 
 import javax.swing.*;
 import java.awt.*;
@@ -9,7 +13,7 @@ import java.util.List;
 
 public class PlayWithHumanBoardPanel extends BoardPanel implements MouseListener {
     List<List<Rectangle>> humanClickAreas;
-    AI AI;
+    com.JavaBeginnerToPro.GomoWhiz.utilities.AI AI;
     Playground playground;
     boolean aiMoving=false;
     @Override
@@ -77,26 +81,9 @@ public class PlayWithHumanBoardPanel extends BoardPanel implements MouseListener
         addMouseListener(this);
 
 //        AI=new QTableWithForcedActions(1);
-        AI =new MinMax(1);
+        //AI = new MinMax(1);
+        AI = new MinMax(1);
         playing=true;
-//        Button button=new Button("Restart");
-//        button.addActionListener(new ActionListener() {
-//            @Override
-//            public void actionPerformed(ActionEvent e) {
-//
-//                for (int i = 0; i < gameState.length; i++) {
-////            state[i] = random.nextInt(3) - 1;
-//                    gameState[i] = 0;
-//                }
-//                ;button.getParent().repaint();
-//                playing=true;
-//            }
-//        });
-//        add(button);
-        if(rightPanel!=null){
-            updateRightPanel();
-        }
-
     }
 
     public static void main(String[] args) {
@@ -108,7 +95,7 @@ public class PlayWithHumanBoardPanel extends BoardPanel implements MouseListener
 //        }
         JFrame frame = new JFrame();
         frame.setVisible(true);
-        frame.add(new PlayWithHumanBoardPanel(state,new Playground()));
+        frame.add(new PlayWithHumanBoardPanel(state, new Playground()));
 
     }
 

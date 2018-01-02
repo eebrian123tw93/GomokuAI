@@ -25,7 +25,7 @@
                     </descriptorRefs>
                     <archive>
                         <manifest>
-                            <mainClass>com.JavaBeginnerToPro.GomoWhiz.ConwayAI_V2.QTable_AI</mainClass>
+                            <mainClass>com.JavaBeginnerToPro.GomoWhiz.QLearning.QTable_AI</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
@@ -34,24 +34,13 @@
     </build>
 
 
-    <dependencies>
-        <dependency>
-            <groupId>org.swinglabs</groupId>
-            <artifactId>swingx</artifactId>
-            <version>1.6.1</version>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/org.encog/encog-core -->
-        <dependency>
-            <groupId>org.encog</groupId>
-            <artifactId>encog-core</artifactId>
-            <version>3.4</version>
-        </dependency>
-        <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <version>6.0.6</version>
-        </dependency>
-    </dependencies>
+    <!--<dependencies>-->
+        <!--<dependency>-->
+            <!--<groupId>org.swinglabs</groupId>-->
+            <!--<artifactId>swingx</artifactId>-->
+            <!--<version>1.6.1</version>-->
+        <!--</dependency>-->
+    <!--</dependencies>-->
 
 
 

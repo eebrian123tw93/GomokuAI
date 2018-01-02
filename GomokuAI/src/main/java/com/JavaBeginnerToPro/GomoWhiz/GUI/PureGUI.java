@@ -1,13 +1,25 @@
-package com.JavaBeginnerToPro.GomoWhiz.Version_1;
+package com.JavaBeginnerToPro.GomoWhiz.GUI;
 
-import org.jdesktop.swingx.JXPanel;
-import org.jdesktop.swingx.border.DropShadowBorder;
 
 import javax.imageio.ImageIO;
-import javax.swing.*;
+import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.EmptyBorder;
-import java.awt.*;
+import java.awt.BasicStroke;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Point;
+import java.awt.Rectangle;
+import java.awt.Window;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.KeyEvent;
@@ -18,10 +30,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Method;
-import java.util.Date;
-import java.util.Map;
 import java.util.Random;
-import java.util.TreeMap;
 
 public class PureGUI extends JFrame implements KeyListener {
     private String info1, info2, info3;
@@ -164,7 +173,7 @@ public class PureGUI extends JFrame implements KeyListener {
     }
 }
 
-class BoardPanel_Pure extends JXPanel {
+class BoardPanel_Pure extends JPanel {
     private Rectangle[][] rectangles;
     private int[] gameState;
     private int [] randomTable;
@@ -217,14 +226,6 @@ class BoardPanel_Pure extends JXPanel {
         init();
         setBorder(new EmptyBorder(10,10,10,10));
         setOpaque(false);
-        DropShadowBorder shadow = new DropShadowBorder();
-        shadow.setShadowColor(Color.BLACK);
-        shadow.setShowLeftShadow(true);
-        shadow.setShowRightShadow(false);
-        shadow.setShowBottomShadow(false);
-        shadow.setShowTopShadow(true);
-        shadow.setShadowSize(20);
-        setBorder(shadow);
         initRandomTable();
     }
     public void init() {
@@ -256,7 +257,7 @@ class BoardPanel_Pure extends JXPanel {
         g.drawImage(woodImage,20,20,getBounds().width-10,getBounds().height-10,this);
         g.setColor(Color.darkGray);
         ((Graphics2D)g).setStroke(new BasicStroke(3));
-        int shadowSize=((DropShadowBorder)getBorder()).getShadowSize();
+        int shadowSize=0;
         g.drawImage(woodImage, p.x-rectSize+shadowSize, p.y-rectSize+shadowSize, rectSize*((int) Math.sqrt(gameState.length)+1), rectSize*((int) Math.sqrt(gameState.length)+1), this);
         g.setColor(Color.BLACK);
 
