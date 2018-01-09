@@ -6,4 +6,6 @@
   **QTable_AI** uses table based [Q-learning](https://en.wikipedia.org/wiki/Q-learning).
   
   **minMax** uses [Minimax](https://en.wikipedia.org/wiki/Minimax) + [Alpha–beta pruning](https://en.wikipedia.org/wiki/Alpha%E2%80%93beta_pruning).
-  
+
+[Maven](https://maven.apache.org/) is required for the project.
+For those who just want to try it out, we provide a runnable jar with a trained ai brain for [direct download](https://drive.google.com/open?id=1Jzx80gVN1fevWRBfpSWQoXjT7uUt3YAG).
