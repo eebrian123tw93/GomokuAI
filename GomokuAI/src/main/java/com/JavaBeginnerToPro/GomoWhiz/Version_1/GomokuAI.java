@@ -9,14 +9,14 @@ public class GomokuAI {
 
     public static final int gameBoardWidth = 15;
     public static final int winRequire = 5;
-    public static int GAMES_TO_TRAIN = 10;
-    public static int GAMES_TO_PLAY = 10;
+    public static int GAMES_TO_TRAIN = 1000;
+    public static int GAMES_TO_PLAY = 0;
     public boolean displayBoard = false;
     public boolean isPlaying = false;
 
     static final int GAMEBOARD_SIZE = gameBoardWidth * gameBoardWidth;
     static final double GAMMA = 0.9; //the decay rate of future rewards
-    static final double LEARNING_RATE = 0.1; //the "ALPHA"
+    static final double LEARNING_RATE = 0.5; //the "ALPHA"
     Random rand;
     int[] currentState;
     boolean gameEnded = false;
@@ -64,7 +64,7 @@ public class GomokuAI {
             //System.out.println("qMap size: " + qMap.size());
 
             //display stats every 1000 games
-            if (gamesPlayed % 1000 == 0) {
+            if (gamesPlayed % 100 == 0) {
                 System.out.println("wins: " + wins + " losses: " + losses + " ties: " + ties);
                 wins=losses=ties=0;
             }
@@ -81,7 +81,7 @@ public class GomokuAI {
 
             if (displayBoard) {
                 try {
-                    ((BoardPanel)gui.getContentPane().getComponent(0)).initRandomTable();
+                    ((BoardPanel)gui.getContentPane()).initRandomTable();
                     //gui.repaint();
                     Thread.sleep(500);
                 }
@@ -149,8 +149,13 @@ public class GomokuAI {
             //swap players
             if (currentPlayer == 1) currentPlayer = -1;
             else currentPlayer = 1;
-
-
+            //my test
+//            try {
+//                Thread.sleep(200);
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
+            //
             if (displayBoard && isPlaying) {
                 try {
                     ((BoardPanel) gui.getContentPane().getComponent(0)).setGameState(currentState);

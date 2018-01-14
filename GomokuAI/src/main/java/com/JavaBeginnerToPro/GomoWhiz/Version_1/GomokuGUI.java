@@ -2,7 +2,6 @@ package com.JavaBeginnerToPro.GomoWhiz.Version_1;
 
 import javax.swing.*;
 import javax.swing.border.BevelBorder;
-import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -35,7 +34,7 @@ public class GomokuGUI extends JFrame implements KeyListener {
     }
 
     enum Player {
-        Random, human, Minmax, PureQTable, ForcedActions, MinMaxWithForcedActions, QTableWithForcedActions;
+        Random, human, Minmax, PureQTable, ForcedActions, MinMaxWithForcedActions, QTableWithForcedActions, SQL_AI;
     }
 
     public static void main(String[] args) {
@@ -211,13 +210,18 @@ public class GomokuGUI extends JFrame implements KeyListener {
             }
 
         });
+        JMenuItem sqlAI = new JMenuItem("SQL AI");
+        sqlAI.addActionListener((ActionEvent event) -> {
+            playerOne = Player.SQL_AI;
+            updatePlayer();
+        });
         player1Menu.add(randomAI);
         player1Menu.add(conwayQTableAI);
         player1Menu.add(forcedActionAI);
         player1Menu.add(minMaxAI);
         player1Menu.add(minMaxForcedAI);
         player1Menu.add(qTableForcedAI);
-
+        player1Menu.add(sqlAI);
 
         ////////////////Player2///////////////////
         JMenu player2Menu = new JMenu("Player2");
@@ -349,6 +353,9 @@ public class GomokuGUI extends JFrame implements KeyListener {
             case ForcedActions:
                 playground.setAI1(new ForcedActions(1));
                 break;
+            case SQL_AI:
+                playground.setAI1(new SQL_AI(1));
+                break;
             default:
                 break;
         }
@@ -397,7 +404,7 @@ public class GomokuGUI extends JFrame implements KeyListener {
 
     public boolean jFileChooserDialog() {
         if (chooser == null) {
-            chooser = new JFileChooser(System.getProperty("user.home")+"/Desktop");
+            chooser = new JFileChooser(System.getProperty("user.home") + "/Desktop");
 //            FileNameExtensionFilter filter = new FileNameExtensionFilter(
 //                    "文字檔", "txt");
 //            chooser.setFileFilter(filter);

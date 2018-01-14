@@ -1,5 +1,11 @@
 package com.JavaBeginnerToPro.GomoWhiz.Version_1;
 
+import com.JavaBeginnerToPro.GomoWhiz.minMax.Board;
+
+import javax.swing.*;
+import javax.swing.Timer;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.sql.*;
 import java.util.Date;
 import java.util.*;
@@ -34,7 +40,8 @@ public class SQLGomokuAI extends GomokuAI {
     String sqlAdd;
     LinkedList<StringBuilder> updateValues;
     int length;
-    List<Statement> statements=new LinkedList<>();
+    List<Statement> statements;
+    BoardPanel boardPanel;
 
     public SQLGomokuAI() {
         DBName = "chess";
@@ -64,6 +71,32 @@ public class SQLGomokuAI extends GomokuAI {
         strBuilder.append("?);");
         sqlAdd = strBuilder.toString();
 
+
+//        boardPanel=new BoardPanel(currentState);
+//
+//        JFrame frame=new JFrame();
+//        frame.add(boardPanel);
+//        frame.setVisible(true);
+//        frame.setSize(1920,1080);
+//
+//
+//        Timer screenUpdate = new Timer(300, new ActionListener() {
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+//                int [] state=new int[currentState.length];
+//                for (int i=0;i<currentState.length;i++){
+//                    state[i]=currentState[i];
+//                    if(state[i]==-1)state[i]+=2;
+//                    else if(state[i]==1)state[i]+=1;
+//                }
+//                boardPanel.setGameState(state);
+//               frame.repaint();
+//
+//            }
+//        });
+//        screenUpdate.start();
+        if(Board.winStates.size()==0)
+        Board.winStatesInit();
     }
 
     public void closeObject() {
@@ -311,17 +344,42 @@ public class SQLGomokuAI extends GomokuAI {
         if (statements.size() > 500) {
             closeObject();
         }
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     
     public static void main(String[] args) {
         SQLGomokuAI sqlGomokuAI = new SQLGomokuAI();
         System.out.println(new Date());
-        sqlGomokuAI.learningMode = true;
         sqlGomokuAI.train();
         sqlGomokuAI.play();
         System.out.println(new Date());
         Runtime.getRuntime().gc();
+    }
+
+    int chooseAction(String stateKey, int currentPlayer, int[] currentState) {
+
+        if (learningMode == false) {
+            //AI 1 looks for the maximum Q values (because it gets a positive reward when winning)
+            if (currentPlayer == 1) return getMaxQValueAction(stateKey);
+                //AI -1 looks for the minimum Q values (because it gets a negative reward when winning)
+            else if (currentPlayer == -1) return getMinQValueAction(stateKey);
+            //else if (currentPlayer == -1) return getMaxQValueAction(stateKey);
+        }
+
+        else {
+                if (currentPlayer == 1)
+                    return getMaxQValueAction(stateKey);
+                else
+                    return getMinQValueAction(stateKey);
+        }
+
+        //else if (currentPlayer == -1) return getMaxQValueAction(stateKey);
+        return -1; //just in case. should cause an error
     }
 }
 

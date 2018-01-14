@@ -14,11 +14,12 @@ public class Board implements Comparator<Board.ActionValue> {
     int n;
     int m;
     int winRequire;
-    static List<boolean[][]> winStates = new ArrayList<>();
+    public static List<boolean[][]> winStates = new ArrayList<>();
     final static long[][] zobrist = createZobrist();
     static Map<Long, Integer> zobristHash;
-    static int numplayer;
-    static int numOppenent;
+    public static int numplayer;
+    public static int numOppenent;
+
     public char[][] getBoard() {
         return board;
     }
@@ -276,41 +277,6 @@ public class Board implements Comparator<Board.ActionValue> {
         int y1 = action % n;
         board[x1][y1] = player == 1 ? 'o' : 'x';
         int point = 0;
-//        if (player == 1) {
-//            if (DetectWin_2.detectWin(transfer(this), n, winRequire, player)) {
-//                point = Score.FIVE;
-//                return point;
-//            }
-//            if (DetectBoard_2.detectWin(transfer(this), n, winRequire - 1, player,action)) {
-//                point = Score.FOUR;
-//                return point;
-//            }
-//            if (DetectBoard_2.detectWin(transfer(this), n, winRequire - 2, player,action)) {
-//                point = Score.THREE;
-//                return point;
-//            }
-//            if (DetectBoard_2.detectWin(transfer(this), n, winRequire - 3, player,action)) {
-//                point = Score.TWO;
-//                return point;
-//            }
-//        } else if (player == 2) {
-//            if (DetectWin_2.detectWin(transfer(this), n, winRequire, player)) {
-//                point = Score.FIVE;
-//                return point;
-//            }
-//            if (DetectBoard_2.detectWin(transfer(this), n, winRequire - 1, player,action)) {
-//                point = Score.FOUR;
-//                return point;
-//            }
-//            if (DetectBoard_2.detectWin(transfer(this), n, winRequire - 2, player,action)) {
-//                point = Score.THREE;
-//                return point;
-//            }
-//            if (DetectBoard_2.detectWin(transfer(this), n, winRequire - 3, player,action)) {
-//                point = Score.TWO;
-//                return point;
-//            }
-//        }
         for (int i = 0; i < winStates.size(); i++) {
             point = Math.max(evl(this, winStates.get(i), player), point);
         }

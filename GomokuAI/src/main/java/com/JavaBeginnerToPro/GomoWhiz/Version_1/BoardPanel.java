@@ -174,7 +174,7 @@ public class BoardPanel extends JXPanel {
 //                g.setColor(Color.WHITE);
 //                g.fillOval(p.x - chessR / 2, p.y - chessR / 2, chessR, chessR);
             }
-
+//            ((Graphics2D) g).drawString(""+i,p.x,p.y);
             if (i % (int) Math.sqrt(gameState.length) == (int) Math.sqrt(gameState.length) - 1) {
                 p.x = this.getBounds().width / 2 - rectSize * (int) Math.sqrt(gameState.length) / 2;
                 p.y += rectSize;

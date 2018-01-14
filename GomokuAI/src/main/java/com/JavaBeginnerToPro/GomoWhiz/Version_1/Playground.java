@@ -39,7 +39,8 @@ public class Playground {
 
     public static void main(String[] args) {
         Playground playground = new Playground();
-        if (playground.displayBoard == true) playground.gui = new PureGUI(playground.state, "Player 1 win percent", "Player 2 win percent", "Games played");
+        if (playground.displayBoard == true)
+            playground.gui = new PureGUI(playground.state, "Player 1 win percent", "Player 2 win percent", "Games played");
 
         playground.setAI1(new QTableWithForcedActions(1, "qMap_20k"));
         //playground.setAI2(new QTableWithForcedActions(2, "qMap_20k"));
@@ -64,18 +65,21 @@ public class Playground {
     public AI getAI1() {
         return AI1;
     }
+
     public void setAI1(AI AI1) {
         this.AI1 = AI1;
     }
+
     public void setAI2(AI AI2) {
         this.AI2 = AI2;
     }
+
     public int[] getState() {
         return state;
     }
 
     void play() {
-        for(int i=0;i<state.length;i++)state[i]=0;
+        for (int i = 0; i < state.length; i++) state[i] = 0;
         int action;
         int movesRemaining = BOARD_SIZE;
         int currentPlayer;
@@ -93,8 +97,7 @@ public class Playground {
                 showGUI(state);
                 try {
                     Thread.sleep(guiDelayMillis);
-                }
-                catch (InterruptedException e) {
+                } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
             }
@@ -102,12 +105,10 @@ public class Playground {
             if (DetectWin_2.detectWin(state, BOARD_WIDTH, WIN_REQUIRE, 1)) {
                 ++player1Win;
                 break;
-            }
-            else if (DetectWin_2.detectWin(state, BOARD_WIDTH, WIN_REQUIRE, 2)) {
+            } else if (DetectWin_2.detectWin(state, BOARD_WIDTH, WIN_REQUIRE, 2)) {
                 ++player2Win;
                 break;
-            }
-            else if (movesRemaining == 0) {
+            } else if (movesRemaining == 0) {
                 ++tie;
                 break;
             }
@@ -120,11 +121,10 @@ public class Playground {
                 player2WinPercent = (float) player2Win / gamesPlayed * 100;
             }
 
-            if(gui == null){
+            if (gui == null) {
                 try {
                     Thread.sleep(200);
-                }
-                catch (Exception e){
+                } catch (Exception e) {
 
                 }
             }
@@ -198,6 +198,7 @@ class TableBased2_Conway extends AI {
         }
         return maxQValueAction;
     }
+
     int getMinQValueAction(String stateKey) {
         double minQValue = Double.MAX_VALUE;
         int minQValueAction = -1;
@@ -211,12 +212,14 @@ class TableBased2_Conway extends AI {
         }
         return minQValueAction;
     }
+
     String stateToString(int[] state) {
         StringBuilder sb = new StringBuilder();
         for (int i : state) sb.append(Integer.toString(i));
         return sb.toString();
     }
 }
+
 class NN_ConwayP1 extends AI {
     //GomokuAI_NN gomokuAI_NN = new GomokuAI_NN();
     private String fileName = "network_9_3p1.eg";
@@ -269,6 +272,7 @@ class NN_ConwayP1 extends AI {
         return action;
     }
 }
+
 class NN_ConwayP2 extends AI {
     //GomokuAI_NN gomokuAI_NN = new GomokuAI_NN();
     private String fileName = "network_9_3p2.eg";
@@ -321,9 +325,32 @@ class NN_ConwayP2 extends AI {
         return action;
     }
 }
+
 class SQL_AI extends AI {
-    public int move (int [] state){
-        return randomMove(state);
+    int player;
+    SQLComokuAI_II sqlComokuAI_ii;
+
+    public SQL_AI(int player) {
+        if (player == 1) {
+            this.player = 1;
+        } else if (player == 2) {
+            this.player = -1;
+        }
+
+        sqlComokuAI_ii = new SQLComokuAI_II();
+    }
+
+    public int move(int[] state) {
+        int[] copyState = state.clone();
+        for (int i = 0; i < state.length; i++) {
+            if (state[i] == 1) {
+                copyState[i] = player;
+            } else if (state[i] == 2) {
+                copyState[i] = -player;
+            }
+        }
+        String key = sqlComokuAI_ii.makeStateKey(copyState, player);
+        return sqlComokuAI_ii.chooseAction(key, player, copyState);
     }
 }
 
@@ -334,10 +361,12 @@ class MinMax extends AI {
     MinMax(int ourPlayerNum) {
         smartAgent = new SmartAgent(15, 5, ourPlayerNum);
     }
+
     public int move(int[] state) {
         return smartAgent.move(state);
     }
 }
+
 class MinMaxWithForcedActions extends AI {
     private SmartAgent smartAgent;
     private QTable_AI qTableAi = new QTable_AI();
@@ -348,16 +377,17 @@ class MinMaxWithForcedActions extends AI {
         smartAgent = new SmartAgent(15, 5, ourPlayerNum);
         smartAgent.setMinimax(1);
     }
+
     public int move(int[] state) {
         if (PatternDetect.isEmpty(state)) return state.length / 2;
-        int [] player1Patterns = PatternDetect.detect(state, 1);
-        int [] player2Patterns = PatternDetect.detect(state, 2);
-        if (qTableAi.obviousActionNeeded(player1Patterns, player2Patterns)){
+        int[] player1Patterns = PatternDetect.detect(state, 1);
+        int[] player2Patterns = PatternDetect.detect(state, 2);
+        if (qTableAi.obviousActionNeeded(player1Patterns, player2Patterns)) {
             return qTableAi.forcedAction(state, qTableAi.scanObviousPatternTypes(player1Patterns, player2Patterns, ourPlayerNum), ourPlayerNum);
-        }
-        else return smartAgent.move(state);
+        } else return smartAgent.move(state);
     }
 }
+
 class QTableWithForcedActions extends AI {
     private int ourPlayerNum;
     private QTable_AI qTable_ai;
@@ -372,6 +402,7 @@ class QTableWithForcedActions extends AI {
         return qTable_ai.chooseAction(state, ourPlayerNum);
     }
 }
+
 class PureQTable extends AI {
     //only gets moves from qMap, otherwise random
     private Map<String, Double> qMap;
@@ -396,7 +427,8 @@ class PureQTable extends AI {
         for (int i : PatternDetect.detect(state, 2)) sb.append(Integer.toString(i));
         return sb.toString();
     }
-    private int getMaxQValueAction(int [] state, int currentPlayer){
+
+    private int getMaxQValueAction(int[] state, int currentPlayer) {
         int[] nextState = state.clone();
         int[] validActions = getValidActions(state);
         int maxQAction = -1;
@@ -415,7 +447,8 @@ class PureQTable extends AI {
 
         return maxQAction;
     }
-    private int getMinQValueAction(int [] state, int currentPlayer){
+
+    private int getMinQValueAction(int[] state, int currentPlayer) {
         int[] nextState = state.clone();
         int[] validActions = getValidActions(state);
         int minQAction = -1;
@@ -433,16 +466,18 @@ class PureQTable extends AI {
         }
         return minQAction;
     }
-    private double evalState(String stateKey){
+
+    private double evalState(String stateKey) {
         //if state has not happened before
         if (qMap.get(stateKey) == null)
             qMap.put(stateKey, (rand.nextDouble() * 0.3) - 0.15); //-0.15 ~ +0.15
 
         return qMap.get(stateKey);
     }
-    private static int [] getValidActions(int [] state){
-        int [][] state2D = DetectWin_2.convert1Dto2D(state, Playground.BOARD_WIDTH);
-        int [] validActions;
+
+    private static int[] getValidActions(int[] state) {
+        int[][] state2D = DetectWin_2.convert1Dto2D(state, Playground.BOARD_WIDTH);
+        int[] validActions;
         int upperBound = 0;
         int lowerBound = state2D.length;
         int leftBound = 0;
@@ -452,9 +487,7 @@ class PureQTable extends AI {
             validActions = new int[1];
             validActions[0] = state.length / 2;
             return validActions;
-        }
-
-        else {
+        } else {
             boolean found = false;
 
             //find upper bound
@@ -509,8 +542,8 @@ class PureQTable extends AI {
             }
 
             int emptySpacesInsideValidRegion = 0;
-            for (int row = upperBound; row <= lowerBound; ++row){
-                for (int col = leftBound; col <= rightBound; ++col){
+            for (int row = upperBound; row <= lowerBound; ++row) {
+                for (int col = leftBound; col <= rightBound; ++col) {
                     if (state2D[row][col] == 0) ++emptySpacesInsideValidRegion;
                 }
             }
@@ -521,7 +554,7 @@ class PureQTable extends AI {
             int index = 0;
             for (int row = 1; row < state2D.length - 1; ++row) {
                 for (int col = 1; col < state2D.length - 1; ++col) {
-                    if (row >= upperBound && row <= lowerBound && col >= leftBound && col <= rightBound){
+                    if (row >= upperBound && row <= lowerBound && col >= leftBound && col <= rightBound) {
                         if (state2D[row][col] == 0) {
                             validActions[index] = counter;
                             ++index;
@@ -535,21 +568,22 @@ class PureQTable extends AI {
         }
     }
 }
+
 class ForcedActions extends AI {
     //pure forced actions, if no obvious actions detected, random play
     private int ourPlayerNum;
     private QTable_AI qTableAi = new QTable_AI();
 
-    public ForcedActions(int ourPlayerNum){
+    public ForcedActions(int ourPlayerNum) {
         this.ourPlayerNum = ourPlayerNum;
     }
-    public int move(int [] state){
+
+    public int move(int[] state) {
         if (PatternDetect.isEmpty(state)) return state.length / 2;
-        int [] player1Patterns = PatternDetect.detect(state, 1);
-        int [] player2Patterns = PatternDetect.detect(state, 2);
-        if (qTableAi.obviousActionNeeded(player1Patterns, player2Patterns)){
+        int[] player1Patterns = PatternDetect.detect(state, 1);
+        int[] player2Patterns = PatternDetect.detect(state, 2);
+        if (qTableAi.obviousActionNeeded(player1Patterns, player2Patterns)) {
             return qTableAi.forcedAction(state, qTableAi.scanObviousPatternTypes(player1Patterns, player2Patterns, ourPlayerNum), ourPlayerNum);
-        }
-        else return randomMove(state);
+        } else return randomMove(state);
     }
 }
